@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - research/15term-window
+      - research/15term-verifier-pilot
     paths:
       - candidate.json
       - src/build_interval_tables.py

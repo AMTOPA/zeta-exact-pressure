@@ -1,10 +1,9 @@
 # Zeta exact-pressure optimization
 
 > [!IMPORTANT]
-> **Current research-draft candidate: 67.3330598288%.**
+> **Current research-draft candidate: 67.3331466374%.**
 >
-> The new seven-point local target
-> \(\varepsilon=0.005401\) is closed by the repository-native outward-rounded interval verifier. The window contribution also has an interval-verified floor \(H>0.6723338\). The inherited analytic interface is still imported from the lineage repositories, and independent reproduction of the new local certificate is requested before publication-quality use.
+> The seven-point local target \(\varepsilon=0.0054022\) is closed by the repository-native outward-rounded interval verifier. The same rational 15-term window has an interval-verified floor \(H>0.6723338866\). The inherited analytic interface is still imported from the lineage repositories, and independent reproduction of the local certificate is requested before publication-quality use.
 
 This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
 
@@ -37,16 +36,16 @@ with common denominator $10^9$ and numerators
    -148305
 ```
 
-High-precision evaluation gives
+Direct interval arithmetic encloses the analytic window value near
 
 $$
-H(v)=0.672333886657942\ldots,
+H(v)=0.67233388665794215883536822355662\ldots
 $$
 
-and `src/check_window.py` verifies by interval arithmetic that
+and verifies the rational working floor
 
 $$
-H(v)>0.6723338.
+\boxed{H(v)>0.6723338866}.
 $$
 
 The position-pressure coefficients remain
@@ -56,39 +55,45 @@ $$
 \qquad B=\frac3{1150}.
 $$
 
-## Why this candidate replaced the earlier 15-term search
+## Robust local search and tightened certificate
 
-An earlier score-screened search proposed `epsilon = 0.005561`. The interval verifier exposed a missed low basin, and unrestricted local optimization then found still deeper basins. That target was rejected rather than weakened cosmetically.
+An earlier score-screened search proposed `epsilon = 0.005561`; interval verification exposed missed basins, so that target was rejected. Counterexamples were fed back into a min-max exchange optimization. The retained rational window was then stress-tested by polishing every template in `{1,2,3,4}^6` without score screening, an additional `{1,2,3,5}^6` family, and multi-range differential evolution.
 
-The counterexamples were fed back into a min-max exchange optimization. The retained window was stress-tested by polishing every template in `{1,2,3,4}^6` without score screening, an additional `{1,2,3,5}^6` family, and multi-range differential evolution. The lowest floating-point basin observed for the rounded rational window was
+The lowest floating-point basin observed is
 
 $$
 0.005402429240910082\ldots.
 $$
 
-The rigorous target was set below it at
+A shared-table rigorous epsilon ladder gave
+
+```text
+0.0054015   VERIFIED=true
+0.0054020   VERIFIED=true
+0.0054022   VERIFIED=true
+0.0054024   INCONCLUSIVE (terminal cell; not a counterexample)
+0.00540242  INCONCLUSIVE (same terminal cell; not a counterexample)
+```
+
+Therefore the promoted certified target is
 
 $$
-\boxed{\varepsilon=0.005401}.
+\boxed{\varepsilon=0.0054022}.
 $$
 
-## Interval certificate
-
-The full run used a 4000 grid and 50 decimal digits for `mpmath.iv` table construction, followed by C++ branch-and-bound with interval Hessian LDL and convex tangent pruning:
+For this target the 4000-grid / 50-digit branch-and-bound run reports
 
 ```text
 VERIFIED=true
-nodes=3171002
-pruned=1585573
-splits=1585429
-convex=1776812
-tangent=751200
-max_depth=62
+nodes=3380026
+pruned=1690085
+splits=1689941
+convex=1980120
+tangent=852267
+max_depth=70
 ```
 
-The exact table hashes, workflow run, artifact ID, and full certificate metadata are recorded in [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt).
-
-Independent reproduction is still `false`.
+The exact table hashes, workflow run, artifact ID, and certificate provenance are recorded in [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt). Independent reproduction remains `false`.
 
 ## Exact-pressure projection
 
@@ -118,24 +123,24 @@ $$
 Using the certified working inputs
 
 $$
-H=0.6723338,\qquad \varepsilon=0.005401,\qquad B=3/1150,
+H=0.6723338866,\qquad \varepsilon=0.0054022,\qquad B=3/1150,
 $$
 
-the integer scan selects $m=204$ and yields
+the integer scan still selects $m=204$ and yields
 
 $$
-0.6733305982879586830\ldots,
+0.6733314663744424509804847844858\ldots,
 $$
 
-hence the safe research-draft decimal floor
+hence the safe decimal floor
 
 $$
-\boxed{0.6733305982},
+\boxed{0.6733314663},
 $$
 
-i.e. **67.3330598288%** before the harmless decimal truncation.
+i.e. **67.3331466374%** before decimal truncation.
 
-The previous interval-certified record, **67.3290756019%**, is frozen under [`archive/2026-08-12-certified-6732907560/`](archive/2026-08-12-certified-6732907560/).
+The immediately previous interval-certified record, **67.3330598288%**, is frozen under [`archive/2026-08-12-certified-6733305982/`](archive/2026-08-12-certified-6733305982/). The earlier **67.3290756019%** record remains under [`archive/2026-08-12-certified-6732907560/`](archive/2026-08-12-certified-6732907560/).
 
 ## Reproduction
 
@@ -145,7 +150,7 @@ Run
 sh run.sh
 ```
 
-for structural checks, interval $H$ verification, window positivity, exact pressure multiplicity, final arithmetic, and verifier compilation/smoke testing. The full local certificate workflow is in `.github/workflows/local-certificate-pilot.yml`.
+for structural checks, interval $H$ verification, window positivity, exact pressure multiplicity, final arithmetic, and verifier compilation/smoke testing. Heavy full-certificate workflows are invoked manually from `main` in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md).
 
 ## Trust boundary
 
@@ -153,7 +158,7 @@ Checked directly in this repository:
 
 - exact pair-span capacities and position-pressure total;
 - interval lower bound for the 15-term $H(v)$ and window positivity;
-- the global six-gap inequality $F(g_1,\ldots,g_6)\ge0.005401$ by outward-rounded interval branch-and-bound;
+- the global six-gap inequality $F(g_1,\ldots,g_6)\ge0.0054022$ by outward-rounded interval branch-and-bound;
 - exact shifted-pressure multiplicity bookkeeping and final high-precision arithmetic.
 
 Still imported: the explicit-formula / trace interface, finite-$m$ Gram spectral profile, normalized-gap bookkeeping, and the analytic link from $H(v)$ to the zero count.

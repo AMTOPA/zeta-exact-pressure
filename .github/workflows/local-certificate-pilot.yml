@@ -23,12 +23,13 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
 
-      - name: Build full outward-rounded tables
+      - name: Build full-range lower-bound table
         run: |
           python3 src/build_interval_tables.py \
             --output tables-15term \
             --grid 4000 \
-            --precision 50
+            --precision 50 \
+            --lower-only
 
       - name: Build native verifier
         run: |

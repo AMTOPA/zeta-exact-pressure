@@ -68,6 +68,31 @@
     "verified": false,
     "note": "The target 0.005561 is below the observed floating-point adversarial minimum. This is discovery evidence only; a rigorous interval branch-and-bound certificate is still required."
   },
+  "pair_weights": {
+    "denominator": 1000000000,
+    "span_capacity_numerator": 2000000000,
+    "entries": [
+      [0, 1, 219313883],
+      [0, 2, 870819909],
+      [0, 3, 325978722],
+      [0, 4, 1000000000],
+      [0, 5, 1000000000],
+      [0, 6, 2000000000],
+      [1, 2, 330070053],
+      [1, 3, 129180091],
+      [1, 4, 674021278],
+      [1, 6, 1000000000],
+      [2, 3, 450616064],
+      [2, 5, 674021278],
+      [2, 6, 1000000000],
+      [3, 4, 450616064],
+      [3, 5, 129180091],
+      [3, 6, 325978722],
+      [4, 5, 330070053],
+      [4, 6, 870819909],
+      [5, 6, 219313883]
+    ]
+  },
   "position_pressure": {
     "denominator": 2300000000,
     "numerators": [

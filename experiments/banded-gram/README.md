@@ -1,35 +1,35 @@
 # Banded-Gram analytic extension
 
-Status: **analytic-extension research candidate**.  The local 17-term six-gap certificate used here is interval-certified.  The new matrix lemma below is an analytic step and should receive independent human review before this experiment replaces the root certified record.
+Status: **analytic-extension research candidate**. The local 17-term six-gap certificate used here is interval-certified. The new matrix profile below is an analytic step and should receive independent human review before this experiment replaces the root certified record.
 
 ## Why this direction
 
-The scalar Gram profile used by the predecessor keeps only the total off-diagonal energy
+The predecessor compresses all off-diagonal Gram information into
 
 \[
-E=2\sum_{i<j}|G_{ij}|^2,
+E=2\sum_{i<j}|G_{ij}|^2
 \]
 
-then applies the sharp unrestricted profile \(\Delta\ge h_m(E)\), where \(\Delta=\operatorname{tr}\Psi(G)\).  That profile is sharp if *only* total energy is known, so further parameter squeezing cannot improve this step.
+and then applies the sharp unrestricted profile \(\Delta\ge h_m(E)\), where \(\Delta=\operatorname{tr}\Psi(G)\). Because \(h_m\) is sharp when only total energy is retained, repeatedly tuning the local window cannot remove that loss.
 
-The translated seven-point certificate contains more information: it only uses pairs whose index span is at most six.  Therefore define the six-band energy
+The translated seven-point certificate contains stronger information: it uses only pair spans at most six. Define
 
 \[
-E_6=2\sum_{1\le j-i\le6}|G_{ij}|^2.
+E_q=2\sum_{1\le j-i\le q}|G_{ij}|^2.
 \]
 
-Because every local pair-span capacity is at most 2, summing the translated local inequalities gives
+For the present certificate, \(q=6\). Exact span capacities equal to 2 imply after summing translated local inequalities
 
 \[
 E_6+B\,\operatorname{span}(B)\ge A,
 \qquad A=\varepsilon(m-6),
 \]
 
-without first replacing \(E_6\) by the full off-diagonal energy.
+without first relaxing \(E_6\) to total off-diagonal energy.
 
-## Banded-Gram lemma
+## Continuous banded-Gram profile
 
-Let \(G\succeq0\) be an \(m\times m\) Hermitian Gram matrix with \(G_{ii}\le1\), and let
+Let \(G\succeq0\) be Hermitian and let
 
 \[
 \Psi(t)=
@@ -39,151 +39,163 @@ Let \(G\succeq0\) be an \(m\times m\) Hermitian Gram matrix with \(G_{ii}\le1\),
 \end{cases}
 \]
 
-For an integer \(q\ge1\), set
+Set
 
 \[
-E_q=2\sum_{1\le j-i\le q}|G_{ij}|^2.
+T_q=\frac{q+1}{q}.
 \]
 
-Then
+Then the proposed strengthened profile is
 
 \[
 \boxed{
-E_q\le\frac{q+1}{q}
-\quad\Longrightarrow\quad
-\operatorname{tr}\Psi(G)\ge E_q.
+\operatorname{tr}\Psi(G)\ge g_q(E_q)
 }
 \]
 
-### Proof
-
-Write \(X=G-I\), and split
+with
 
 \[
-X=Y+Z,
+g_q(E)=
+\begin{cases}
+E,&0\le E\le T_q,\\[1mm]
+2\sqrt{T_qE}-T_q,&E\ge T_q.
+\end{cases}
 \]
 
-where \(Y\) keeps exactly the off-diagonal entries with \(1\le |i-j|\le q\), and \(Z\) contains the diagonal and all farther entries.  The supports are disjoint, hence
+The function \(g_q\) is increasing, concave, continuous, \(C^1\) at \(T_q\), and satisfies \(g_q(0)=0\).
+
+### Proof
+
+Write
+
+\[
+G-I=Y+Z,
+\]
+
+where \(Y\) contains exactly the off-diagonal entries with \(1\le|i-j|\le q\), and \(Z\) contains the diagonal and all farther entries. Their Frobenius supports are disjoint, so
 
 \[
 \|Y\|_F^2=E_q,
 \qquad
-\|X\|_F^2=\|Y\|_F^2+\|Z\|_F^2.
+\|G-I\|_F^2=E_q+\|Z\|_F^2.
 \]
 
-For a unit vector \(x\), put \(p_i=|x_i|^2\).  Color the indices by their residues modulo \(q+1\).  Every band edge joins two different colors.  If \(P_c\) is the total \(p_i\)-mass in color class \(c\), then
+For a unit vector \(x\), put \(p_i=|x_i|^2\). Color indices by residue modulo \(q+1\). Every q-band edge joins different colors. If \(P_c\) denotes total \(p_i\)-mass in color class \(c\), then
 
 \[
 \sum_{1\le j-i\le q}p_ip_j
 \le
 \sum_{c<d}P_cP_d
-=
-\frac12\left(1-\sum_cP_c^2\right)
-\le
-\frac{q}{2(q+1)}.
+=\frac12\left(1-\sum_cP_c^2\right)
+\le\frac{q}{2(q+1)}.
 \]
 
-Cauchy--Schwarz therefore gives
+Cauchy--Schwarz gives
 
 \[
 |x^*Yx|^2
-\le
-E_q\,\frac{q}{q+1}.
+\le E_q\frac{q}{q+1}.
 \]
 
-Thus if \(E_q\le(q+1)/q\), then \(\|Y\|_{\rm op}\le1\), so \(Y-I\preceq0\).
+Hence
 
-Eigenvalue by eigenvalue,
+\[
+\|Y\|_{\rm op}\le C,
+\qquad
+C:=\sqrt{\frac{q}{q+1}E_q}
+=\sqrt{\frac{E_q}{T_q}}.
+\]
+
+Now use the eigenvalue identity
 
 \[
 \Psi(\lambda)
 =(\lambda-1)^2-(\lambda-2)_+^2,
 \]
 
-hence
+which yields
 
 \[
-\operatorname{tr}\Psi(G)
-=
-\|G-I\|_F^2-\|(G-2I)_+\|_F^2.
+\Delta:=\operatorname{tr}\Psi(G)
+=\|G-I\|_F^2-\|(G-2I)_+\|_F^2.
 \]
 
-Now
+If \(C\le1\), then \(Y-I\preceq0\). Since the Frobenius norm of the positive part is the distance to the cone of negative-semidefinite matrices,
 
 \[
-G-2I=(Y-I)+Z.
+\|(G-2I)_+\|_F\le\|Z\|_F,
 \]
 
-The Frobenius norm of the positive part is the distance to the cone of negative-semidefinite Hermitian matrices.  Since \(Y-I\preceq0\),
+so \(\Delta\ge E_q\).
+
+If \(C>1\), put \(\alpha=C^{-1}\). Then \(\alpha Y-I\preceq0\) and
 
 \[
-\|(G-2I)_+\|_F
-\le\|Z\|_F.
+G-2I=(\alpha Y-I)+\bigl(Z+(1-\alpha)Y\bigr).
 \]
 
-Consequently
+Again using distance to the negative-semidefinite cone and Frobenius orthogonality of \(Y\) and \(Z\),
 
 \[
-\operatorname{tr}\Psi(G)
+\|(G-2I)_+\|_F^2
+\le
+\|Z\|_F^2+(1-\alpha)^2E_q.
+\]
+
+Therefore
+
+\[
+\Delta
 \ge
-\|Y\|_F^2+\|Z\|_F^2-\|Z\|_F^2
-=E_q.
+E_q\bigl(1-(1-\alpha)^2\bigr)
+=E_q(2\alpha-\alpha^2).
 \]
 
-This proves the lemma.
-
-## Combination with the existing scalar profile
-
-The unrestricted predecessor theorem still gives
+Substituting \(\alpha=\sqrt{T_q/E_q}\) gives
 
 \[
-\operatorname{tr}\Psi(G)\ge h_m(E_{\rm total}),
-\qquad E_{\rm total}\ge E_q.
+\Delta\ge2\sqrt{T_qE_q}-T_q.
 \]
 
-Let
+This proves the displayed continuous profile.
+
+## Pressure combination
+
+The translated local certificate gives
 
 \[
-T_q=\frac{q+1}{q}.
+E_q+P\ge A,
+\qquad P=B\,\operatorname{span}(B)\ge0.
 \]
 
-Suppose the translated local certificate gives
+Set
 
 \[
-E_q+B\,\operatorname{span}(B)\ge A
-\]
-
-and that
-
-\[
-A<T_q,
+R=g_q(A),
 \qquad
-h_m(T_q)>A.
+\eta=\frac{R}{A}.
 \]
 
-If \(E_q\le T_q\), the banded lemma gives \(\Delta\ge E_q\), hence \(\Delta+B\operatorname{span}(B)\ge A\).  If \(E_q>T_q\), monotonicity of the unrestricted profile gives
+Because \(g_q\) is increasing, concave, and vanishes at zero, for \(E_q\le A\)
 
 \[
-\Delta\ge h_m(E_{\rm total})\ge h_m(T_q)>A.
+g_q(E_q)\ge\frac{E_q}{A}g_q(A)=\eta E_q,
 \]
 
-Therefore in all cases
+while for \(E_q\ge A\), \(g_q(E_q)\ge R\). Hence in all cases
 
 \[
-\boxed{\Delta+B\operatorname{span}(B)\ge A.}
+\boxed{
+\Delta+\eta P\ge R.
+}
 \]
 
-In the shifted-block deduction this means we may use
+This is exactly the form required by the predecessor shifted-block/pinching step, but with \(h_m(A)\) replaced by the stronger banded profile \(g_q(A)\).
 
-\[
-R=A,\qquad \eta=1,
-\]
+## Interval-certified local input
 
-instead of \(R=h_m(A)\), \(\eta=R/A\).
-
-## Current numerical input
-
-The second-exchange 17-term local certificate has now closed in the hardened outward-rounded verifier:
+The second-exchange 17-term local certificate has closed in the hardened outward-rounded verifier:
 
 \[
 H>0.6721881580,
@@ -193,7 +205,7 @@ H>0.6721881580,
 B=\frac{93}{23000}.
 \]
 
-Verifier evidence:
+Evidence:
 
 ```text
 workflow run = 31610179703
@@ -208,57 +220,98 @@ tangent=936616
 max_depth=74
 ```
 
-Take \(q=6\) and \(m=152\).  Then
+## Exact projection
+
+The strengthened profile changes the optimal block length to
 
 \[
-A=0.0079107\times146
-=1.1549622
-=\frac{5774811}{5000000},
+\boxed{m=165}.
 \]
 
-while
+With \(q=6\),
 
 \[
-T_6=\frac76=1.1666\ldots.
+A=0.0079107\times159
+=1.2578013
+=\frac{12578013}{10000000},
 \]
 
-The exact checker verifies \(h_{152}(7/6)>A\) by squaring the single positive square-root comparison; the resulting rational square gap is
+and
 
 \[
-\frac{2040735610367471}{324900000000000000}>0.
+T_6=\frac76.
 \]
 
-Thus the strengthened block deduction uses \(R=A\) and \(\eta=1\).  The exact final ratio is
+Instead of using a floating square root in the final statement, take the rational lower floor
 
 \[
-\frac{292048975046}{433679483675}
-=0.6734212385865638563170612269568\ldots,
+R_{\rm floor}=1.2560878
+=\frac{6280439}{5000000}.
 \]
 
-or
+The exact checker proves
 
 \[
-\boxed{67.34212385865638\ldots\%}.
+R_{\rm floor}<2\sqrt{T_6A}-T_6
 \]
 
-A safe ten-decimal floor is
+by the rational square inequality
 
 \[
-\boxed{0.6734212385}.
+T_6A-\left(\frac{R_{\rm floor}+T_6}{2}\right)^2
+=
+\frac{43705511}{900000000000000}>0.
 \]
 
-This is about **0.00059246 percentage points** above the current root record 67.3415313957%.
+Thus
 
-## Reproduce the exact arithmetic
+\[
+\eta=\frac{R_{\rm floor}}A
+=\frac{12560878}{12578013}.
+\]
 
-Run
+The shifted-block arithmetic becomes
+
+\[
+\frac SN\ge
+\frac{mH-\eta B(m-6)}{m-R_{\rm floor}}-o(1),
+\]
+
+and evaluates exactly to
+
+\[
+\frac{607970185271419}{902805037076740}
+=0.6734235635636362491098136775718\ldots.
+\]
+
+Therefore this analytic extension projects to
+
+\[
+\boxed{67.34235635636362\ldots\%},
+\]
+
+with safe ten-decimal floor
+
+\[
+\boxed{0.6734235635}.
+\]
+
+This is about **0.00082496 percentage points** above the current root record 67.3415313957%.
+
+## Geometry checks
+
+A first 7-point/8-point mixture experiment was also carried out. Under a common analytic window, the pair-capacity constraint forces the mixture coefficients to form a convex combination, and the scalar \(A_m\to h_m(A_m)\) projection selected an endpoint rather than an interior mixture. That negative result is what motivated retaining band position information instead of mixing geometries before the scalar Gram compression.
+
+A preliminary five-gap experiment was also tested because \(T_5=6/5\) is larger than \(T_6\). Free pair/pressure LPs initially overfit badly; after adversarial exchange, the robust local minima fell well below the level needed to beat the six-gap construction. At present \(q=6\) appears to be the better geometry for this banded profile.
+
+## Reproduce exact arithmetic
 
 ```bash
 python3 src/check_banded_gram.py
 ```
 
-or `sh run.sh` after this experiment is wired into the normal arithmetic checks.
+The same check is wired into `sh run.sh` and normal arithmetic CI.
 
 ## Trust boundary
 
-The 17-term local inequality and its window floor are interval-certified.  The calculations from the banded lemma to the displayed rational bound are exact.  The only genuinely new non-computational step is the banded-Gram lemma and its insertion into the predecessor shifted-block/pinching argument.  That step should be independently reviewed before root promotion.
+The 17-term local inequality and its window floor are interval-certified. The arithmetic from the banded profile to the displayed rational bound is exact. The genuinely new step is the continuous banded-Gram matrix inequality and its use inside the predecessor shifted-block/pinching argument. That analytic extension should receive independent human review before root promotion.

@@ -1,0 +1,50 @@
+{
+  "description": "Archived certified research-draft candidate before the 11-term discovery update.",
+  "status": "archived; interval-certified in the recorded development verifier; independent reproduction not completed",
+  "date": "2026-08-12",
+  "source_commit": "1acaef2e7cb322fc1912a881397e7abafa82c43c",
+  "points": 7,
+  "gaps_per_local_window": 6,
+  "window": {
+    "denominator": 1000000000,
+    "numerators": [1000000000, 6907835, -9359173, 528441, 1509267, -4923883, 1358707],
+    "frequencies": ["sqrt(2)", "2*pi", "4*pi", "6*pi", "8*pi", "10*pi", "12*pi"],
+    "computed_h": "0.67240570242660302900695918199373849423...",
+    "analytic_h_cert": {"numerator": 6724057, "denominator": 10000000}
+  },
+  "local_certificate": {
+    "target": {"numerator": 52289, "denominator": 10000000},
+    "verified": true,
+    "independent_reproduction": false,
+    "reported_stats": {
+      "nodes": 2334226,
+      "pruned": 1167275,
+      "splits": 1166951,
+      "convex": 1407996,
+      "tangent": 595297,
+      "max_depth": 77
+    }
+  },
+  "position_pressure": {
+    "denominator": 2300000000,
+    "numerators": [831522, 1096590, 1071888, 1071888, 1096590, 831522],
+    "total": {"numerator": 3, "denominator": 1150}
+  },
+  "final_deduction": {
+    "pressure_shift_factor": "m-6",
+    "block_length": 210,
+    "safe_published_lower": {"numerator": 6732907560, "denominator": 10000000000},
+    "computed_bound": "0.6732907560192226357616716518812750378481...",
+    "computed_percent": "67.329075601922263576..."
+  },
+  "provenance": {
+    "positioned_pressure_predecessor": {
+      "repository": "sxuff/zeta-positioned-pressure",
+      "commit": "6fd6c5eee6332a379a10cda4276c82e5b2bc3cd4",
+      "files": {
+        "table_builder": {"path": "src/build_tables.py", "blob_sha": "fd600325f8f0a1054827613899b132ca2fcf5332"},
+        "verifier": {"path": "src/verify_positioned.cpp", "blob_sha": "63ff4ae342c77ec44eaea56c5f81a41d03e8a1f3"}
+      }
+    }
+  }
+}

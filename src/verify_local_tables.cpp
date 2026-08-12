@@ -56,8 +56,12 @@ public:
     }
 
     double query(int left, int right) const {
-        if (left < 0 || right < left || static_cast<std::size_t>(right) >= count_)
+        if (left < 0 || right < left)
             return -std::numeric_limits<double>::infinity();
+        // W=(K/K(0))^2 is globally nonnegative.  If a requested distance
+        // interval extends past the tabulated region, zero is therefore a
+        // rigorous lower bound for the whole interval.
+        if (static_cast<std::size_t>(right) >= count_) return 0.0;
         std::size_t l = static_cast<std::size_t>(left) + size_;
         std::size_t r = static_cast<std::size_t>(right) + size_;
         double ans = std::numeric_limits<double>::infinity();

@@ -1,5 +1,5 @@
 {
-  "description": "Auxiliary odd/even span-weighted six-gap certificate for the multi-lag banded-Gram experiment.",
+  "description": "Auxiliary pressure-scaled six-gap certificate for the two-supporting-line banded-Gram experiment.",
   "status": "discovery-level auxiliary certificate; interval certification pending; not a standalone root record",
   "date": "2026-08-12",
   "points": 7,
@@ -15,33 +15,37 @@
     "positivity_subdivision_cells": 4096
   },
   "local_search": {
-    "method": "keep the certified second-exchange 17-term window and pressure vector; multiply every odd pair span by 26/25 and every even pair span by 24/25; polish all {1,2,3,4}^6 templates without score screening",
-    "span_tilt_delta": {"numerator":1,"denominator":25},
-    "float_minimum_observed": "0.00794501634934098...",
-    "float_minimum_location": ["1.045569055916","1.979587403541","1.051588313705","2.919045694850","1.048163136758","1.044664917907"],
-    "candidate_target_for_certification": {"numerator":15889,"denominator":2000000},
+    "method": "keep the interval-certified second-exchange 17-term window and exact pair weights; multiply the entire position-pressure vector by 6/5; polish all {1,2,3,4}^6 templates without score screening and stress with six multi-range differential-evolution runs",
+    "pressure_scale": {"numerator":6,"denominator":5},
+    "template_start_count": 4096,
+    "template_screening": false,
+    "differential_evolution_runs": 6,
+    "float_minimum_observed": "0.008999276423831326...",
+    "float_minimum_location": ["1.034964897995","1.038703956438","1.962587593105","1.039262172775","1.035733103346","1.961720338887"],
+    "candidate_target_for_certification": {"numerator":17997,"denominator":2000000},
     "verified": false,
-    "note": "The target 0.0079445 is about 5.16e-7 below the current unscreened floating minimum. This is an auxiliary inequality for a two-constraint multi-lag deduction, not a standalone scalar-Gram candidate."
+    "note": "The target 0.0089985 is about 7.76e-7 below the unscreened floating minimum. The lowest of six DE stress runs remained above 0.00905. This is an auxiliary energy-pressure supporting-line inequality, not a standalone scalar-Gram candidate."
   },
   "local_certificate": {
-    "target": {"numerator":15889,"denominator":2000000},
+    "target": {"numerator":17997,"denominator":2000000},
     "verified": false,
     "independent_reproduction": false,
-    "method": "planned fresh outward-rounded 17-term tables plus generalized per-span-capacity six-dimensional C++ branch-and-bound"
+    "method": "reuse of outward-rounded tables for the identical 17-term window plus hardened six-dimensional C++ branch-and-bound with the auxiliary pressure vector"
   },
   "pair_weights": {
-    "denominator": 25000000000,
-    "span_capacity_numerators": [52000000000,48000000000,52000000000,48000000000,52000000000,48000000000],
-    "entries": [[0,1,6346859818],[0,2,0],[0,3,6609799924],[0,4,24000000000],[0,5,26000000000],[0,6,48000000000],[1,2,9002878326],[1,3,8835113856],[1,4,19390200076],[1,5,0],[1,6,26000000000],[2,3,10650261856],[2,4,30329772288],[2,5,19390200076],[2,6,24000000000],[3,4,10650261856],[3,5,8835113856],[3,6,6609799924],[4,5,9002878326],[4,6,0],[5,6,6346859818]]
+    "denominator": 1000000000,
+    "span_capacity_numerator": 2000000000,
+    "entries": [[0,1,244109993],[0,2,0],[0,3,254223074],[0,4,1000000000],[0,5,1000000000],[0,6,2000000000],[1,2,346264551],[1,3,368129744],[1,4,745776926],[1,5,0],[1,6,1000000000],[2,3,409625456],[2,4,1263740512],[2,5,745776926],[2,6,1000000000],[3,4,409625456],[3,5,368129744],[3,6,254223074],[4,5,346264551],[4,6,0],[5,6,244109993]]
   },
   "position_pressure": {
-    "denominator": 46000000000,
-    "numerators": [22420713,32878293,37700994,37700994,32878293,22420713],
-    "total": {"numerator":93,"denominator":23000}
+    "denominator": 230000000000,
+    "numerators": [134524278,197269758,226205964,226205964,197269758,134524278],
+    "total": {"numerator":279,"denominator":57500}
   },
   "multilag_role": {
-    "base_constraint": "E_odd + E_even + P >= A0 from root candidate.json",
-    "auxiliary_constraint": "(26/25) E_odd + (24/25) E_even + P >= A_delta",
-    "projected_if_target_closes": "Combined with the continuous banded-Gram profile, preliminary optimization gives about 67.34246% near m=173; exact promotion arithmetic will be added only after this auxiliary local target is interval-certified."
+    "base_pressure": {"numerator":93,"denominator":23000},
+    "base_constraint": "S + P >= A0 from root candidate.json, where S is the six-band energy and P=(93/23000)*span",
+    "auxiliary_constraint": "S + (6/5) P >= A1",
+    "conditional_projection": "If this auxiliary target closes and the continuous banded-Gram profile is accepted, the two supporting lines remove the Gram discount at m=259: R=A0 and eta=1, projecting to about 67.3442336664%."
   }
 }

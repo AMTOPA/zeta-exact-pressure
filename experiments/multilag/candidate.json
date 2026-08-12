@@ -1,6 +1,6 @@
 {
-  "description": "Adversarially optimized auxiliary 6/5-pressure six-gap certificate for the two-supporting-line banded-Gram experiment.",
-  "status": "auxiliary local interval-certified at epsilon=0.009015; independent reproduction requested; not a standalone root record",
+  "description": "Adversarially optimized auxiliary 6/5-pressure six-gap certificate for the pressure-frontier bundle.",
+  "status": "auxiliary local interval-certified at epsilon=0.009017; independent reproduction requested; not a standalone root record",
   "date": "2026-08-13",
   "points": 7,
   "gaps_per_local_window": 6,
@@ -15,28 +15,28 @@
     "positivity_subdivision_cells": 4096
   },
   "local_search": {
-    "method": "fix the root 17-term window and pair weights; constrain the auxiliary pressure total to exactly (6/5)*(93/23000); optimize the three reflection-symmetric pressure coordinates by semi-infinite LP / adversarial exchange; quantize to denominator 230e9; repolish all {1,2,3,4}^6 templates without screening; stress with six multi-range differential-evolution runs; choose the rigorous target from the global no-Gram-loss threshold rather than from the floating local optimum",
+    "method": "fix the root 17-term window and pair weights; constrain the auxiliary pressure total to exactly (6/5)*(93/23000); optimize the three reflection-symmetric pressure coordinates by semi-infinite LP / adversarial exchange; quantize to denominator 230e9; repolish all {1,2,3,4}^6 templates without screening; stress with six multi-range differential-evolution runs; choose rigorous targets from global pressure-frontier thresholds rather than from the floating local optimum",
     "pressure_total_scale": {"numerator":6,"denominator":5},
     "template_start_count": 4096,
     "template_screening": false,
     "differential_evolution_runs": 6,
     "float_minimum_observed": "0.00902172205332521...",
     "float_minimum_location": ["1.036097587833","1.038002793236","1.965416856027","1.045335923444","1.967453357559","1.040665593176"],
-    "candidate_target_for_certification": {"numerator":9015,"denominator":1000000},
+    "candidate_target_for_certification": {"numerator":9017,"denominator":1000000},
     "verified": true,
-    "next_bundle_target": {"numerator":9017,"denominator":1000000},
-    "note": "The certified target 0.009015 is about 6.72e-6 below the quantized unscreened floating minimum. At m=312 the exact analytic threshold for the full no-Gram-loss deduction is only about 0.009011915, so this target preserves the 67.3447428731% conditional projection. A modest 0.009017 follow-up is sufficient for the planned c=1,6/5,8/5 supporting-line bundle to reach its next block plateau when combined with the c=8/5 auxiliary target."
+    "previous_verified_target": {"numerator":9015,"denominator":1000000},
+    "note": "The target 0.009017 is about 4.72e-6 below the quantized unscreened floating minimum and closed in the hardened interval verifier. The lower 0.009015 target had already sufficed for the two-line m=312 projection; 0.009017 is retained because it is the bundle-directed target used with the c=8/5 supporting line at m=496."
   },
   "local_certificate": {
-    "target": {"numerator":9015,"denominator":1000000},
+    "target": {"numerator":9017,"denominator":1000000},
     "verified": true,
     "independent_reproduction": false,
     "method": "reuse the outward-rounded tables for the identical certified 17-term window and the root-certified accelerated six-dimensional C++ branch-and-bound verifier; apply only the mechanical compatibility change from one scalar span capacity to per-span capacity indexing",
-    "source_commit": "836f5afe94e80ec813821d15810d11f9be8f24a5",
-    "workflow_run_id": 31652101496,
-    "artifact_id": 9162976523,
-    "artifact_digest_sha256": "59ae8abd4e6c45a656ae54035ce3b10cb9e988a104e440bd25c0ddf37f959903",
-    "verified_at_utc": "2026-08-12T23:47:37Z",
+    "source_commit": "af334c7c1527497d45c06e119f33e4fc187c820f",
+    "workflow_run_id": 31652296299,
+    "artifact_id": 9163050273,
+    "artifact_digest_sha256": "15456e74c421ba887805fd80cf81d02d94f9a3550d857f980b1537815274c9f5",
+    "verified_at_utc": "2026-08-12T23:50:52Z",
     "verifier_source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
     "verifier_source_blob": "b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21",
     "capacity_compatibility_patch_only": true,
@@ -44,14 +44,19 @@
     "table_source_artifact_id": 9147378469,
     "table_source_artifact_digest_sha256": "871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1",
     "verifier_stats": {
-      "nodes": 2191040,
-      "pruned": 1095528,
-      "splits": 1095512,
-      "convex": 1021160,
-      "tangent": 464504,
-      "max_depth": 64
+      "nodes": 2223766,
+      "pruned": 1111891,
+      "splits": 1111875,
+      "convex": 1048624,
+      "tangent": 477837,
+      "max_depth": 65
     },
-    "note": "An earlier generalized-verifier run reached the node limit with convex=tangent=0 because a later Hessian-interval rewrite disabled the effective accelerated pruning. The certified run pins and restores the verifier implementation actually used by the root 17-term certificate, with only the exact per-span capacity compatibility edit."
+    "previous_certificate": {
+      "target": {"numerator":9015,"denominator":1000000},
+      "workflow_run_id": 31652101496,
+      "artifact_id": 9162976523,
+      "artifact_digest_sha256": "59ae8abd4e6c45a656ae54035ce3b10cb9e988a104e440bd25c0ddf37f959903"
+    }
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -67,6 +72,7 @@
     "base_pressure": {"numerator":93,"denominator":23000},
     "base_constraint": "S + P >= A0 from root candidate.json, where S is the six-band energy and P=(93/23000)*span",
     "auxiliary_constraint": "S + (6/5) P >= A1 because the optimized auxiliary pressure vector has the same exact total (6/5)B; translated pressure bookkeeping uses only the total",
-    "conditional_projection": "With the now interval-certified auxiliary target 0.009015 and conditional on acceptance of the continuous banded-Gram profile, the two supporting lines remove the Gram discount through m=312: R=A0 and eta=1. Exact conditional projection is 67.3447428731%, safe floor 0.6734474287."
+    "two_line_projection": "The already certified target 0.009015 removes the Gram discount through m=312, giving exact conditional projection 67.3447428731% with safe floor 0.6734474287.",
+    "bundle_projection": "The stronger certified target 0.009017 is used with the certified c=8/5 auxiliary line in the three-supporting-line m=496 pressure-frontier bundle, giving exact conditional projection 67.3456660659% with safe floor 0.6734566606, conditional only on acceptance of the continuous banded-Gram analytic profile."
   }
 }

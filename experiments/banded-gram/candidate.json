@@ -1,0 +1,48 @@
+{
+  "description": "Banded-Gram analytic extension using the interval-certified second-exchange 17-term seven-point local certificate.",
+  "status": "analytic-extension research candidate; local numerical inputs interval-certified; new banded-Gram lemma requires independent human review before root promotion",
+  "date": "2026-08-12",
+  "local_input": {
+    "source": "second-exchange 17-term hardened local certificate",
+    "source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
+    "workflow_run_id": 31610179703,
+    "artifact_id": 9147378469,
+    "artifact_digest_sha256": "871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1",
+    "verified": true,
+    "points": 7,
+    "gaps": 6,
+    "h_floor": {"numerator": 336094079, "denominator": 500000000},
+    "epsilon": {"numerator": 79107, "denominator": 10000000},
+    "pressure_total": {"numerator": 93, "denominator": 23000},
+    "verifier_stats": {
+      "nodes": 3768186,
+      "pruned": 1884125,
+      "splits": 1884061,
+      "convex": 2030240,
+      "tangent": 936616,
+      "max_depth": 74
+    }
+  },
+  "banded_gram": {
+    "block_length": 152,
+    "bandwidth": 6,
+    "color_count": 7,
+    "band_energy_threshold": {"numerator": 7, "denominator": 6},
+    "A": {"numerator": 5774811, "denominator": 5000000},
+    "profile_claim": "For PSD G with diag(G)<=1 and E_6=2*sum_{1<=j-i<=6}|G_ij|^2 <= 7/6, tr Psi(G) >= E_6. Together with h_152(7/6)>A this turns the block profile into R=A, eta=1.",
+    "h_threshold_square_witness": {
+      "inner": {"numerator": 1057, "denominator": 912},
+      "comparison_rhs": {"numerator": 611976727, "denominator": 570000000},
+      "positive_square_gap": {"numerator": 2040735610367471, "denominator": 324900000000000000}
+    }
+  },
+  "projection": {
+    "R_equals_A": true,
+    "eta": {"numerator": 1, "denominator": 1},
+    "exact_bound": {"numerator": 292048975046, "denominator": 433679483675},
+    "computed_bound": "0.6734212385865638563170612269568299402444634216993548443999954686120188413130147...",
+    "computed_percent": "67.34212385865638563170612269568299402444634216993548443999954686120188413130147...%",
+    "safe_decimal_floor": {"numerator": 6734212385, "denominator": 10000000000}
+  },
+  "promotion_policy": "Do not replace root candidate.json solely from numerical CI. The local certificate is rigorous, but the new banded-Gram analytic lemma must receive independent mathematical review first."
+}

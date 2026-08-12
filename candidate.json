@@ -1,5 +1,5 @@
 {
-  "description": "Joint total-pressure / window / pair-weight seven-point exact-pressure construction with interval-certified epsilon=0.007887.",
+  "description": "Joint total-pressure / window / pair-weight seven-point exact-pressure construction with interval-certified epsilon=0.0078875.",
   "status": "interval-certified research-draft candidate; independent reproduction requested",
   "date": "2026-08-12",
   "lineage": [
@@ -9,7 +9,8 @@
     "AMTOPA/zeta-exact-pressure archived 67.3331466374% record",
     "AMTOPA/zeta-exact-pressure archived 67.3378195478% record",
     "AMTOPA/zeta-exact-pressure archived 67.3406216299% record",
-    "joint total-pressure / window / pair-weight / position-pressure min-max search"
+    "AMTOPA/zeta-exact-pressure archived 67.3413085287% joint-pressure record",
+    "joint total-pressure / window / pair-weight / position-pressure min-max search and epsilon tightening"
   ],
   "points": 7,
   "gaps_per_local_window": 6,
@@ -29,15 +30,15 @@
     "interval_window_lower_bound": "0.7616106600142013..."
   },
   "local_search": {
-    "method": "adversarial exchange over total pressure, 15-term window, exact pair weights and exact position-pressure weights; span capacities and total pressure preserved exactly; broad resonance-template polishing and multi-range differential-evolution stress",
+    "method": "adversarial exchange over total pressure, 15-term window, exact pair weights and exact position-pressure weights; span capacities and total pressure preserved exactly; broad resonance-template polishing and multi-range differential-evolution stress; followed by a shared-table upward epsilon ladder",
     "float_minimum_observed": "0.0078878193504693...",
     "float_minimum_location": ["1.042887125276","1.974404852204","1.046257771352","1.972360347862","1.044510345045","1.978097154680"],
-    "candidate_target_for_certification": {"numerator":7887,"denominator":1000000},
+    "candidate_target_for_certification": {"numerator":631,"denominator":80000},
     "verified": true,
-    "note": "The exact target 0.007887 lies about 8.19e-7 below the observed floating minimum and closed directly in the hardened six-dimensional outward-rounded interval verifier."
+    "note": "The tightened exact target 0.0078875 lies about 3.19e-7 below the observed floating minimum and closed directly as the highest tested target in the hardened six-dimensional outward-rounded interval verifier."
   },
   "local_certificate": {
-    "target": {"numerator":7887,"denominator":1000000},
+    "target": {"numerator":631,"denominator":80000},
     "verified": true,
     "independent_reproduction": false,
     "grid": 4000,
@@ -48,18 +49,18 @@
     "components_per_gap": [2,2,2,2,2,2],
     "method": "mpmath.iv outward-rounded kernel tables plus six-dimensional C++ branch-and-bound with interval Hessian LDL and convex tangent pruning",
     "compiler_hardening": "-ffp-contract=off",
-    "source_commit": "1f6715705ad69423b2b22069e13daa6843ccc58c",
-    "workflow_run_id": 31603343875,
-    "artifact_id": 9144421792,
-    "artifact_digest_sha256": "09ff629ed821e560222f13e92ad9d093bc85f766f940cba5c3bdd7704a36033d",
-    "verified_at_utc": "2026-08-12T13:59:17Z",
+    "source_commit": "7dc0252627e9aa520d553dc80f9fbdf934869726",
+    "workflow_run_id": 31604769082,
+    "artifact_id": 9145083157,
+    "artifact_digest_sha256": "7c1e3f431e690c22149733ae0f05a589068a0f9d0c97d408450cc87859f0414d",
+    "verified_at_utc": "2026-08-12T14:17:10Z",
     "verifier_stats": {
-      "nodes": 3424276,
-      "pruned": 1712170,
-      "splits": 1712106,
-      "convex": 1756299,
-      "tangent": 801918,
-      "max_depth": 71
+      "nodes": 3509280,
+      "pruned": 1754672,
+      "splits": 1754608,
+      "convex": 1839289,
+      "tangent": 843219,
+      "max_depth": 74
     },
     "table_hashes_sha256_big_endian_float_stream": {
       "w_lower.bin": "6029be4ca062cc5d336060cd50cbae862d0394a4cd3d9c226052f46685f21996",
@@ -85,16 +86,16 @@
     "block_length": 145,
     "projection_inputs": {
       "h_floor": {"numerator":3360999513,"denominator":5000000000},
-      "epsilon_target": {"numerator":7887,"denominator":1000000},
+      "epsilon_target": {"numerator":631,"denominator":80000},
       "pressure_total": {"numerator":93,"denominator":23000}
     },
-    "projected_safe_decimal": {"numerator":6734130852,"denominator":10000000000},
-    "computed_bound_from_conservative_inputs": "0.6734130852868493916709045716416011658781093353454181276920626244408669960259242399697...",
-    "computed_percent_from_conservative_inputs": "67.341308528684939167090457164160116587810933534541812769206262444086699602592424...",
+    "projected_safe_decimal": {"numerator":6734134068,"denominator":10000000000},
+    "computed_bound_from_conservative_inputs": "0.67341340687957015904881991337827557260140247167811...",
+    "computed_percent_from_conservative_inputs": "67.341340687957015904881991337827557260140247167811...",
     "certified": true
   },
   "archive": {
-    "previous_certified_record": "archive/2026-08-12-certified-6734062162/"
+    "previous_certified_record": "archive/2026-08-12-certified-6734130852/"
   },
   "provenance": {
     "positioned_pressure_predecessor": {

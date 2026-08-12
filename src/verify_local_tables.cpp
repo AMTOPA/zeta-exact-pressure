@@ -118,7 +118,7 @@ public:
             l >>= 1U;
             r >>= 1U;
         }
-        return ans;
+        return down(ans);
     }
 
     std::size_t count() const { return count_; }
@@ -134,7 +134,7 @@ struct PairWeight {
     int j;
     double lower;
     double upper;
-    Interval interval;
+    Interval exact;
 };
 
 struct Stats {
@@ -146,52 +146,17 @@ struct Stats {
     int max_depth = 0;
 };
 
-bool prove_positive_definite(
-    const Box& box,
-    const std::array<int, Q + 1>& prefix_lo,
-    const std::array<int, Q + 1>& prefix_hi,
-    const std::vector<PairWeight>& pairs,
-    const MinTree& second_min
-) {
-    std::array<std::array<Interval, Q>, Q> matrix{};
-    for (int r = 0; r < Q; ++r)
-        for (int c = 0; c < Q; ++c)
-            matrix[r][c] = point(0);
-
-    for (const auto& p : pairs) {
-        const int span = p.j - p.i;
-        const int left = prefix_lo[p.j] - prefix_lo[p.i];
-        const int right = prefix_hi[p.j] - prefix_hi[p.i] + span - 1;
-        const double s = second_min.query(left, right, false);
-        if (!std::isfinite(s)) return false;
-
-        const double scalar = s >= 0
-            ? down(p.lower * s)
-            : down(p.upper * s);
-        const Interval term = point(static_cast<long double>(scalar));
-        for (int r = p.i; r < p.j; ++r)
-            for (int c = p.i; c < p.j; ++c)
-                matrix[r][c] = add(matrix[r][c], term);
-    }
-
-    std::array<std::array<Interval, Q>, Q> L{};
-    std::array<Interval, Q> D{};
-    for (int r = 0; r < Q; ++r)
-        for (int c = 0; c < Q; ++c)
-            L[r][c] = point(0);
-
-    for (int col = 0; col < Q; ++col) {
-        Interval pivot = matrix[col][col];
-        for (int k = 0; k < col; ++k)
-            pivot = sub(pivot, mul(square(L[col][k]), D[k]));
-        if (!(pivot.lo > 0)) return false;
-        D[col] = pivot;
-        L[col][col] = point(1);
-        for (int row = col + 1; row < Q; ++row) {
-            Interval value = matrix[row][col];
-            for (int k = 0; k < col; ++k)
-                value = sub(value, mul(mul(L[row][k], L[col][k]), D[k]));
-            L[row][col] = div_positive(value, pivot);
+bool interval_ldl_positive(std::array<std::array<Interval, Q>, Q> matrix) {
+    for (int k = 0; k < Q; ++k) {
+        if (!(matrix[k][k].lo > 0)) return false;
+        const Interval pivot = matrix[k][k];
+        for (int i = k + 1; i < Q; ++i) {
+            const Interval lik = div_positive(matrix[i][k], pivot);
+            for (int j = i; j < Q; ++j) {
+                const Interval correction = mul(mul(lik, matrix[j][k]), point(1));
+                matrix[j][i] = sub(matrix[j][i], correction);
+                matrix[i][j] = matrix[j][i];
+            }
         }
     }
     return true;
@@ -206,34 +171,35 @@ long double tangent_lower_bound(
     const std::vector<double>& d_mid_lo,
     const std::vector<double>& d_mid_hi
 ) {
-    std::array<int, Q> mid_num{};
-    std::array<int, Q + 1> prefix_mid{};
-    std::array<Interval, Q> gradient{};
-    Interval value = point(0);
-
+    std::array<long double, Q + 1> center_prefix{};
     for (int c = 0; c < Q; ++c) {
-        mid_num[c] = box.gap[c].first + box.gap[c].second + 1;
-        prefix_mid[c + 1] = prefix_mid[c] + mid_num[c];
-        const long double xq = static_cast<long double>(mid_num[c]) / (2.0L * GRID);
-        const Interval x = {ldown(xq), lup(xq)};
-        value = add(value, mul(pressure[c], x));
+        const long double center =
+            static_cast<long double>(box.gap[c].first + box.gap[c].second + 1)
+            / (2.0L * GRID);
+        center_prefix[c + 1] = center_prefix[c] + center;
+    }
+
+    Interval value = point(0);
+    std::array<Interval, Q> gradient{};
+    for (int c = 0; c < Q; ++c) {
         gradient[c] = pressure[c];
+        const long double center =
+            static_cast<long double>(box.gap[c].first + box.gap[c].second + 1)
+            / (2.0L * GRID);
+        value = add(value, mul(pressure[c], point(center)));
     }
 
     for (const auto& p : pairs) {
-        const int index = prefix_mid[p.j] - prefix_mid[p.i];
-        if (index < 0 || static_cast<std::size_t>(index) >= w_mid_lo.size())
+        const long double distance = center_prefix[p.j] - center_prefix[p.i];
+        const int mid_idx = static_cast<int>(std::llround(distance * 2.0L * GRID));
+        if (mid_idx < 0 || static_cast<std::size_t>(mid_idx) >= w_mid_lo.size())
             return -std::numeric_limits<long double>::infinity();
-        const Interval w = {
-            static_cast<long double>(w_mid_lo[index]),
-            static_cast<long double>(w_mid_hi[index])
-        };
-        const Interval derivative = {
-            static_cast<long double>(d_mid_lo[index]),
-            static_cast<long double>(d_mid_hi[index])
-        };
-        value = add(value, mul(p.interval, w));
-        const Interval slope = mul(p.interval, derivative);
+        Interval w{static_cast<long double>(w_mid_lo[mid_idx]),
+                   static_cast<long double>(w_mid_hi[mid_idx])};
+        Interval d{static_cast<long double>(d_mid_lo[mid_idx]),
+                   static_cast<long double>(d_mid_hi[mid_idx])};
+        value = add(value, mul(p.exact, w));
+        const Interval slope = mul(p.exact, d);
         for (int c = p.i; c < p.j; ++c)
             gradient[c] = add(gradient[c], slope);
     }
@@ -269,7 +235,7 @@ int main(int argc, char** argv) {
             std::int64_t total = 0;
             for (const auto& p : candidate_config::pairs)
                 if (p.j - p.i == span) total += p.num;
-            if (total != candidate_config::span_capacity_num)
+            if (total != candidate_config::span_capacity_num[span - 1])
                 throw std::runtime_error("pair span capacity mismatch");
         }
 
@@ -435,47 +401,74 @@ int main(int argc, char** argv) {
                     continue;
                 }
 
-                if (accelerated && prove_positive_definite(
-                        box, prefix_lo, prefix_hi, pairs, second_min)) {
+                bool convex = false;
+                if (accelerated) {
+                    std::array<int, Q + 1> prefix_mid{};
+                    for (int c = 0; c < Q; ++c)
+                        prefix_mid[c + 1] = prefix_mid[c] +
+                            (box.gap[c].first + box.gap[c].second + 1) / 2;
+
+                    std::array<std::array<Interval, Q>, Q> hessian{};
+                    for (const auto& p : pairs) {
+                        const int span = p.j - p.i;
+                        const int left = prefix_lo[p.j] - prefix_lo[p.i];
+                        const int right = prefix_hi[p.j] - prefix_hi[p.i] + span - 1;
+                        const double sec = second_min.query(left, right, false);
+                        if (!std::isfinite(sec)) {
+                            convex = false;
+                            goto skip_convexity;
+                        }
+                        const Interval curvature = mul(
+                            p.exact,
+                            {static_cast<long double>(sec),
+                             std::numeric_limits<long double>::infinity()});
+                        for (int a = p.i; a < p.j; ++a)
+                            for (int b = p.i; b < p.j; ++b)
+                                hessian[a][b] = add(hessian[a][b], curvature);
+                    }
+                    convex = interval_ldl_positive(hessian);
+                }
+
+            skip_convexity:
+                if (convex) {
                     ++stats.convex;
                     const long double tangent = tangent_lower_bound(
                         box, pairs, pressure_interval,
                         w_mid_lo, w_mid_hi, d_mid_lo, d_mid_hi);
                     if (tangent >= static_cast<long double>(target_up)) {
-                        ++stats.pruned;
                         ++stats.tangent;
+                        ++stats.pruned;
                         continue;
                     }
                 }
 
-                int split = 0;
-                int width = box.gap[0].second - box.gap[0].first;
-                for (int c = 1; c < Q; ++c) {
-                    const int w = box.gap[c].second - box.gap[c].first;
-                    if (w > width) {
-                        width = w;
-                        split = c;
+                int split_dim = -1;
+                int split_width = -1;
+                for (int c = 0; c < Q; ++c) {
+                    const int width = box.gap[c].second - box.gap[c].first;
+                    if (width > split_width) {
+                        split_width = width;
+                        split_dim = c;
                     }
                 }
-                if (width == 0) {
+                if (split_width <= 0) {
                     std::cout << "INCONCLUSIVE=true reason=terminal_cell lower="
                               << std::setprecision(17) << lower << " box=";
-                    for (const auto& r : box.gap)
-                        std::cout << '[' << r.first << ',' << r.second << ']';
+                    for (int c = 0; c < Q; ++c)
+                        std::cout << '[' << box.gap[c].first << ',' << box.gap[c].second << ']';
                     std::cout << " nodes=" << stats.nodes
                               << " convex=" << stats.convex << " tangent=" << stats.tangent
                               << "\n";
                     return 3;
                 }
 
-                const int lo = box.gap[split].first;
-                const int hi = box.gap[split].second;
-                const int mid = lo + (hi - lo) / 2;
+                const int mid = (box.gap[split_dim].first + box.gap[split_dim].second) / 2;
                 Box left_box = box;
                 Box right_box = box;
-                left_box.depth = right_box.depth = box.depth + 1;
-                left_box.gap[split] = {lo, mid};
-                right_box.gap[split] = {mid + 1, hi};
+                left_box.gap[split_dim].second = mid;
+                right_box.gap[split_dim].first = mid + 1;
+                left_box.depth = box.depth + 1;
+                right_box.depth = box.depth + 1;
                 stack.push_back(right_box);
                 stack.push_back(left_box);
                 ++stats.splits;
@@ -490,7 +483,7 @@ int main(int argc, char** argv) {
                   << " max_depth=" << stats.max_depth << "\n";
         return 0;
     } catch (const std::exception& e) {
-        std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "error: " << e.what() << '\n';
         return 2;
     }
 }

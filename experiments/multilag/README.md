@@ -34,9 +34,7 @@ Keep exactly the same interval-certified 17-term analytic window and exactly the
 \frac65 B=\frac{279}{57500},
 \]
 
-but do not keep the old pressure shape. At that exact total, adversarial exchange optimizes the reflection-symmetric position-pressure distribution.
-
-The resulting exact vector is
+then adversarially optimize the reflection-symmetric distribution at that exact total. The exact vector is
 
 \[
 \frac1{230000000000}
@@ -48,34 +46,27 @@ The resulting exact vector is
 138257404).
 \]
 
-Its entries are nonnegative and sum exactly to \(279/57500\).
-
-The optimization used semi-infinite LP exchange against the dangerous basins, followed by unscreened polishing of all \(4^6=4096\) resonance templates. After quantization, the robust floating minimum is
+Unscreened polishing of all \(4^6=4096\) resonance templates, followed by six multi-range differential-evolution runs, gives a robust floating minimum
 
 \[
-\boxed{0.00902172205332521\ldots}
+\boxed{0.00902172205332521\ldots}.
 \]
 
-near
+The strict target is deliberately **not** pushed to that floating optimum. At the globally selected block \(m=312\), the exact no-Gram-loss condition only requires approximately
 
 \[
-(1.036097587833,
-1.038002793236,
-1.965416856027,
-1.045335923444,
-1.967453357559,
-1.040665593176).
+\varepsilon_1>0.009011915.
 \]
 
-Six multi-range differential-evolution stress runs did not find a lower value; one converged to the same lowest basin.
-
-The proposed rigorous auxiliary target is
+We therefore target
 
 \[
-\boxed{\varepsilon_1=0.0090210}.
+\boxed{\varepsilon_1=0.009015},
 \]
 
-If this interval target closes, summing translated auxiliary inequalities gives
+leaving about \(6.72\times10^{-6}\) floating margin while preserving exactly the same final projection. This is a certifiability-directed target rather than a local-record target.
+
+If it closes, summing translated auxiliary inequalities gives
 
 \[
 \boxed{
@@ -85,17 +76,11 @@ A_1=\varepsilon_1(m-6).
 }
 \]
 
-Together with the root inequality
-
-\[
-S+P\ge A_0,
-\]
-
-we obtain two supporting lines in the \((S,P)\)-plane.
+Together with \(S+P\ge A_0\), this gives two supporting lines in the \((S,P)\)-plane.
 
 ## Combine with the continuous banded profile
 
-Use the proposed six-band profile
+Use
 
 \[
 g(S)=
@@ -105,16 +90,13 @@ S,&S\le7/6,\\[1mm]
 \end{cases}
 \]
 
-from `experiments/banded-gram/`.
-
-The largest block for which the two supporting lines remove the Gram loss completely is
+from `experiments/banded-gram/`. The largest full no-Gram-loss block for the exact target above is
 
 \[
-\boxed{m=312},
-\qquad n=m-6=306.
+\boxed{m=312},\qquad n=306.
 \]
 
-At this block length,
+Then
 
 \[
 A_0=0.0079107\times306
@@ -122,15 +104,13 @@ A_0=0.0079107\times306
 =2.4206742,
 \]
 
-and, conditional on the auxiliary target,
-
 \[
-A_1=0.009021\times306
-=\frac{1380213}{500000}
-=2.760426.
+A_1=0.009015\times306
+=\frac{275859}{100000}
+=2.75859.
 \]
 
-The two pressure lower bounds
+The pressure lower bounds
 
 \[
 P\ge A_0-S,
@@ -142,72 +122,41 @@ intersect at
 
 \[
 S_*=\frac{(6/5)A_0-A_1}{1/5}
-=\frac{451197}{625000}
-=0.7219152.
+=\frac{913869}{1250000}
+=0.7310952
+<\frac76.
 \]
 
-Crucially,
-
-\[
-S_*<\frac76.
-\]
-
-### Region 1: \(0\le S\le S_*\)
-
-The root supporting line is active and the banded profile is linear, hence
-
-\[
-g(S)+P
-\ge S+(A_0-S)
-=A_0.
-\]
-
-### Region 2: \(S_*\le S\le A_1\)
-
-The auxiliary pressure line is active. The function
+For \(0\le S\le S_*\), the root line is active and \(g(S)=S\), so \(g(S)+P\ge A_0\). For \(S_*\le S\le A_1\), the auxiliary line is active and
 
 \[
 g(S)+\frac56(A_1-S)
 \]
 
-is concave, so its minimum occurs at an endpoint. At \(S=S_*\) it equals \(A_0\). At \(S=A_1\), it equals \(g(A_1)\), and exact arithmetic proves
-
-\[
-g(A_1)>A_0
-\]
-
-through the square witness
+is concave, so its minimum occurs at an endpoint. At \(S_*\) it is \(A_0\); at \(A_1\), exact arithmetic proves \(g(A_1)>A_0\) via
 
 \[
 \frac76A_1-
 \left(\frac{A_0+7/6}{2}\right)^2
 =
-\frac{2919038927231}{900000000000000}>0.
+\frac{991238927231}{900000000000000}>0.
 \]
 
-### Region 3: \(S\ge A_1\)
-
-Here \(P\ge0\), and monotonicity gives
+For \(S\ge A_1\), monotonicity gives the same conclusion. Therefore, conditional on the auxiliary certificate and the banded-Gram profile,
 
 \[
-g(S)\ge g(A_1)>A_0.
+\boxed{\Delta+P\ge A_0},
+\qquad
+\boxed{R=A_0,\ \eta=1}.
 \]
 
-Therefore, conditional on the auxiliary certificate and the banded-Gram profile,
+At \(m=313\) the exact endpoint square witness is already negative,
 
 \[
-\boxed{\Delta+P\ge A_0}.
+-\frac{9309444857209}{3600000000000000}<0,
 \]
 
-Equivalently,
-
-\[
-\boxed{R=A_0,\qquad\eta=1.}
-\]
-
-The scalar Gram discount disappears completely at \(m=312\).
-
-This endpoint is genuine rather than a scan cutoff: for the same exact targets, the corresponding square condition is already negative at \(m=313\). Thus \(m=312\) is the last block in the full no-loss regime.
+so \(m=312\) is a genuine analytic boundary rather than a scan cutoff.
 
 ## Conditional exact projection
 
@@ -215,23 +164,19 @@ Using the already interval-certified
 
 \[
 H>0.6721881580,
-\qquad
-B=\frac{93}{23000},
+\qquad B=\frac{93}{23000},
 \]
 
-and \(R=A_0,\eta=1\), the shifted-block expression is
+we obtain exactly
 
 \[
 \frac{mH-B(m-6)}{m-A_0}
 =
 \frac{199798509242}{296680187225}
-\]
-
-\[
 =0.6734474287306362\ldots.
 \]
 
-Hence, **conditional on** the auxiliary interval certificate and independent acceptance of the banded-Gram analytic profile, this construction gives
+Thus, **conditional on** auxiliary interval closure and independent acceptance of the banded-Gram profile,
 
 \[
 \boxed{67.3447428731\ldots\%}
@@ -245,9 +190,21 @@ with safe decimal floor
 
 That is about **0.003094 percentage points** above the current root scalar-Gram record 67.3416490971%.
 
+## Beyond a single auxiliary line
+
+The deeper direction is now clear: certificates of the form
+
+\[
+S+cP\ge A(c)
+\]
+
+are supporting lines for the local energy-pressure feasible region. A small bundle of rigorously certified scales can approximate that frontier piecewise and extend the range where the Gram discount disappears.
+
+Current numerical exploration finds a stronger single-line scale near \(c\approx1.6\), and combining several scales (for example \(1,1.2,1.6\), with a later \(2.0\) line) pushes the conditional no-loss block farther than any one auxiliary line. These higher-scale lines remain discovery work until separately interval-certified.
+
 ## Certification strategy
 
-The auxiliary analytic window is identical to the root 17-term window. Only the pressure coefficients change. A previously launched auxiliary workflow has already generated outward-rounded tables for this exact window; the optimized auxiliary pressure target requires no wider table range. The strict verifier can therefore reuse those tables and recompile only the exact auxiliary coefficients.
+The auxiliary analytic window is identical to the root 17-term window, so the strict verifier reuses the already certified root outward-rounded kernel tables and recompiles only the exact auxiliary pressure coefficients. The verifier independently checks the required table range.
 
 Exact conditional arithmetic is checked by
 
@@ -257,5 +214,5 @@ python3 src/check_multilag.py
 
 The result must not replace the root record unless both conditions hold:
 
-1. `epsilon_1 = 0.0090210` returns `VERIFIED=true` in the hardened interval verifier;
+1. `epsilon_1 = 0.009015` returns `VERIFIED=true` in the hardened interval verifier;
 2. the continuous banded-Gram profile and its insertion into shifted-block pinching pass independent mathematical review.

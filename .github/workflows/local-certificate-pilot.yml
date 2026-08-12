@@ -23,13 +23,12 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
 
-      - name: Build full-range lower-bound table
+      - name: Build full interval tables
         run: |
           python3 src/build_interval_tables.py \
             --output tables-15term \
             --grid 4000 \
-            --precision 50 \
-            --lower-only
+            --precision 50
 
       - name: Build native verifier
         run: |
@@ -38,22 +37,18 @@ jobs:
           g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG \
             -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
 
-      - name: Run bounded certification target ladder
+      - name: Run accelerated top-target pilot
         shell: bash
         run: |
-          : > certificate-pilot.log
-          for target in 5450 5500 5540 5561; do
-            echo "===== target=${target}/1000000 =====" | tee -a certificate-pilot.log
-            set +e
-            build/verify_local_tables "$target" 1000000 tables-15term 5000000 \
-              | tee -a certificate-pilot.log
-            code=${PIPESTATUS[0]}
-            set -e
-            echo "target_${target}_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
-            if [[ "$code" != "0" && "$code" != "3" ]]; then
-              exit "$code"
-            fi
-          done
+          set +e
+          build/verify_local_tables 5561 1000000 tables-15term 20000000 \
+            | tee certificate-pilot.log
+          code=${PIPESTATUS[0]}
+          set -e
+          echo "target_5561_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [[ "$code" != "0" && "$code" != "3" ]]; then
+            exit "$code"
+          fi
 
       - name: Upload pilot evidence
         if: always()

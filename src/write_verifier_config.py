@@ -20,6 +20,11 @@ def main() -> int:
     target = rational(c["local_search"]["candidate_target_for_certification"])
     entries = [(int(i), int(j), int(n)) for i, j, n in pairs["entries"]]
     pnums = [int(x) for x in pressure["numerators"]]
+    pressure_den = int(pressure["denominator"])
+    pressure_total = rational(pressure["total"])
+    pressure_total_scaled = pressure_total * pressure_den
+    if pressure_total_scaled.denominator != 1:
+        raise ValueError("declared pressure total is incompatible with pressure denominator")
 
     lines = [
         "#pragma once",
@@ -30,7 +35,8 @@ def main() -> int:
         f"inline constexpr int gaps = {q};",
         f"inline constexpr std::int64_t pair_den = {int(pairs['denominator'])}LL;",
         f"inline constexpr std::int64_t span_capacity_num = {int(pairs['span_capacity_numerator'])}LL;",
-        f"inline constexpr std::int64_t pressure_den = {int(pressure['denominator'])}LL;",
+        f"inline constexpr std::int64_t pressure_den = {pressure_den}LL;",
+        f"inline constexpr std::int64_t pressure_total_num = {pressure_total_scaled.numerator}LL;",
         f"inline constexpr std::int64_t target_num = {target.numerator}LL;",
         f"inline constexpr std::int64_t target_den = {target.denominator}LL;",
         "struct PairEntry { int i; int j; std::int64_t num; };",

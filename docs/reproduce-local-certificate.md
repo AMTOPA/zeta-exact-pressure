@@ -1,8 +1,18 @@
-# Reproducing the local seven-point certificate
+# Local-certificate reproduction and next certification target
 
-The current certificate uses the positioned-pressure layout from `sxuff/zeta-positioned-pressure`, with the same pair weights and pressure weights, but a new seven-term window and a new target.
+## Current status
 
-## Pinned upstream provenance
+`main` now tracks an 11-term **discovery candidate**. Its proposed local target is
+
+```text
+TARGET = 5405 / 1000000 = 0.005405
+```
+
+but this target is **not yet interval-certified**.
+
+The previous certified development record at `0.0052289` is archived under [`../archive/2026-08-12-certified-6732907560/`](../archive/2026-08-12-certified-6732907560/).
+
+## Pinned implementation reference
 
 For reproducibility, use the predecessor at exactly
 
@@ -11,46 +21,41 @@ repository: sxuff/zeta-positioned-pressure
 commit: 6fd6c5eee6332a379a10cda4276c82e5b2bc3cd4
 ```
 
-The two implementation files used as the adaptation reference at that commit are
+Reference implementation blobs:
 
 ```text
-src/build_tables.py       blob fd600325f8f0a1054827613899b132ca2fcf5332
-src/verify_positioned.cpp blob 63ff4ae342c77ec44eaea56c5f81a41d03e8a1f3
+src/build_tables.py       fd600325f8f0a1054827613899b132ca2fcf5332
+src/verify_positioned.cpp 63ff4ae342c77ec44eaea56c5f81a41d03e8a1f3
 ```
 
-These identifiers are also recorded in `candidate.json` and checked by the repository self-check. The predecessor repository currently exposes no license metadata, so its source is referenced rather than vendored here.
+The predecessor repository exposes no license metadata, so its implementation is referenced rather than vendored.
 
-A reproduction should check out the pinned commit rather than a moving `main` branch:
+## Current exact window
 
-```bash
-git clone https://github.com/sxuff/zeta-positioned-pressure.git
-git -C zeta-positioned-pressure checkout 6fd6c5eee6332a379a10cda4276c82e5b2bc3cd4
-```
-
-## Parameters
-
-Replace the window coefficients in the table builder by
+Use denominator `1000000000` and numerators
 
 ```text
-WINDOW_DEN = 1000000000
-WINDOW_NUM = (
-    1000000000,
-    6907835,
-    -9359173,
-    528441,
-    1509267,
-    -4923883,
-    1358707,
-)
+1000000000
+8421762
+-9816829
+1448046
+1412305
+-2228329
+2374999
+-4885560
+8393483
+-3137216
+2381462
 ```
 
-and set
+with frequencies
 
 ```text
-TARGET = 52289 / 10000000
+sqrt(2), 2*pi, 4*pi, 6*pi, 8*pi, 10*pi,
+12*pi, 14*pi, 16*pi, 18*pi, 20*pi
 ```
 
-Keep the positioned pressure coefficients unchanged:
+The position-pressure coefficients remain
 
 ```text
 PRESSURE_DEN = 2300000000
@@ -64,11 +69,48 @@ PRESSURE_NUM = (
 )
 ```
 
-The pair-weight layout is unchanged from the predecessor.
+and sum exactly to `3/1150`.
 
-## Expected verifier record
+## Discovery evidence
 
-The development run with outward-rounded interval tables and tangent/convexity acceleration returned
+The current discovery loop used pressure-feasible lattice adversary starts with reflection reduction and local polishing. The recorded observed floating-point minimum is
+
+```text
+0.00540611079920...
+```
+
+across 2,823 adversarial starts.
+
+This value is discovery evidence only. Floating-point optimization is not an acceptance criterion.
+
+## Required certification run
+
+To promote the candidate, the interval implementation must be generalized from the previous 7-term window to the 11-term window and must prove
+
+```text
+F(g1,...,g6) >= 0.005405
+```
+
+for all nonnegative gaps. A successful record should include:
+
+1. exact rational window and pressure parameters;
+2. interval/table generation precision and implementation version;
+3. hashes of generated tables/artifacts;
+4. complete branch-and-bound statistics;
+5. final `VERIFIED=true` result;
+6. an independent reproduction if possible.
+
+If a terminal counterexample box is found, record that box and feed it back into the adversarial discovery set rather than lowering the target blindly.
+
+## Historical record
+
+The superseded seven-term result certified target
+
+```text
+52289 / 10000000 = 0.0052289
+```
+
+with the recorded development counters
 
 ```text
 VERIFIED=true
@@ -80,15 +122,4 @@ tangent=595297
 max_depth=77
 ```
 
-A proposed higher target `0.00522895` was not accepted, so this repository uses the lower certified target `0.0052289`.
-
-## Independent reproduction requested
-
-For publication-quality confidence, reproduce the certificate using:
-
-1. the pinned predecessor commit above;
-2. independently generated interval tables;
-3. ideally a second interval implementation such as Arb/FLINT;
-4. the exact rational parameters above.
-
-Record the platform, compiler/interpreter versions, generated table hashes, verifier counters, and final `VERIFIED` result so that the reproduction can be compared with the current certificate record.
+and produced the archived 67.3290756019% research-draft candidate. See the archive directory for the frozen machine-readable snapshot and source commit.

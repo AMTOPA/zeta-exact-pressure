@@ -1,0 +1,59 @@
+{
+  "description": "Archived robust 15-term interval-certified research-draft record before epsilon/H tightening.",
+  "status": "archived; interval-certified locally; independent reproduction not completed",
+  "date": "2026-08-12",
+  "source_commit": "cc8b59c3ee18a7eb2dbff4b8282f386f3a4f22b8",
+  "points": 7,
+  "gaps_per_local_window": 6,
+  "window": {
+    "denominator": 1000000000,
+    "numerators": [1000000000, 8629738, -10085378, 1746803, 1125700, -2203905, 1904615, -4559603, 7930665, -3022627, 2165339, 398121, -255934, 188899, -148305],
+    "frequencies": ["sqrt(2)", "2*pi", "4*pi", "6*pi", "8*pi", "10*pi", "12*pi", "14*pi", "16*pi", "18*pi", "20*pi", "22*pi", "24*pi", "26*pi", "28*pi"],
+    "computed_h": "0.672333886657942...",
+    "projection_h_floor": {"numerator": 6723338, "denominator": 10000000},
+    "h_floor_interval_verified": true
+  },
+  "local_certificate": {
+    "target": {"numerator": 5401, "denominator": 1000000},
+    "verified": true,
+    "independent_reproduction": false,
+    "grid": 4000,
+    "precision_decimal_digits": 50,
+    "workflow_run_id": 31589096212,
+    "artifact_id": 9138629773,
+    "reported_stats": {
+      "nodes": 3171002,
+      "pruned": 1585573,
+      "splits": 1585429,
+      "convex": 1776812,
+      "tangent": 751200,
+      "max_depth": 62
+    },
+    "table_hashes_sha256_big_endian_float_stream": {
+      "w_lower.bin": "a9aec0b9c422129a126bc4ccca82fe08c233cc38c111314b82be486b0d5b5f81",
+      "w_second_lower.bin": "d772fffe91a6f2105b1cb5840ecf24f0db75358093102c46b4793fb74db2ec62",
+      "w_mid_lower.bin": "da401aeae6091e651c6e09a634be7f57742af876803f099f98d47a79e72cd637",
+      "w_mid_upper.bin": "a79dd4d689481f0deffc2b1ad349557f8c9eb410c48aad15dd34f89fa087b3b5",
+      "w_prime_mid_lower.bin": "f6a728fca354c87bf69d87505d8f534ad1c88fdef56efd5213652e2878c2bf8f",
+      "w_prime_mid_upper.bin": "dd3ba0243b35e4cc9c0ed2083b606ffa92df48b38845967401e37db61cd7143f"
+    }
+  },
+  "position_pressure": {
+    "denominator": 2300000000,
+    "numerators": [831522, 1096590, 1071888, 1071888, 1096590, 831522],
+    "total": {"numerator": 3, "denominator": 1150}
+  },
+  "final_deduction": {
+    "pressure_shift_factor": "m-6",
+    "block_length": 204,
+    "safe_published_lower": {"numerator": 6733305982, "denominator": 10000000000},
+    "computed_bound": "0.6733305982879586830508445665624969011279...",
+    "computed_percent": "67.333059828795868305..."
+  },
+  "provenance": {
+    "positioned_pressure_predecessor": {
+      "repository": "sxuff/zeta-positioned-pressure",
+      "commit": "6fd6c5eee6332a379a10cda4276c82e5b2bc3cd4"
+    }
+  }
+}

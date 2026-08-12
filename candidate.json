@@ -1,5 +1,5 @@
 {
-  "description": "Robust 15-term window with an interval-certified 0.005401 seven-point local target and exact shifted-pressure projection.",
+  "description": "Robust 15-term window with an interval-certified 0.0054022 seven-point local target, tightened interval H floor, and exact shifted-pressure projection.",
   "status": "interval-certified research-draft candidate; independent reproduction requested",
   "date": "2026-08-12",
   "lineage": [
@@ -8,6 +8,7 @@
     "sxuff/zeta-positioned-pressure",
     "AMTOPA/zeta-exact-pressure-673262",
     "AMTOPA/zeta-exact-pressure archived 67.3290756019% record",
+    "AMTOPA/zeta-exact-pressure archived 67.3330598288% record",
     "AMTOPA/zeta-exact-pressure screened 15-term candidate rejected after interval-guided counterexample discovery"
   ],
   "points": 7,
@@ -49,10 +50,10 @@
       "26*pi",
       "28*pi"
     ],
-    "computed_h": "0.672333886657942...",
+    "computed_h": "0.6723338866579421588353682235566229019073801717703904779259479012...",
     "projection_h_floor": {
-      "numerator": 6723338,
-      "denominator": 10000000
+      "numerator": 3361669433,
+      "denominator": 5000000000
     },
     "h_floor_interval_verified": true
   },
@@ -64,16 +65,16 @@
     "differential_evolution_runs": 9,
     "float_minimum_observed": "0.005402429240910082...",
     "candidate_target_for_certification": {
-      "numerator": 5401,
-      "denominator": 1000000
+      "numerator": 27011,
+      "denominator": 5000000
     },
     "verified": true,
-    "note": "The earlier 0.005561 target was rejected after interval verification exposed basins missed by score-screened starts. Counterexamples were fed back into the window optimization. The resulting 0.005401 target is now closed by the repository-native outward-rounded interval verifier."
+    "note": "The robust rational window has observed floating minimum 0.005402429240910082.... A shared-table interval ladder certified 0.0054015, 0.0054020, and 0.0054022. Targets 0.0054024 and 0.00540242 were inconclusive because of a terminal cell, not falsified. The promoted rigorous target is 0.0054022."
   },
   "local_certificate": {
     "target": {
-      "numerator": 5401,
-      "denominator": 1000000
+      "numerator": 27011,
+      "denominator": 5000000
     },
     "verified": true,
     "independent_reproduction": false,
@@ -82,17 +83,18 @@
     "coarse_cells": 59790,
     "midpoint_values": 119581,
     "method": "mpmath.iv outward-rounded kernel tables plus C++ branch-and-bound with interval Hessian LDL and convex tangent pruning",
-    "source_commit": "7c7df2f617318883593dd414b6fc77691c9f480e",
-    "workflow_run_id": 31589096212,
-    "artifact_id": 9138629773,
-    "verified_at_utc": "2026-08-12T10:58:55Z",
+    "source_commit": "e762fb7ee75db81aa5e984556113b2795e4a0d6b",
+    "workflow_run_id": 31590835765,
+    "artifact_id": 9139396890,
+    "artifact_digest_sha256": "adbf45ccd4b61df2c53041d3bc5e495af795d2fd5996bf49eb778651eeae559b",
+    "verified_at_utc": "2026-08-12T11:25:01Z",
     "verifier_stats": {
-      "nodes": 3171002,
-      "pruned": 1585573,
-      "splits": 1585429,
-      "convex": 1776812,
-      "tangent": 751200,
-      "max_depth": 62
+      "nodes": 3380026,
+      "pruned": 1690085,
+      "splits": 1689941,
+      "convex": 1980120,
+      "tangent": 852267,
+      "max_depth": 70
     },
     "table_hashes_sha256_big_endian_float_stream": {
       "w_lower.bin": "a9aec0b9c422129a126bc4ccca82fe08c233cc38c111314b82be486b0d5b5f81",
@@ -147,18 +149,18 @@
     "pressure_shift_factor": "m-6",
     "block_length": 204,
     "projected_safe_decimal": {
-      "numerator": 6733305982,
+      "numerator": 6733314663,
       "denominator": 10000000000
     },
-    "computed_bound_from_conservative_inputs": "0.67333059828795868305084456656249690112795551923695387941459443959673183809216937...",
-    "computed_percent_from_conservative_inputs": "67.333059828795868305084456656249690112795551923695387941459443959673183809216937...",
+    "computed_bound_from_conservative_inputs": "0.67333146637444245098048478448581349906047661620179785024791786378554584082368156528...",
+    "computed_percent_from_conservative_inputs": "67.333146637444245098048478448581349906047661620179785024791786378554584082368157...",
     "float_discovery_bound": "0.6733316156327896...",
     "float_discovery_percent": "67.33316156327896...",
     "certified": true
   },
   "archive": {
-    "previous_certified_record": "archive/2026-08-12-certified-6732907560/",
-    "previous_source_commit": "1acaef2e7cb322fc1912a881397e7abafa82c43c"
+    "previous_certified_record": "archive/2026-08-12-certified-6733305982/",
+    "previous_source_commit": "cc8b59c3ee18a7eb2dbff4b8282f386f3a4f22b8"
   },
   "provenance": {
     "positioned_pressure_predecessor": {

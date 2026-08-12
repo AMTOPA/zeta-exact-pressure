@@ -37,6 +37,17 @@ def parse_frequency(text: str):
     raise ValueError(f"unsupported frequency: {text}")
 
 
+def sinc_value(z):
+    radius = max(abs(float(z.a)), abs(float(z.b)))
+    if radius < SERIES_RADIUS:
+        value = iv.mpf(1)
+        for n in range(1, SERIES_TERMS):
+            sign = -1 if n & 1 else 1
+            value += sign * z ** (2 * n) / math.factorial(2 * n + 1)
+        return value + iv.mpf([-SERIES_TAIL, SERIES_TAIL])
+    return iv.sin(z) / z
+
+
 def sinc_triplet(z):
     radius = max(abs(float(z.a)), abs(float(z.b)))
     if radius < SERIES_RADIUS:
@@ -62,27 +73,34 @@ def sinc_triplet(z):
     )
 
 
-def make_kernel(candidate: dict):
+def window_constants(candidate: dict):
     window = candidate["window"]
     den = int(window["denominator"])
     coeff = [iv.mpf(int(n)) / den for n in window["numerators"]]
     omega = [parse_frequency(x) for x in window["frequencies"]]
+    return coeff, omega
 
-    def kernel_triplet(x):
-        value = iv.mpf(0)
-        first = iv.mpf(0)
-        second = iv.mpf(0)
-        for c, w in zip(coeff, omega):
-            left = w / 2 - iv.pi * x
-            right = w / 2 + iv.pi * x
-            lv, ld, ldd = sinc_triplet(left)
-            rv, rd, rdd = sinc_triplet(right)
-            value += c * (lv + rv) / 2
-            first += c * iv.pi * (rd - ld) / 2
-            second += c * iv.pi**2 * (ldd + rdd) / 2
-        return value, first, second
 
-    return kernel_triplet
+def kernel_value(x, coeff, omega):
+    value = iv.mpf(0)
+    for c, w in zip(coeff, omega):
+        value += c * (sinc_value(w / 2 - iv.pi * x) + sinc_value(w / 2 + iv.pi * x)) / 2
+    return value
+
+
+def kernel_triplet(x, coeff, omega):
+    value = iv.mpf(0)
+    first = iv.mpf(0)
+    second = iv.mpf(0)
+    for c, w in zip(coeff, omega):
+        left = w / 2 - iv.pi * x
+        right = w / 2 + iv.pi * x
+        lv, ld, ldd = sinc_triplet(left)
+        rv, rd, rdd = sinc_triplet(right)
+        value += c * (lv + rv) / 2
+        first += c * iv.pi * (rd - ld) / 2
+        second += c * iv.pi**2 * (ldd + rdd) / 2
+    return value, first, second
 
 
 def outward_lower(x: float) -> float:
@@ -94,16 +112,28 @@ def outward_upper(x: float) -> float:
 
 
 def coarse_chunk(task):
-    start, stop, grid, precision, candidate = task
+    start, stop, grid, precision, candidate, lower_only = task
     iv.dps = precision
-    kernel = make_kernel(candidate)
-    k0 = kernel(iv.mpf(0))[0]
+    coeff, omega = window_constants(candidate)
+    if lower_only:
+        k0 = kernel_value(iv.mpf(0), coeff, omega)
+        k0sq = k0 * k0
+        lower: list[float] = []
+        for i in range(start, stop):
+            x = iv.mpf([i / grid, (i + 1) / grid])
+            k = kernel_value(x, coeff, omega)
+            w = k * k / k0sq
+            lo = max(0.0, float(w.a))
+            lower.append(0.0 if lo == 0.0 else outward_lower(lo))
+        return start, lower, None
+
+    k0 = kernel_triplet(iv.mpf(0), coeff, omega)[0]
     k0sq = k0 * k0
     lower: list[float] = []
     second_lower: list[float] = []
     for i in range(start, stop):
         x = iv.mpf([i / grid, (i + 1) / grid])
-        k, kd, kdd = kernel(x)
+        k, kd, kdd = kernel_triplet(x, coeff, omega)
         w = k * k / k0sq
         wdd = 2 * (kd * kd + k * kdd) / k0sq
         lo = max(0.0, float(w.a))
@@ -115,8 +145,8 @@ def coarse_chunk(task):
 def midpoint_chunk(task):
     start, stop, grid, precision, candidate = task
     iv.dps = precision
-    kernel = make_kernel(candidate)
-    k0 = kernel(iv.mpf(0))[0]
+    coeff, omega = window_constants(candidate)
+    k0 = kernel_triplet(iv.mpf(0), coeff, omega)[0]
     k0sq = k0 * k0
     wlo: list[float] = []
     whi: list[float] = []
@@ -124,7 +154,7 @@ def midpoint_chunk(task):
     dhi: list[float] = []
     for i in range(start, stop):
         x = iv.mpf(i) / (2 * grid)
-        k, kd, _ = kernel(x)
+        k, kd, _ = kernel_triplet(x, coeff, omega)
         w = k * k / k0sq
         wd = 2 * k * kd / k0sq
         wlo.append(outward_lower(float(w.a)))
@@ -134,7 +164,15 @@ def midpoint_chunk(task):
     return start, wlo, whi, dlo, dhi
 
 
-def tasks(length: int, workers: int, grid: int, precision: int, candidate: dict):
+def coarse_tasks(length: int, workers: int, grid: int, precision: int, candidate: dict, lower_only: bool):
+    chunk = max(1, math.ceil(length / workers))
+    return [
+        (start, min(length, start + chunk), grid, precision, candidate, lower_only)
+        for start in range(0, length, chunk)
+    ]
+
+
+def midpoint_tasks(length: int, workers: int, grid: int, precision: int, candidate: dict):
     chunk = max(1, math.ceil(length / workers))
     return [
         (start, min(length, start + chunk), grid, precision, candidate)
@@ -161,6 +199,7 @@ def main() -> int:
     parser.add_argument("--grid", type=int, default=4000)
     parser.add_argument("--precision", type=int, default=50)
     parser.add_argument("--workers", type=int, default=max(1, os.cpu_count() or 1))
+    parser.add_argument("--lower-only", action="store_true", help="generate only w_lower.bin")
     parser.add_argument(
         "--smoke-cells",
         type=int,
@@ -186,40 +225,42 @@ def main() -> int:
     with context.Pool(workers) as pool:
         coarse_parts = pool.map(
             coarse_chunk,
-            tasks(cell_count, workers, args.grid, args.precision, candidate),
+            coarse_tasks(cell_count, workers, args.grid, args.precision, candidate, args.lower_only),
         )
     w_lower = [0.0] * cell_count
-    w_second_lower = [0.0] * cell_count
+    w_second_lower = None if args.lower_only else [0.0] * cell_count
     for start, lo, second in coarse_parts:
         w_lower[start : start + len(lo)] = lo
-        w_second_lower[start : start + len(second)] = second
+        if w_second_lower is not None and second is not None:
+            w_second_lower[start : start + len(second)] = second
 
-    midpoint_workers = max(1, min(args.workers, midpoint_count))
-    with context.Pool(midpoint_workers) as pool:
-        mid_parts = pool.map(
-            midpoint_chunk,
-            tasks(midpoint_count, midpoint_workers, args.grid, args.precision, candidate),
-        )
-    w_mid_lower = [0.0] * midpoint_count
-    w_mid_upper = [0.0] * midpoint_count
-    w_prime_mid_lower = [0.0] * midpoint_count
-    w_prime_mid_upper = [0.0] * midpoint_count
-    for start, lo, hi, dlo, dhi in mid_parts:
-        stop = start + len(lo)
-        w_mid_lower[start:stop] = lo
-        w_mid_upper[start:stop] = hi
-        w_prime_mid_lower[start:stop] = dlo
-        w_prime_mid_upper[start:stop] = dhi
+    tables: dict[str, list[float]] = {"w_lower.bin": w_lower}
+    if not args.lower_only:
+        midpoint_workers = max(1, min(args.workers, midpoint_count))
+        with context.Pool(midpoint_workers) as pool:
+            mid_parts = pool.map(
+                midpoint_chunk,
+                midpoint_tasks(midpoint_count, midpoint_workers, args.grid, args.precision, candidate),
+            )
+        w_mid_lower = [0.0] * midpoint_count
+        w_mid_upper = [0.0] * midpoint_count
+        w_prime_mid_lower = [0.0] * midpoint_count
+        w_prime_mid_upper = [0.0] * midpoint_count
+        for start, lo, hi, dlo, dhi in mid_parts:
+            stop = start + len(lo)
+            w_mid_lower[start:stop] = lo
+            w_mid_upper[start:stop] = hi
+            w_prime_mid_lower[start:stop] = dlo
+            w_prime_mid_upper[start:stop] = dhi
+        tables.update({
+            "w_second_lower.bin": w_second_lower,
+            "w_mid_lower.bin": w_mid_lower,
+            "w_mid_upper.bin": w_mid_upper,
+            "w_prime_mid_lower.bin": w_prime_mid_lower,
+            "w_prime_mid_upper.bin": w_prime_mid_upper,
+        })
 
     args.output.mkdir(parents=True, exist_ok=True)
-    tables = {
-        "w_lower.bin": w_lower,
-        "w_second_lower.bin": w_second_lower,
-        "w_mid_lower.bin": w_mid_lower,
-        "w_mid_upper.bin": w_mid_upper,
-        "w_prime_mid_lower.bin": w_prime_mid_lower,
-        "w_prime_mid_upper.bin": w_prime_mid_upper,
-    }
     manifest = {
         "term_count": int(candidate["window"]["term_count"]),
         "grid": args.grid,
@@ -227,11 +268,13 @@ def main() -> int:
         "workers": workers,
         "target": f"{target.numerator}/{target.denominator}",
         "coarse_cells": cell_count,
-        "midpoint_values": midpoint_count,
+        "midpoint_values": 0 if args.lower_only else midpoint_count,
+        "lower_only": args.lower_only,
         "smoke_only": bool(args.smoke_cells),
         "files": {},
     }
     for name, values in tables.items():
+        assert values is not None
         write_f64(args.output / name, values)
         manifest["files"][name] = {
             "length": len(values),

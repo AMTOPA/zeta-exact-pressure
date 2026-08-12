@@ -37,16 +37,22 @@ jobs:
           g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG \
             -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
 
-      - name: Run bounded certification pilot
+      - name: Run bounded certification target ladder
         shell: bash
         run: |
-          set +e
-          build/verify_local_tables 5561 1000000 tables-15term 5000000 | tee certificate-pilot.log
-          code=${PIPESTATUS[0]}
-          echo "verifier_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
-          if [[ "$code" != "0" && "$code" != "3" ]]; then
-            exit "$code"
-          fi
+          : > certificate-pilot.log
+          for target in 5450 5500 5540 5561; do
+            echo "===== target=${target}/1000000 =====" | tee -a certificate-pilot.log
+            set +e
+            build/verify_local_tables "$target" 1000000 tables-15term 5000000 \
+              | tee -a certificate-pilot.log
+            code=${PIPESTATUS[0]}
+            set -e
+            echo "target_${target}_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
+            if [[ "$code" != "0" && "$code" != "3" ]]; then
+              exit "$code"
+            fi
+          done
 
       - name: Upload pilot evidence
         if: always()

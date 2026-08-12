@@ -50,7 +50,8 @@ jobs:
           mkdir -p build
           python3 src/write_verifier_config.py --output build/candidate_config.hpp
           grep 'gaps = 7' build/candidate_config.hpp
-          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
+            -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
 
       - name: Build full outward-rounded tables
         run: |
@@ -61,24 +62,47 @@ jobs:
             --precision 50 \
             --workers 4
 
-      - name: Run seven-dimensional certificate
+      - name: Run hardened seven-dimensional target ladder
         shell: bash
         run: |
+          : > eight-point-certificate.log
+          probe() {
+            num="$1"; den="$2"; label="$3"
+            echo "===== ${label} = ${num}/${den} =====" | tee -a eight-point-certificate.log
+            set +e
+            build/verify_local_tables "$num" "$den" tables-8point 80000000 | tee -a eight-point-certificate.log
+            code=${PIPESTATUS[0]}
+            set -e
+            echo "${label}_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+            if [[ "$code" != "0" && "$code" != "3" ]]; then exit "$code"; fi
+            return "$code"
+          }
+
           set +e
-          build/verify_local_tables 2741 500000 tables-8point 50000000 | tee eight-point-certificate.log
-          code=${PIPESTATUS[0]}
+          probe 2741 500000 eps_005482
+          code=$?
           set -e
-          echo "verifier_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
-          if [[ "$code" != "0" && "$code" != "3" ]]; then
-            exit "$code"
+          if [[ "$code" == "3" ]]; then
+            set +e
+            probe 137 25000 eps_005480
+            code=$?
+            set -e
           fi
+          if [[ "$code" == "3" ]]; then
+            set +e
+            probe 219 40000 eps_005475
+            code=$?
+            set -e
+          fi
+          if [[ "$code" != "0" && "$code" != "3" ]]; then exit "$code"; fi
 
       - name: Upload certificate evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eight-point-robust-certificate
+          name: eight-point-robust-certificate-hardened
           path: |
             tables-8point/manifest.json
+            tables-8point/*.bin
             eight-point-certificate.log
           if-no-files-found: warn

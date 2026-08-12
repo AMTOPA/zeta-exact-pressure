@@ -2,35 +2,37 @@ Current interval-certified research-draft record
 ===============================================
 
 Date: 2026-08-12
-Status: INTERVAL-CERTIFIED LOCALLY; INDEPENDENT REPRODUCTION REQUESTED
+Status: INTERVAL-CERTIFIED LOCALLY; EXISTING SCALAR-GRAM PROJECTION; INDEPENDENT REPRODUCTION REQUESTED
 
 Local geometry:
 points=7
 gaps=6
 
-Joint-pressure 15-term window numerator vector (denominator 1e9):
+Second-exchange 17-term window numerator vector (denominator 1e9):
 1000000000
-12948011
--12114181
-3684033
-5911261
--1663892
-5928575
--7167828
-6229914
--5147758
--756341
-440544
--311207
-237969
--190433
+12378982
+-12602495
+4164033
+5741405
+-1724025
+6219280
+-8047828
+6321519
+-5241981
+-892658
+560544
+-431207
+357969
+-310433
+100000
+-100000
 
 Interval-verified window input:
-H(v)=0.6721999026675757754212693844824134965885997231953...
-H_interval=[0.672199902667575775421269384482413496588599723195359313123857471942660251994...,
-            0.672199902667575775421269384482413496588599723195359313123857471942668764332...]
-H_floor=3360999513/5000000000=0.6721999026
-interval_window_lower_bound=0.7616106600142013...
+H(v)=0.6721881581182345851694563877256548411463766196857994939795075115150882...
+H_interval=[0.672188158118234585169456387725654841146376619685799493979507511515082923948...,
+            0.672188158118234585169456387725654841146376619685799493979507511515093500981...]
+H_floor=336094079/500000000=0.6721881580
+interval_window_lower_bound=0.7616418486406763...
 
 Exact position pressure (denominator 46000000000):
 22420713
@@ -46,66 +48,63 @@ For every index span s=1,...,6, the sum of exact pair weights of span s is exact
 All pair and pressure coefficients are nonnegative.
 
 Discovery hardening:
-- adversarial exchange over total pressure, the 15-term window, pair weights, and position-pressure weights;
-- exact rational span capacities and exact declared pressure total preserved;
-- broad resonance-template polishing and multi-range differential-evolution stress;
-- observed floating-point minimum: 0.0078878193504693...
-- observed lowest basin near (1.042887125276,1.974404852204,1.046257771352,1.972360347862,1.044510345045,1.978097154680).
+- second final-bound-directed adversarial exchange in the 17-term window;
+- all {1,2,3,4}^6 and {1,2,3,5}^6 starts polished without score screening;
+- six multi-range differential-evolution stress runs;
+- observed floating-point minimum: 0.007911105155226424...;
+- observed lowest basin near (1.978079145369,1.044055102239,1.973013931233,1.045981098706,1.974452906922,1.042299648208).
 
 Promoted rigorous local target:
-7887/1000000 = 0.007887
+79107/10000000 = 0.0079107
 VERIFIED=true
 independent_reproduction=false
 
 Hardened interval verifier:
 grid=4000
 precision_decimal_digits=50
-coarse_cells=64760
-midpoint_values=129521
+coarse_cells=64954
+midpoint_values=129909
 initial_boxes=64
 components_per_gap=2,2,2,2,2,2
 compiler flag=-ffp-contract=off
 
 SHA-256 (big-endian float stream):
-w_lower.bin             6029be4ca062cc5d336060cd50cbae862d0394a4cd3d9c226052f46685f21996
-w_second_lower.bin      0e8cbb5b775ac844902978943dba957fd23c6ee0e48b327c36fca65752c5224a
-w_mid_lower.bin         83147ca21efd2f10574af64cf742634c5b10736ffcfd563d1ea730a41b48a76d
-w_mid_upper.bin         1f5c3ca9c908e18f00b2f8a59256f615011ef83a603fdd48d5fb2898d78cd54b
-w_prime_mid_lower.bin   41558ea71ef06c851a758608d34f61e97be87d9be9075f5b5e2b895c61554799
-w_prime_mid_upper.bin   c93278fc0173b29115fc971600c3ca754083edb299bd70020e1ecb1e769c5942
+w_lower.bin             b5acdeea50dc30f55cd1649cea974a1b9017916bca1545b10dd9b0a518ba2c8e
+w_second_lower.bin      fbac961c866b91cb35ec0298fa31899cae4485f2bc23237d81003935ebc355d0
+w_mid_lower.bin         4c4c010ae2cab8da1074d8f4891d73c1c34964550832a300d448b0279e878a47
+w_mid_upper.bin         cb8163fae74263715eb3a31797515fb2d568dccb92462e1ffeeb1dad23ccde8e
+w_prime_mid_lower.bin   6190bc2478c1a8c3d78593848b71fbe0238c7c60c4a9cfed09e12a949c9ed30a
+w_prime_mid_upper.bin   b221e2967ce42d84f36255ff8280e395f39aa39e2f035083ddb46a0ebf65c915
 
 Verifier record:
-source commit=1f6715705ad69423b2b22069e13daa6843ccc58c
-workflow run=31603343875
-artifact id=9144421792
-artifact digest sha256=09ff629ed821e560222f13e92ad9d093bc85f766f940cba5c3bdd7704a36033d
-verified at UTC=2026-08-12T13:59:17Z
-nodes=3424276
-pruned=1712170
-splits=1712106
-convex=1756299
-tangent=801918
-max_depth=71
+source commit=b3b7784ed0089c3c2197d740aaae1a424d142e44
+workflow run=31610179703
+artifact id=9147378469
+artifact digest sha256=871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1
+verified at UTC=2026-08-12T15:18:01Z
+nodes=3768186
+pruned=1884125
+splits=1884061
+convex=2030240
+tangent=936616
+max_depth=74
 VERIFIED=true
 
-Exact-pressure projection:
-H_floor=0.6721999026
-epsilon=0.007887
+Existing scalar-Gram projection:
+H_floor=0.6721881580
+epsilon=0.0079107
 B=93/23000
 local gaps Q=6
 best m=145
-A_m=1.096293
-R_m=1.0944074097077275572459819659380041202918171...
-eta_m=0.9982800307105195027661236238286699999834142...
-bound=0.6734130852868493916709045716416011658781093353454...
-percent=67.34130852868493916709045716416011658781093353454...%
-safe decimal floor=0.6734130852
+bound=0.6734164909714992949500355331074903174997772794755...
+percent=67.34164909714992949500355331074903174997772794755...%
+safe decimal floor=0.6734164909
 
-Analytic-interface note:
-The positioned-pressure predecessor defines B symbolically as the total position pressure and carries that B through E_B+B*span >= A and the block penalty. The present construction varies B while preserving nonnegative pressures and pair-span capacities at 2, and uses the new exact B=93/23000 in the final penalty.
+Analytic extension under review:
+experiments/banded-gram/ retains the six-band energy before the unrestricted scalar Gram compression. Its local input is exactly the interval-certified certificate above and its final arithmetic is rationally checked. The proposed continuous banded profile projects to 67.3423563564% with safe floor 0.6734235635. This analytic extension is not part of the root certified statement until its new matrix lemma and insertion into shifted-block pinching receive independent review.
 
 Trust boundary:
-The local six-gap numerical inequality, exact total pressure, pair-span capacities, H floor, and final arithmetic are checked in this repository. The explicit-formula / trace interface and finite-m Gram profile remain imported from the lineage repositories. Independent reproduction of this joint-pressure certificate is requested before publication-quality use.
+The local six-gap numerical inequality, exact total pressure, pair-span capacities, H floor, and existing scalar-Gram final arithmetic are checked in this repository. The explicit-formula / trace interface and shifted-block framework remain imported from the lineage repositories. Independent reproduction of the latest local certificate and independent review of the banded-Gram extension are requested before publication-quality use.
 
 Previous interval-certified research-draft record:
-archive/2026-08-12-certified-6734062162/
+archive/2026-08-12-certified-6734153139/

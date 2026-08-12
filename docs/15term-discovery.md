@@ -1,122 +1,122 @@
-# 15-term discovery candidate
+# 15-term search history and robust repair
 
-> Status: floating-point discovery result only. The local target below is **not** interval-certified.
+This note records an important failed discovery step as well as the retained candidate.
 
-## Motivation
+## 1. Rejected score-screened candidate
 
-The 11-term candidate improved the local defect by enlarging the window basis while keeping the predecessor pair weights and exact position-pressure vector fixed. Further experiments showed that freely re-optimizing pair/pressure weights is fragile: cutting-plane LP solutions can overfit the current counterexample set and expose new mixed 1/3-resonance valleys under differential-evolution stress. The present candidate therefore freezes the established pair/pressure weights and spends the remaining freedom only on the window.
+The first 15-term search polished only a selected subset of integer-lattice starts. It proposed a window with an observed floating-point minimum near `0.0055619915` and target `0.005561`.
 
-## Exact window
+The interval verifier did **not** certify that target. More importantly, its unresolved boxes pointed to a basin reachable from the resonance template `(1,1,1,3,1,1)` that had been discarded because the unpolished integer point did not rank among the lowest score-screened starts. Continuous optimization from that region found successively lower values, ultimately showing that the proposed target was false for that window.
 
-Use
+This candidate was rejected. The episode demonstrates that ranking integer templates by their starting value is not a safe discovery heuristic near the kernel-zero lattice.
 
-\[
-v(s)=\sum_{j=0}^{14}c_j\cos(\omega_j s),\qquad
-\omega_0=\sqrt2,\quad \omega_j=2j\pi\ (1\le j\le14),
-\]
+## 2. Adversarial exchange repair
 
-with common denominator `1000000000` and numerators
+The missed basins were fed back into the window optimization. Pair weights and position-pressure weights were kept fixed; only the 15-term window was re-optimized against the accumulated adversarial set.
+
+The retained rational window has denominator `1000000000` and numerators
 
 ```text
 1000000000
-   7715770
- -15127849
-   -277796
-   1460676
-  -4061917
-   4967584
-  -4903364
-   5054213
-  -2570688
-   3857592
-    459037
-   -292106
-    211779
-   -164957
+   8629738
+ -10085378
+   1746803
+   1125700
+  -2203905
+   1904615
+  -4559603
+   7930665
+  -3022627
+   2165339
+    398121
+   -255934
+    188899
+   -148305
+```
+
+with frequencies
+
+```text
+sqrt(2), 2*pi, 4*pi, ..., 28*pi.
 ```
 
 High-precision evaluation gives
 
 ```text
-H(v) = 0.6722654286963972986928429055204711746749537758314228...
+H(v) = 0.672333886657942...
 ```
 
-The conservative projection input is
+and interval arithmetic verifies
 
 ```text
-H_floor = 0.6722654
+H(v) > 0.6723338.
 ```
 
-## Adversarial discovery search
+## 3. Unscreened stress policy
 
-The pair-weight layout and position-pressure vector are unchanged from the predecessor/current main candidate.
+The corrected discovery policy does not select starts by their unpolished score. It includes:
 
-The candidate was stress-tested with:
+- every template in `{1,2,3,4}^6` (4096 starts), each locally polished;
+- every template in `{1,2,3,5}^6` (another 4096 starts), each locally polished;
+- multi-range differential-evolution runs over substantially larger boxes.
 
-- all `9^6 = 531441` integer gap patterns in `{0,...,8}^6` scored before polishing;
-- analytic-gradient L-BFGS-B polishing of the 220 lowest integer-lattice starts;
-- accumulated low configurations from the preceding 11-term and alternating-minimax experiments;
-- 9 differential-evolution runs over boxes `[0,6]^6`, `[0,10]^6`, and `[0,16]^6`.
-
-For the rounded rational coefficients above, the lowest floating-point value observed in the strong lattice-polish pass was
+The lowest floating-point basin observed for the rounded rational window is
 
 ```text
-F_min_float = 0.005561991478045605...
+0.005402429240910082...
 ```
 
-The independent differential-evolution stress runs did not find a lower value; their lowest result in this pass was approximately `0.00571099837`.
+near a family of configurations containing gaps close to `1`, `2`, and `2.92` normalized spacings.
 
-This is discovery evidence, not a proof that the global minimum has been found.
-
-## Proposed rigorous target
-
-The next interval-verifier target is
+The rigorous target was deliberately set lower:
 
 ```text
-EPS_TARGET = 0.005561 = 5561 / 1000000
+EPS_TARGET = 0.005401 = 5401 / 1000000.
 ```
 
-which leaves about `9.91e-7` between the target and the current floating-point minimum.
+## 4. Rigorous certification
 
-A verifier success must prove
+The repository-native table builder generated outward-rounded interval tables on a 4000 grid at 50 decimal digits. The C++ branch-and-bound verifier used direct lower bounds plus interval Hessian LDL and convex supporting-hyperplane pruning.
 
-\[
-F(g_1,\ldots,g_6)\ge 0.005561
-\]
+The full run closed the domain:
 
-for all nonnegative gaps, using outward-rounded interval arithmetic/branch-and-bound. Any terminal counterexample box should be fed back into the discovery set rather than hidden by lowering the target without analysis.
+```text
+VERIFIED=true
+nodes=3171002
+pruned=1585573
+splits=1585429
+convex=1776812
+tangent=751200
+max_depth=62
+```
 
-## Conditional global projection
+Exact table hashes, workflow provenance, and artifact identifiers are recorded in `candidate.json` and `certificates/latest-verification.txt`.
+
+## 5. Final projection
 
 With
 
 ```text
-H_floor = 0.6722654
-EPS_TARGET = 0.005561
+H_floor = 0.6723338
+EPS = 0.005401
 B = 3/1150
 ```
 
-the exact-pressure integer scan selects
+the exact-pressure scan selects `m=204` and gives
 
 ```text
-m = 199
+0.67333059828795868305084456656...
+= 67.3330598287958683... %
 ```
 
-and gives
+with safe decimal floor
 
 ```text
-0.67336590025702537190754388355895632950...
-= 67.33659002570253719... %
+0.6733305982.
 ```
 
-so the safe decimal floor conditional on certifying the local target is
+The previous 67.3290756019% research-draft record remains archived for comparison.
 
-```text
-0.6733659002
-```
+## Lesson for subsequent optimization
 
-Using the floating-point `H(v)` and observed local minimum instead gives a discovery projection of roughly `67.33665733%`.
-
-## Basis-size check
-
-A 17-term follow-up optimization did not improve the active-set objective over the 15-term solution. This suggests the straightforward high-harmonic extension is already near diminishing returns; the next useful work should prioritize rigorous certification or a genuinely different window family rather than simply adding more Fourier terms.
+The main discovery change is methodological: **adversary selection must be based on resonance-template coverage and exchange, not on the objective value of the unpolished start**. Future window or weight optimization should preserve this rule and should feed every interval-verifier obstruction back into the discovery set before attempting a higher target.

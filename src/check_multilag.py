@@ -1,65 +1,64 @@
 #!/usr/bin/env python3
-"""Exact arithmetic for the two-certificate multi-lag banded-Gram experiment.
+"""Exact arithmetic for the pressure-supporting-line banded-Gram experiment.
 
 The arithmetic is conditional on interval certification of the auxiliary local
 certificate in experiments/multilag/candidate.json and on acceptance of the
-continuous banded-Gram analytic profile.  No floating-point value is used in
-the proof checks below.
+continuous banded-Gram analytic profile. No floating-point value is used below.
 """
 from fractions import Fraction
 
 q = 6
-m = 173
+m = 259
 n = m - q
 
 H = Fraction(336094079, 500000000)
 B = Fraction(93, 23000)
 eps0 = Fraction(79107, 10000000)
-eps1 = Fraction(15889, 2000000)  # 0.0079445 auxiliary target
-delta = Fraction(1, 25)
+eps1 = Fraction(17997, 2000000)  # auxiliary target 0.0089985
+c = Fraction(6, 5)               # auxiliary pressure multiplier
 T = Fraction(7, 6)
 
 A0 = eps0 * n
 A1 = eps1 * n
+assert A0 == Fraction(20014071, 10000000)
+assert A1 == Fraction(4553241, 2000000)
 
-# The base certificate gives S+P >= A0.  The tilted certificate gives
-# (26/25)E_odd + (24/25)E_even + P >= A1.  Since E_odd-E_even <= S,
-# it implies (26/25)S + P >= A1.
-Sx = (A1 - A0) / delta
-assert Sx == Fraction(28223, 200000)
-assert 0 < Sx < T < A0
+# Base: S + P >= A0.
+# Auxiliary: S + c P >= A1.
+# Their active pressure lines intersect at Sx.
+Sx = (c * A0 - A1) / (c - 1)
+assert Sx == Fraction(6253401, 10000000)
+assert 0 < Sx < T < A0 < A1
 
-# Rational floor below g_6(A0)=2*sqrt(T*A0)-T.
-R = Fraction(131628967, 100000000)
-square_gap = T * A0 - ((R + T) / 2) ** 2
-assert square_gap == Fraction(2718616199, 360000000000000000)
+# For 0<=S<=Sx the base line is active and g_6(S)=S, hence
+# g_6(S)+P >= S+(A0-S)=A0 exactly.
+# For Sx<=S<=A1 the auxiliary line is active. The function
+# g_6(S)+(A1-S)/c is concave, so its minimum occurs at Sx or A1.
+# At Sx its value is A0. At A1 it is g_6(A1), which exceeds A0
+# by the exact square witness below.
+square_gap = T * A1 - ((A0 + T) / 2) ** 2
+assert square_gap == Fraction(528783848062631, 3600000000000000)
 assert square_gap > 0
 
-# Choose eta so the two active pressure lines meet the target R exactly at Sx.
-# Because Sx<T, g_6(Sx)=Sx.
-eta = (R - Sx) / (A0 - Sx)
-assert eta == Fraction(117517467, 117997190)
+# Thus the two local supporting lines plus the banded profile prove
+# Delta + P >= A0: the scalar Gram discount disappears entirely.
+R = A0
+eta = Fraction(1)
 
-# Other endpoint in the first pressure regime is strictly above R.
-assert eta * A1 > R
-# At the other endpoint, g_6(A0)>R by the square witness above.
-# On each interval the banded profile plus the relevant affine pressure term is
-# concave, so the interval minimum occurs at an endpoint.
+bound = (m * H - B * n) / (m - R)
+assert bound == Fraction(86536866461, 128499296450)
 
-bound = (m * H - eta * B * n) / (m - R)
-assert bound == Fraction(93944445751924037, 139502543089048315)
-
-safe = Fraction(6734246105, 10000000000)
+safe = Fraction(6734423366, 10000000000)
 assert safe < bound < safe + Fraction(1, 10000000000)
 
 print("multilag_exact_arithmetic_verified=True")
 print("m=", m)
 print("A0=", A0)
 print("A1=", A1)
-print("S_intersection=", Sx)
-print("R_floor=", R)
-print("band_profile_square_gap=", square_gap)
-print("eta=", eta)
+print("supporting_line_intersection=", Sx)
+print("g_A1_over_A0_square_gap=", square_gap)
+print("R_equals_A0=True")
+print("eta=1")
 print("bound_fraction=", f"{bound.numerator}/{bound.denominator}")
 print("bound=", float(bound))
 print("percent=", float(bound * 100))

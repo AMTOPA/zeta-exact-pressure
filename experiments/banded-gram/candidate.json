@@ -1,6 +1,6 @@
 {
-  "description": "Banded-Gram analytic extension using the interval-certified second-exchange 17-term seven-point local certificate.",
-  "status": "analytic-extension research candidate; local numerical inputs interval-certified; new banded-Gram lemma requires independent human review before root promotion",
+  "description": "Continuous banded-Gram profile using the interval-certified second-exchange 17-term seven-point local certificate.",
+  "status": "analytic-extension research candidate; local numerical inputs interval-certified; new banded-Gram profile requires independent human review before root promotion",
   "date": "2026-08-12",
   "local_input": {
     "source": "second-exchange 17-term hardened local certificate",
@@ -24,25 +24,24 @@
     }
   },
   "banded_gram": {
-    "block_length": 152,
+    "block_length": 165,
     "bandwidth": 6,
     "color_count": 7,
     "band_energy_threshold": {"numerator": 7, "denominator": 6},
-    "A": {"numerator": 5774811, "denominator": 5000000},
-    "profile_claim": "For PSD G with diag(G)<=1 and E_6=2*sum_{1<=j-i<=6}|G_ij|^2 <= 7/6, tr Psi(G) >= E_6. Together with h_152(7/6)>A this turns the block profile into R=A, eta=1.",
-    "h_threshold_square_witness": {
-      "inner": {"numerator": 1057, "denominator": 912},
-      "comparison_rhs": {"numerator": 611976727, "denominator": 570000000},
-      "positive_square_gap": {"numerator": 2040735610367471, "denominator": 324900000000000000}
+    "A": {"numerator": 12578013, "denominator": 10000000},
+    "profile": "g_q(E)=E for E<=T_q and g_q(E)=2*sqrt(T_q*E)-T_q for E>=T_q, with T_q=(q+1)/q. The proof rescales the q-band matrix to operator norm at most one before applying the Frobenius distance to the negative-semidefinite cone.",
+    "R_floor": {"numerator": 6280439, "denominator": 5000000},
+    "R_floor_square_witness": {
+      "comparison_rhs": {"numerator": 36341317, "denominator": 30000000},
+      "positive_square_gap": {"numerator": 43705511, "denominator": 900000000000000}
     }
   },
   "projection": {
-    "R_equals_A": true,
-    "eta": {"numerator": 1, "denominator": 1},
-    "exact_bound": {"numerator": 292048975046, "denominator": 433679483675},
-    "computed_bound": "0.6734212385865638563170612269568299402444634216993548443999954686120188413130147...",
-    "computed_percent": "67.34212385865638563170612269568299402444634216993548443999954686120188413130147...%",
-    "safe_decimal_floor": {"numerator": 6734212385, "denominator": 10000000000}
+    "eta": {"numerator": 12560878, "denominator": 12578013},
+    "exact_bound": {"numerator": 607970185271419, "denominator": 902805037076740},
+    "computed_bound": "0.6734235635636362491098136775717977062894258575335678590070538147648800615353047...",
+    "computed_percent": "67.34235635636362491098136775717977062894258575335678590070538147648800615353047...%",
+    "safe_decimal_floor": {"numerator": 6734235635, "denominator": 10000000000}
   },
-  "promotion_policy": "Do not replace root candidate.json solely from numerical CI. The local certificate is rigorous, but the new banded-Gram analytic lemma must receive independent mathematical review first."
+  "promotion_policy": "Do not replace root candidate.json solely from numerical CI. The local certificate is rigorous, but the continuous banded-Gram analytic profile and its insertion into shifted-block pinching require independent mathematical review first."
 }

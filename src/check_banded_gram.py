@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Exact arithmetic checks for experiments/banded-gram/candidate.json.
 
-This checks the arithmetic consequences of the new banded-Gram lemma.  It does
-not replace mathematical review of the lemma itself.
+This checks the arithmetic consequences of the continuous banded-Gram profile.
+It does not replace mathematical review of the analytic profile itself.
 """
 from __future__ import annotations
 
@@ -37,30 +37,29 @@ B = rat(local["pressure_total"])
 A = epsilon * (m - q)
 assert A == rat(band["A"])
 
-# The q-band graph is properly colored by index modulo q+1.  The analytic
-# lemma therefore has the threshold (q+1)/q.
+# Proper coloring of the q-band graph by residues modulo q+1 gives the
+# operator-norm constant q/(q+1), hence T=(q+1)/q in the analytic profile.
 T = Fraction(q + 1, q)
 assert T == rat(band["band_energy_threshold"])
-assert A < T
+assert A > T  # the selected optimum is in the square-root branch
 
-# Exact verification that h_m(T) > A, without evaluating the square root.
-# h_m(T) = T/m + 2*sqrt((m-1)T/m) - 1 in the nonlinear branch.
-assert T > Fraction(m, m - 1)
-inner = Fraction(m - 1, m) * T
-rhs = (A + 1 - T / m) / 2
-assert rhs > 0
-square_gap = inner - rhs * rhs
-witness = band["h_threshold_square_witness"]
-assert inner == rat(witness["inner"])
+# The continuous profile is
+#   g_q(A) = 2*sqrt(T*A) - T   for A >= T.
+# We use a rational R_floor below g_q(A).  Verify this without floating point:
+# T*A > ((R_floor + T)/2)^2.
+R = rat(band["R_floor"])
+rhs = (R + T) / 2
+square_gap = T * A - rhs * rhs
+witness = band["R_floor_square_witness"]
 assert rhs == rat(witness["comparison_rhs"])
 assert square_gap == rat(witness["positive_square_gap"])
 assert square_gap > 0
 
-# With the banded-Gram lemma and h_m(T)>A, the block deduction uses R=A and
-# eta=1 instead of the scalar relaxation R=h_m(A), eta=R/A.
-assert projection["R_equals_A"] is True
-assert rat(projection["eta"]) == 1
-bound = (m * H - B * (m - q)) / (m - A)
+eta = R / A
+assert eta == rat(projection["eta"])
+
+# Shifted-block arithmetic with the strengthened banded profile.
+bound = (m * H - eta * B * (m - q)) / (m - R)
 assert bound == rat(projection["exact_bound"])
 
 safe = rat(projection["safe_decimal_floor"])
@@ -74,7 +73,9 @@ print("q=", q)
 print("m=", m)
 print("A=", A)
 print("band_threshold=", T)
-print("h_threshold_square_gap=", square_gap)
+print("R_floor=", R)
+print("R_floor_square_gap=", square_gap)
+print("eta=", eta)
 print("exact_bound_fraction=", f"{bound.numerator}/{bound.denominator}")
 print("bound=", value)
 print("percent=", value * 100)

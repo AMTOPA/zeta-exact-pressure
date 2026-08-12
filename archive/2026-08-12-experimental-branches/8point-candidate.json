@@ -1,0 +1,53 @@
+{
+  "description": "Eight-point / seven-gap discovery candidate obtained by overlapping two certified seven-point layouts and adding the span-7 endpoint pair.",
+  "status": "discovery candidate; NOT interval-certified",
+  "date": "2026-08-12",
+  "lineage": [
+    "Anthropic zeta simple-zero work",
+    "trmdy/zeta-simple-zeros-673137",
+    "sxuff/zeta-positioned-pressure",
+    "AMTOPA/zeta-exact-pressure robust 15-term 67.3330598288% interval-certified record"
+  ],
+  "points": 8,
+  "gaps_per_local_window": 7,
+  "window": {
+    "term_count": 15,
+    "denominator": 1000000000,
+    "numerators": [1000000000,8629738,-10085378,1746803,1125700,-2203905,1904615,-4559603,7930665,-3022627,2165339,398121,-255934,188899,-148305],
+    "frequencies": ["sqrt(2)","2*pi","4*pi","6*pi","8*pi","10*pi","12*pi","14*pi","16*pi","18*pi","20*pi","22*pi","24*pi","26*pi","28*pi"],
+    "computed_h": "0.672333886657942...",
+    "projection_h_floor": {"numerator": 3361669433,"denominator": 5000000000},
+    "h_floor_interval_verified": true
+  },
+  "local_search": {
+    "method": "eight-point overlap functional: half of the certified seven-point layout on gaps 1..6 plus half shifted to gaps 2..7, with an additional span-7 endpoint pair of weight 2; reflection-reduced unscreened {1,2,3,4}^7 polishing and multi-range differential evolution",
+    "template_start_count_after_reflection_reduction": 8320,
+    "template_screening": false,
+    "differential_evolution_runs": 6,
+    "float_minimum_observed": "0.005413773016315503...",
+    "candidate_target_for_certification": {"numerator": 5413,"denominator": 1000000},
+    "verified": false,
+    "note": "The construction preserves exact pair capacity 2 for every span 1..7 and total pressure B=3/1150. The proposed 0.005413 target still requires a new seven-dimensional outward-rounded interval certificate."
+  },
+  "pair_weights": {
+    "denominator": 2000000000,
+    "span_capacity_numerator": 4000000000,
+    "entries": [[0,1,219313883],[0,2,870819909],[0,3,325978722],[0,4,1000000000],[0,5,1000000000],[0,6,2000000000],[0,7,4000000000],[1,2,549383936],[1,3,1000000000],[1,4,1000000000],[1,5,1000000000],[1,6,2000000000],[1,7,2000000000],[2,3,780686117],[2,4,129180091],[2,5,1348042556],[2,6,1000000000],[2,7,1000000000],[3,4,901232128],[3,5,129180091],[3,6,1000000000],[3,7,1000000000],[4,5,780686117],[4,6,1000000000],[4,7,325978722],[5,6,549383936],[5,7,870819909],[6,7,219313883]]
+  },
+  "position_pressure": {
+    "denominator": 4600000000,
+    "numerators": [831522,1928112,2168478,2143776,2168478,1928112,831522],
+    "total": {"numerator": 3,"denominator": 1150}
+  },
+  "final_projection": {
+    "pressure_shift_factor": "m-7",
+    "block_length": 206,
+    "projected_safe_decimal": {"numerator": 6733335783,"denominator": 10000000000},
+    "computed_bound_from_conservative_inputs": "0.67333357838611145227151895150546716817277738563861303386670624459869370094361235...",
+    "computed_percent_from_conservative_inputs": "67.333357838611145227151895150546716817277738563861303386670624459869370094361235...",
+    "float_discovery_percent": "67.3334078529...",
+    "certified": false
+  },
+  "archive": {"previous_certified_record": "archive/2026-08-12-certified-6732907560/","previous_source_commit": "0ca975c883edff70d4ac32709b138a5ccc984935"},
+  "provenance": {"positioned_pressure_predecessor": {"repository": "sxuff/zeta-positioned-pressure","commit": "6fd6c5eee6332a379a10cda4276c82e5b2bc3cd4","files": {"table_builder": {"path": "src/build_tables.py","blob_sha": "fd600325f8f0a1054827613899b132ca2fcf5332"},"verifier": {"path": "src/verify_positioned.cpp","blob_sha": "63ff4ae342c77ec44eaea56c5f81a41d03e8a1f3"}},"license_status": "no license metadata detected; referenced, not vendored"}}
+}

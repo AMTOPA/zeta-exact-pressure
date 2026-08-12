@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this research draft, please cite this repository and the upstream work."
+title: "Joint window and exact-pressure optimization for simple zeros of the Riemann zeta function"
+type: software
+authors:
+  - name: "AMTOPA"
+version: 0.1.0
+date-released: 2026-08-12
+repository-code: "https://github.com/AMTOPA/zeta-exact-pressure"

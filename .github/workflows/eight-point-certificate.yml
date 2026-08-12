@@ -1,0 +1,84 @@
+name: eight-point-robust-certificate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - experiments/8point-robust/candidate.json
+      - src/candidate_data.py
+      - src/build_interval_tables.py
+      - src/write_verifier_config.py
+      - src/verify_local_tables.cpp
+      - .github/workflows/eight-point-certificate.yml
+  workflow_dispatch:
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ZETA_CANDIDATE_PATH: experiments/8point-robust/candidate.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+
+      - name: Validate exact eight-point capacities
+        run: |
+          python3 - <<'PY'
+          import json
+          from fractions import Fraction
+          c=json.load(open('experiments/8point-robust/candidate.json'))
+          q=c['gaps_per_local_window']
+          p=c['pair_weights']
+          for span in range(1,q+1):
+              total=sum(n for i,j,n in p['entries'] if j-i==span)
+              assert total==p['span_capacity_numerator'], (span,total)
+          b=c['position_pressure']
+          assert Fraction(sum(b['numerators']),b['denominator'])==Fraction(3,1150)
+          assert c['local_search']['verified'] is False
+          assert c['final_projection']['certified'] is False
+          print('eight_point_exact_structure_verified=True')
+          PY
+
+      - name: Compile dynamic seven-gap verifier smoke
+        run: |
+          rm -rf smoke build
+          python3 src/build_interval_tables.py --output smoke --smoke-cells 64 --precision 45 --workers 4
+          mkdir -p build
+          python3 src/write_verifier_config.py --output build/candidate_config.hpp
+          grep 'gaps = 7' build/candidate_config.hpp
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
+
+      - name: Build full outward-rounded tables
+        run: |
+          rm -rf tables-8point
+          python3 src/build_interval_tables.py \
+            --output tables-8point \
+            --grid 4000 \
+            --precision 50 \
+            --workers 4
+
+      - name: Run seven-dimensional certificate
+        shell: bash
+        run: |
+          set +e
+          build/verify_local_tables 2741 500000 tables-8point 50000000 | tee eight-point-certificate.log
+          code=${PIPESTATUS[0]}
+          set -e
+          echo "verifier_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$code" != "0" && "$code" != "3" ]]; then
+            exit "$code"
+          fi
+
+      - name: Upload certificate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eight-point-robust-certificate
+          path: |
+            tables-8point/manifest.json
+            eight-point-certificate.log
+          if-no-files-found: warn

@@ -1,10 +1,12 @@
+import math
+
 import mpmath as mp
 from mpmath import iv
 
 from candidate_data import load_candidate, rational
 
 mp.mp.dps = 80
-iv.dps = 60
+iv.dps = 70
 
 candidate = load_candidate()
 window = candidate["window"]
@@ -28,6 +30,28 @@ def A(a, b):
     )
 
 
+def sinc_interval(z):
+    radius = max(abs(float(z.a)), abs(float(z.b)))
+    if radius < 0.5:
+        value = iv.mpf(1)
+        for n in range(1, 30):
+            value += (-1 if n & 1 else 1) * z ** (2 * n) / math.factorial(2 * n + 1)
+        return value + iv.mpf([-1e-65, 1e-65])
+    return iv.sin(z) / z
+
+
+def C_interval(a, b):
+    return (sinc_interval((a - b) / 2) + sinc_interval((a + b) / 2)) / 2
+
+
+def A_interval(a, b):
+    return (
+        (iv.sin(a / 2) / a + 2 * iv.cos(a / 2) / a**2) * sinc_interval(b / 2)
+        - 2 * C_interval(a, b) / a**2
+    )
+
+
+# High-precision point evaluation for a readable reference value.
 c = [mp.mpf(n) / DEN for n in NUM]
 omega = [mp.sqrt(2)] + [2 * j * mp.pi for j in range(1, len(NUM))]
 i1 = sum(ci * sinc(w / 2) for ci, w in zip(c, omega))
@@ -43,14 +67,28 @@ J = sum(
 )
 c1 = i1 * i1 / (i2 + J)
 H = 2 - 1 / c1
-
 print("H =", mp.nstr(H, 70))
-h_floor = mp.mpf(H_FLOOR.numerator) / H_FLOOR.denominator
-assert H > h_floor
 
-# Rigorous interval positivity subdivision on [-1/2, 1/2].
+# Rigorous interval enclosure for the same analytic quantity.
 ci = [iv.mpf(n) / DEN for n in NUM]
 oi = [iv.sqrt(2)] + [2 * j * iv.pi for j in range(1, len(NUM))]
+i1_iv = iv.mpf(0)
+i2_iv = iv.mpf(0)
+J_iv = iv.mpf(0)
+for a, w in zip(ci, oi):
+    i1_iv += a * sinc_interval(w / 2)
+for i in range(len(NUM)):
+    for j in range(len(NUM)):
+        i2_iv += ci[i] * ci[j] * C_interval(oi[i], oi[j])
+        J_iv += ci[i] * ci[j] * A_interval(oi[i], oi[j])
+c1_iv = i1_iv * i1_iv / (i2_iv + J_iv)
+H_iv = 2 - 1 / c1_iv
+h_floor_iv = iv.mpf(H_FLOOR.numerator) / H_FLOOR.denominator
+print("H_interval =", H_iv)
+assert H_iv > h_floor_iv
+print("H_floor_interval_verified=True")
+
+# Rigorous interval positivity subdivision on [-1/2, 1/2].
 N = 4096
 global_lo = float("inf")
 for k in range(N):

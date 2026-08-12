@@ -35,14 +35,37 @@ pressure_sum = sum(
 assert pressure_sum == rational(pressure["total"])
 
 local = candidate["local_search"]
-assert local["verified"] is False
 assert rational(local["candidate_target_for_certification"]) > 0
+verified = bool(local["verified"])
 
 final = candidate["final_projection"]
 assert final["pressure_shift_factor"] == f"m-{gaps}"
 assert int(final["block_length"]) > gaps
 assert rational(final["projected_safe_decimal"]) > 0
-assert final["certified"] is False
+assert bool(final["certified"]) is verified
+
+if verified:
+    certificate = candidate["local_certificate"]
+    assert certificate["verified"] is True
+    assert certificate["independent_reproduction"] is False
+    assert rational(certificate["target"]) == rational(local["candidate_target_for_certification"])
+    assert int(certificate["grid"]) > 0
+    assert int(certificate["precision_decimal_digits"]) >= 40
+    stats = certificate["verifier_stats"]
+    assert int(stats["nodes"]) > 0
+    assert int(stats["pruned"]) > 0
+    assert int(stats["splits"]) > 0
+    assert int(stats["max_depth"]) > 0
+    hashes = certificate["table_hashes_sha256_big_endian_float_stream"]
+    for required in (
+        "w_lower.bin",
+        "w_second_lower.bin",
+        "w_mid_lower.bin",
+        "w_mid_upper.bin",
+        "w_prime_mid_lower.bin",
+        "w_prime_mid_upper.bin",
+    ):
+        assert len(hashes[required]) == 64
 
 archive = candidate["archive"]
 assert archive["previous_certified_record"].startswith("archive/")
@@ -57,5 +80,5 @@ for item in provenance["files"].values():
 
 print("candidate_consistency_verified=True")
 print("pair_weight_span_capacity_verified=True")
-print("candidate_status=discovery_not_interval_certified")
+print("local_interval_certificate_verified=", verified)
 print("predecessor_commit=", provenance["commit"])

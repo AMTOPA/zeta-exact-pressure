@@ -1,6 +1,6 @@
 {
-  "description": "15-term window discovery candidate for exact shifted-pressure optimization of simple zeros of the Riemann zeta function.",
-  "status": "discovery candidate; NOT interval-certified",
+  "description": "Robust 15-term window with an interval-certified 0.005401 seven-point local target and exact shifted-pressure projection.",
+  "status": "interval-certified research-draft candidate; independent reproduction requested",
   "date": "2026-08-12",
   "lineage": [
     "Anthropic zeta simple-zero work",
@@ -8,7 +8,7 @@
     "sxuff/zeta-positioned-pressure",
     "AMTOPA/zeta-exact-pressure-673262",
     "AMTOPA/zeta-exact-pressure archived 67.3290756019% record",
-    "AMTOPA/zeta-exact-pressure 11-term 67.3330085275% discovery candidate"
+    "AMTOPA/zeta-exact-pressure screened 15-term candidate rejected after interval-guided counterexample discovery"
   ],
   "points": 7,
   "gaps_per_local_window": 6,
@@ -17,20 +17,20 @@
     "denominator": 1000000000,
     "numerators": [
       1000000000,
-      7715770,
-      -15127849,
-      -277796,
-      1460676,
-      -4061917,
-      4967584,
-      -4903364,
-      5054213,
-      -2570688,
-      3857592,
-      459037,
-      -292106,
-      211779,
-      -164957
+      8629738,
+      -10085378,
+      1746803,
+      1125700,
+      -2203905,
+      1904615,
+      -4559603,
+      7930665,
+      -3022627,
+      2165339,
+      398121,
+      -255934,
+      188899,
+      -148305
     ],
     "frequencies": [
       "sqrt(2)",
@@ -49,24 +49,59 @@
       "26*pi",
       "28*pi"
     ],
-    "computed_h": "0.672265428696397298692842905520471174674953775831422813524032012700582621469298390070896647...",
+    "computed_h": "0.672333886657942...",
     "projection_h_floor": {
-      "numerator": 6722654,
+      "numerator": 6723338,
       "denominator": 10000000
-    }
+    },
+    "h_floor_interval_verified": true
   },
   "local_search": {
-    "method": "fixed predecessor pair/pressure weights; robust floating-point adversary search using full 0..8 integer lattice scoring, analytic-gradient local polishing, accumulated counterexamples, and multi-range differential evolution; discovery only",
-    "integer_lattice_points_scored": 531441,
-    "integer_lattice_polished_starts": 220,
+    "method": "adversarial exchange optimization with fixed predecessor pair/pressure weights; all {1,2,3,4}^6 resonance templates polished without score screening, plus {1,2,3,5}^6 stress and multi-range differential evolution",
+    "template_start_count_primary": 4096,
+    "template_start_count_secondary": 4096,
+    "template_screening": false,
     "differential_evolution_runs": 9,
-    "float_minimum_observed": "0.005561991478045605...",
+    "float_minimum_observed": "0.005402429240910082...",
     "candidate_target_for_certification": {
-      "numerator": 5561,
+      "numerator": 5401,
       "denominator": 1000000
     },
-    "verified": false,
-    "note": "The target 0.005561 is below the observed floating-point adversarial minimum. This is discovery evidence only; a rigorous interval branch-and-bound certificate is still required."
+    "verified": true,
+    "note": "The earlier 0.005561 target was rejected after interval verification exposed basins missed by score-screened starts. Counterexamples were fed back into the window optimization. The resulting 0.005401 target is now closed by the repository-native outward-rounded interval verifier."
+  },
+  "local_certificate": {
+    "target": {
+      "numerator": 5401,
+      "denominator": 1000000
+    },
+    "verified": true,
+    "independent_reproduction": false,
+    "grid": 4000,
+    "precision_decimal_digits": 50,
+    "coarse_cells": 59790,
+    "midpoint_values": 119581,
+    "method": "mpmath.iv outward-rounded kernel tables plus C++ branch-and-bound with interval Hessian LDL and convex tangent pruning",
+    "source_commit": "7c7df2f617318883593dd414b6fc77691c9f480e",
+    "workflow_run_id": 31589096212,
+    "artifact_id": 9138629773,
+    "verified_at_utc": "2026-08-12T10:58:55Z",
+    "verifier_stats": {
+      "nodes": 3171002,
+      "pruned": 1585573,
+      "splits": 1585429,
+      "convex": 1776812,
+      "tangent": 751200,
+      "max_depth": 62
+    },
+    "table_hashes_sha256_big_endian_float_stream": {
+      "w_lower.bin": "a9aec0b9c422129a126bc4ccca82fe08c233cc38c111314b82be486b0d5b5f81",
+      "w_second_lower.bin": "d772fffe91a6f2105b1cb5840ecf24f0db75358093102c46b4793fb74db2ec62",
+      "w_mid_lower.bin": "da401aeae6091e651c6e09a634be7f57742af876803f099f98d47a79e72cd637",
+      "w_mid_upper.bin": "a79dd4d689481f0deffc2b1ad349557f8c9eb410c48aad15dd34f89fa087b3b5",
+      "w_prime_mid_lower.bin": "f6a728fca354c87bf69d87505d8f534ad1c88fdef56efd5213652e2878c2bf8f",
+      "w_prime_mid_upper.bin": "dd3ba0243b35e4cc9c0ed2083b606ffa92df48b38845967401e37db61cd7143f"
+    }
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -110,16 +145,16 @@
   },
   "final_projection": {
     "pressure_shift_factor": "m-6",
-    "block_length": 199,
+    "block_length": 204,
     "projected_safe_decimal": {
-      "numerator": 6733659002,
+      "numerator": 6733305982,
       "denominator": 10000000000
     },
-    "computed_bound_from_conservative_inputs": "0.673365900257025371907543883558956329504649979486267195486027479757833082871120597063434353...",
-    "computed_percent_from_conservative_inputs": "67.33659002570253719075438835589563295046499794862671954860274797578330828711206...",
-    "float_discovery_bound": "0.673366573285773...",
-    "float_discovery_percent": "67.3366573285773...",
-    "certified": false
+    "computed_bound_from_conservative_inputs": "0.67333059828795868305084456656249690112795551923695387941459443959673183809216937...",
+    "computed_percent_from_conservative_inputs": "67.333059828795868305084456656249690112795551923695387941459443959673183809216937...",
+    "float_discovery_bound": "0.6733316156327896...",
+    "float_discovery_percent": "67.33316156327896...",
+    "certified": true
   },
   "archive": {
     "previous_certified_record": "archive/2026-08-12-certified-6732907560/",

@@ -1,4 +1,4 @@
-"""High-precision arithmetic check of the current conditional projection."""
+"""High-precision arithmetic check of the current final projection."""
 from fractions import Fraction
 
 import mpmath as mp
@@ -35,8 +35,9 @@ for m in range(Q + 1, 5000):
         best = (v, m)
 
 print("scan_best_m=", best[1])
-print("projected_bound=", mp.nstr(best[0], 100))
+print("final_bound=", mp.nstr(best[0], 100))
 assert best[1] == EXPECTED_M
 assert best[0] > q(SAFE)
+assert bool(candidate["final_projection"]["certified"]) is bool(candidate["local_search"]["verified"])
 print("projection_arithmetic_verified=True")
-print("local_interval_certificate_verified=False")
+print("local_interval_certificate_verified=", bool(candidate["local_search"]["verified"]))

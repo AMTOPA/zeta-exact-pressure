@@ -1,141 +1,143 @@
 # Zeta exact-pressure optimization
 
 > [!IMPORTANT]
-> **Current status: discovery candidate, not yet a certified lower bound.**
+> **Current research-draft candidate: 67.3330598288%.**
 >
-> The latest 11-term window search projects
->
-> $$
-> \frac{N_0^s(T,2T)}{N(T,2T)}\approx 0.673330866624887\ldots,
-> $$
->
-> i.e. **67.3330866625%**, using floating-point adversarial search. A deliberately conservative certification target, if proved, projects **67.3330085275%**. The required interval certificate for the new local target has **not** yet been completed.
+> The new seven-point local target
+> \(\varepsilon=0.005401\) is closed by the repository-native outward-rounded interval verifier. The window contribution also has an interval-verified floor \(H>0.6723338\). The inherited analytic interface is still imported from the lineage repositories, and independent reproduction of the new local certificate is requested before publication-quality use.
 
-The previous interval-certified research-draft record, **67.3290756019%**, is preserved under [`archive/2026-08-12-certified-6732907560/`](archive/2026-08-12-certified-6732907560/).
+This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
 
-This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis. All statements inherit the same imported analytic interface described in the earlier manuscript and lineage repositories.
+## Current 15-term window
 
-## Current discovery candidate
-
-The local method still uses seven consecutive simple zeros, six gaps, the same exact position-pressure vector, and exact shifted-pressure averaging. The new lever is a larger window basis optimized against an adversarial lattice search rather than optimizing the window functional $H$ alone.
-
-The 11-term window is
+The local method uses seven consecutive simple zeros, six gaps, the established pair weights, the exact position-pressure vector, and exact shifted-pressure averaging. The window is
 
 $$
-v(s)=\sum_{j=0}^{10}c_j\cos(\omega_j s),
+v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
+\omega_0=\sqrt2,\quad \omega_j=2j\pi\ (1\le j\le14),
 $$
 
-with
-
-$$
-\omega_0=\sqrt2,\qquad \omega_j=2j\pi\quad(1\le j\le10),
-$$
-
-and rational coefficients with denominator $10^9$:
+with common denominator $10^9$ and numerators
 
 ```text
 1000000000
-   8421762
-  -9816829
-   1448046
-   1412305
-  -2228329
-   2374999
-  -4885560
-   8393483
-  -3137216
-   2381462
+   8629738
+ -10085378
+   1746803
+   1125700
+  -2203905
+   1904615
+  -4559603
+   7930665
+  -3022627
+   2165339
+    398121
+   -255934
+    188899
+   -148305
 ```
 
 High-precision evaluation gives
 
 $$
-H(v)=0.6723307581635602536\ldots
+H(v)=0.672333886657942\ldots,
 $$
 
-and the arithmetic projection uses the lower working value
+and `src/check_window.py` verifies by interval arithmetic that
 
 $$
-H_{\rm floor}=0.6723307.
+H(v)>0.6723338.
 $$
 
-The pressure coefficients remain
+The position-pressure coefficients remain
 
 $$
 \frac1{2300000000}(831522,1096590,1071888,1071888,1096590,831522),
 \qquad B=\frac3{1150}.
 $$
 
-## Adversarial local search
+## Why this candidate replaced the earlier 15-term search
 
-Naive multistart searches can miss low lattice-like configurations. The current discovery search therefore used pressure-feasible integer-lattice starts with reflection reduction and local polishing. Across 2,823 adversarial starts, the current observed floating-point minimum is
+An earlier score-screened search proposed `epsilon = 0.005561`. The interval verifier exposed a missed low basin, and unrestricted local optimization then found still deeper basins. That target was rejected rather than weakened cosmetically.
 
-$$
-\varepsilon_{\rm float}\approx0.00540611079920.
-$$
-
-The next certification target is intentionally lower:
+The counterexamples were fed back into a min-max exchange optimization. The retained window was stress-tested by polishing every template in `{1,2,3,4}^6` without score screening, an additional `{1,2,3,5}^6` family, and multi-range differential evolution. The lowest floating-point basin observed for the rounded rational window was
 
 $$
-\varepsilon_{\rm target}=0.005405.
+0.005402429240910082\ldots.
 $$
 
-**This target is not yet interval-certified.** It must not be cited as a proved inequality until the branch-and-bound verifier closes all boxes.
+The rigorous target was set below it at
 
-## Global projection
+$$
+\boxed{\varepsilon=0.005401}.
+$$
 
-For an $m$-point block, retain
+## Interval certificate
+
+The full run used a 4000 grid and 50 decimal digits for `mpmath.iv` table construction, followed by C++ branch-and-bound with interval Hessian LDL and convex tangent pruning:
+
+```text
+VERIFIED=true
+nodes=3171002
+pruned=1585573
+splits=1585429
+convex=1776812
+tangent=751200
+max_depth=62
+```
+
+The exact table hashes, workflow run, artifact ID, and full certificate metadata are recorded in [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt).
+
+Independent reproduction is still `false`.
+
+## Exact-pressure projection
+
+For an $m$-point block define
 
 $$
 A_m=\varepsilon(m-6),\qquad R_m=h_m(A_m),\qquad \eta_m=R_m/A_m,
 $$
 
-with
+where
 
 $$
 h_m(E)=
 \begin{cases}
-E,&0\le E\le m/(m-1),\\[1mm]
+E,&E\le m/(m-1),\\
 E/m+2\sqrt{(m-1)E/m}-1,&E\ge m/(m-1).
 \end{cases}
 $$
 
-and the exact shifted-pressure deduction
+The exact shifted-pressure deduction gives
 
 $$
 \frac{N_0^s(T,2T)}{N(T,2T)}\ge
 \frac{mH-\eta_mB(m-6)}{m-R_m}-o(1).
 $$
 
-Using the conservative discovery inputs
+Using the certified working inputs
 
 $$
-H=0.6723307,\qquad \varepsilon=0.005405,
+H=0.6723338,\qquad \varepsilon=0.005401,\qquad B=3/1150,
 $$
 
-an integer scan selects
+the integer scan selects $m=204$ and yields
 
 $$
-m=204
+0.6733305982879586830\ldots,
 $$
 
-and gives the arithmetic projection
+hence the safe research-draft decimal floor
 
 $$
-0.6733300852750384514\ldots=67.3330085275\ldots\%.
+\boxed{0.6733305982},
 $$
 
-The rational decimal floor
+i.e. **67.3330598288%** before the harmless decimal truncation.
 
-$$
-0.6733300852
-$$
+The previous interval-certified record, **67.3290756019%**, is frozen under [`archive/2026-08-12-certified-6732907560/`](archive/2026-08-12-certified-6732907560/).
 
-is therefore an arithmetic floor **conditional on certifying the new local target**, not a currently established mathematical bound.
-
-Using the floating-point discovery values instead gives approximately **67.3330866625%**.
-
-## Reproduction and checks
+## Reproduction
 
 Run
 
@@ -143,31 +145,17 @@ Run
 sh run.sh
 ```
 
-for structural consistency, high-precision window evaluation, interval positivity subdivision, exact pressure multiplicity, and final projection arithmetic.
-
-The current self-check deliberately does **not** claim that the new local certificate is verified. See [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt) for machine-readable/current status.
-
-## Archive and manuscript
-
-- [`archive/2026-08-12-certified-6732907560/`](archive/2026-08-12-certified-6732907560/) freezes the previous 67.3290756019% record and its certificate statistics.
-- [`paper/main.tex`](paper/main.tex) and [`paper/main.pdf`](paper/main.pdf) correspond to the previous certified-baseline manuscript until the 11-term candidate receives a rigorous local certificate and is promoted into the manuscript.
+for structural checks, interval $H$ verification, window positivity, exact pressure multiplicity, final arithmetic, and verifier compilation/smoke testing. The full local certificate workflow is in `.github/workflows/local-certificate-pilot.yml`.
 
 ## Trust boundary
 
-Currently checked directly in this repository:
+Checked directly in this repository:
 
-- exact position-pressure total and shifted multiplicity identity;
-- high-precision evaluation of the 11-term $H(v)$;
-- interval subdivision positivity of the 11-term window;
-- arithmetic scan of the conditional final projection.
+- exact pair-span capacities and position-pressure total;
+- interval lower bound for the 15-term $H(v)$ and window positivity;
+- the global six-gap inequality $F(g_1,\ldots,g_6)\ge0.005401$ by outward-rounded interval branch-and-bound;
+- exact shifted-pressure multiplicity bookkeeping and final high-precision arithmetic.
 
-Not yet checked for the new candidate:
+Still imported: the explicit-formula / trace interface, finite-$m$ Gram spectral profile, normalized-gap bookkeeping, and the analytic link from $H(v)$ to the zero count.
 
-- a rigorous interval proof of $F(g_1,\ldots,g_6)\ge0.005405$ for all $g_i\ge0$;
-- independent reproduction of that new certificate.
-
-Imported analytic inputs remain the explicit-formula / trace interface, finite-$m$ Gram spectral profile, normalized-gap bookkeeping, and the analytic link from $H(v)$ to the zero count.
-
-## License and attribution
-
-Original material in this repository is released under the MIT License. Third-party verifiers and analytic inputs are referenced rather than vendored; see [`THIRD_PARTY.md`](THIRD_PARTY.md).
+Original repository material is MIT-licensed. Third-party analytic inputs are referenced rather than vendored; see [`THIRD_PARTY.md`](THIRD_PARTY.md).

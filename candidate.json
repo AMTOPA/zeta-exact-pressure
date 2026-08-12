@@ -1,0 +1,28 @@
+{
+  "description": "Joint window and exact shifted-pressure optimization for simple zeros of the Riemann zeta function.",
+  "status": "research draft; independent reproduction requested",
+  "date": "2026-08-12",
+  "window": {
+    "numerators": [1000000000,6907835,-9359173,528441,1509267,-4923883,1358707],
+    "denominator": 1000000000,
+    "computed_h": "0.672405702426603029006959181993738...",
+    "analytic_h_cert": "6724057/10000000"
+  },
+  "local_certificate": {
+    "target": "52289/10000000",
+    "verified": true,
+    "nodes": 2334226,
+    "splits": 1166951,
+    "max_depth": 77
+  },
+  "position_pressure": {
+    "denominator": 2300000000,
+    "numerators": [831522,1096590,1071888,1071888,1096590,831522],
+    "total": "3/1150"
+  },
+  "final": {
+    "block_length": 210,
+    "safe_lower": "6732907560/10000000000",
+    "computed_bound": "0.673290756019222635761671651881275..."
+  }
+}

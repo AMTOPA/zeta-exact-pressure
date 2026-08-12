@@ -15,20 +15,20 @@ n = m - q
 H = Fraction(336094079, 500000000)
 B = Fraction(93, 23000)
 eps0 = Fraction(79107, 10000000)
-eps1 = Fraction(9021, 1000000)  # optimized auxiliary target 0.009021
+eps1 = Fraction(9015, 1000000)  # certifiability-directed auxiliary target
 c = Fraction(6, 5)               # auxiliary total-pressure multiplier
 T = Fraction(7, 6)
 
 A0 = eps0 * n
 A1 = eps1 * n
 assert A0 == Fraction(12103371, 5000000)
-assert A1 == Fraction(1380213, 500000)
+assert A1 == Fraction(275859, 100000)
 
 # Base: S + P >= A0.
 # Auxiliary: S + c P >= A1.  The optimized auxiliary pressure distribution has
 # the same exact total c*B, so translated pressure bookkeeping gives this line.
 Sx = (c * A0 - A1) / (c - 1)
-assert Sx == Fraction(451197, 625000)
+assert Sx == Fraction(913869, 1250000)
 assert 0 < Sx < T < A0 < A1
 
 # On 0<=S<=Sx the base pressure line is active and g_6(S)=S, so
@@ -36,7 +36,7 @@ assert 0 < Sx < T < A0 < A1
 # line is active and g_6(S)+(A1-S)/c is concave, hence its minimum is
 # at Sx or A1.  The following exact square witness proves g_6(A1)>A0.
 square_gap = T * A1 - ((A0 + T) / 2) ** 2
-assert square_gap == Fraction(2919038927231, 900000000000000)
+assert square_gap == Fraction(991238927231, 900000000000000)
 assert square_gap > 0
 
 # Therefore the two supporting lines plus the continuous banded profile give
@@ -55,6 +55,7 @@ n_next = 313 - q
 A0_next = eps0 * n_next
 A1_next = eps1 * n_next
 next_square_gap = T * A1_next - ((A0_next + T) / 2) ** 2
+assert next_square_gap == Fraction(-9309444857209, 3600000000000000)
 assert next_square_gap < 0
 
 print("multilag_exact_arithmetic_verified=True")

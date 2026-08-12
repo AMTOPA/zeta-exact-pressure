@@ -1,232 +1,252 @@
-# Two-certificate multi-lag experiment
+# Two-supporting-line energy-pressure experiment
 
-Status: **auxiliary local interval certification in progress**. This experiment also depends on the continuous banded-Gram analytic profile in `experiments/banded-gram/`, which is under independent review in issue #5.
+Status: **auxiliary local interval certification pending**. This experiment also depends on the continuous banded-Gram analytic profile in `experiments/banded-gram/`, which is under independent review in issue #5.
 
-## Motivation
+## Why this is different from parameter squeezing
 
-A single translated local certificate is compressed to
+The root local certificate gives one block constraint
 
 \[
 S+P\ge A_0,
 \qquad
 S:=E_1+\cdots+E_6,
-\]
-
-where \(P=B\,\operatorname{span}(B)\). Even after replacing the unrestricted scalar Gram profile by the stronger six-band profile, this one constraint allows a large part of the lower bound to be paid by the pressure term.
-
-The goal here is to add one independent lag-weighted inequality that restricts that tradeoff.
-
-## Base certificate
-
-The root interval-certified 17-term certificate gives
-
-\[
-S+P\ge A_0,
 \qquad
-A_0=\varepsilon_0(m-6),
+P:=B\,\operatorname{span}(B),
+\]
+
+with
+
+\[
+\varepsilon_0=0.0079107,
 \qquad
-\varepsilon_0=0.0079107.
+A_0=\varepsilon_0(m-6).
 \]
 
-## Odd/even tilted certificate
+A single supporting line permits the proof to trade band energy against pressure in a way that creates the familiar Gram discount. Instead of optimizing the same certificate again, this experiment adds a **second local inequality with a different energy-pressure slope**.
 
-Keep the same analytic window and the same position-pressure vector, but multiply every odd pair span by
+## Auxiliary pressure-scaled certificate
+
+Keep exactly the same interval-certified 17-term analytic window and exactly the same pair weights, but multiply the entire position-pressure vector by
 
 \[
-1+\delta=\frac{26}{25}
+\boxed{c=\frac65}.
 \]
 
-and every even pair span by
+The auxiliary local functional therefore differs only in its linear pressure term. Its exact pressure total is
 
 \[
-1-\delta=\frac{24}{25},
-\qquad \delta=\frac1{25}.
+\frac65\,B
+=\frac{279}{57500}.
 \]
 
-The exact per-span capacities are therefore
+Unscreened polishing of all \(4^6=4096\) resonance templates gives
 
 \[
-2.08,\ 1.92,\ 2.08,\ 1.92,\ 2.08,\ 1.92.
-\]
-
-All pair coefficients are stored exactly over denominator \(25\cdot10^9\) in `candidate.json`.
-
-Unscreened polishing of all \(4^6=4096\) resonance templates gives the current floating minimum
-
-\[
-0.00794501634934098\ldots
+0.008999276423831326\ldots
 \]
 
 near
 
 \[
-(1.045569055916,
- 1.979587403541,
- 1.051588313705,
- 2.919045694850,
- 1.048163136758,
- 1.044664917907).
+(1.034964897995,
+ 1.038703956438,
+ 1.962587593105,
+ 1.039262172775,
+ 1.035733103346,
+ 1.961720338887).
 \]
 
-The interval target being tested is
+Six multi-range differential-evolution runs were all higher; the lowest was above `0.00905`.
+
+The proposed rigorous target is
 
 \[
-\boxed{\varepsilon_1=0.0079445}.
+\boxed{\varepsilon_1=0.0089985}.
 \]
 
-If it closes, the translated auxiliary inequality is
-
-\[
-\frac{26}{25}E_{\rm odd}
-+\frac{24}{25}E_{\rm even}
-+P
-\ge A_1,
-\qquad
-A_1=\varepsilon_1(m-6).
-\]
-
-Since
-
-\[
-E_{\rm odd}-E_{\rm even}\le
-E_{\rm odd}+E_{\rm even}=S,
-\]
-
-we obtain the weaker but scalar consequence
+If the interval verifier closes this target, summing translated auxiliary inequalities gives
 
 \[
 \boxed{
-\frac{26}{25}S+P\ge A_1.
+S+\frac65 P\ge A_1,
+\qquad
+A_1=\varepsilon_1(m-6).
 }
 \]
 
-Together with the base inequality this supplies two distinct supporting lines in the \((S,P)\)-plane.
+Together with the root inequality
 
-## Combination with the continuous banded profile
+\[
+S+P\ge A_0,
+\]
 
-Let \(g=g_6\) be the continuous profile from `experiments/banded-gram/`:
+this gives two supporting lines in the \((S,P)\)-plane.
+
+## Combine with the continuous banded profile
+
+Use the proposed six-band profile
 
 \[
 g(S)=
 \begin{cases}
-S,&S\le7/6,\\
+S,&S\le7/6,\\[1mm]
 2\sqrt{\frac76S}-\frac76,&S\ge7/6.
 \end{cases}
 \]
 
-For fixed \(m\), the two local inequalities imply
-
-\[
-P\ge
-\max\left(
-A_0-S,
-A_1-\frac{26}{25}S,
-0
-\right).
-\]
-
-The first two affine lower bounds intersect at
-
-\[
-S_*=25(A_1-A_0).
-\]
-
-For the selected \(m=173\),
-
-\[
-A_0=\frac{13210869}{10000000}=1.3210869,
-\]
-
-\[
-A_1=\frac{2653463}{2000000}=1.3267315,
-\]
-
-and
-
-\[
-S_*=\frac{28223}{200000}=0.141115<\frac76.
-\]
-
-Take the rational profile floor
-
-\[
-R=\frac{131628967}{100000000}=1.31628967.
-\]
-
-The exact square witness
-
-\[
-\frac76A_0-
-\left(\frac{R+7/6}{2}\right)^2
-=
-\frac{2718616199}{360000000000000000}>0
-\]
-
-proves \(R<g(A_0)\).
+from `experiments/banded-gram/`.
 
 Choose
 
 \[
-\eta=\frac{R-S_*}{A_0-S_*}
-=\frac{117517467}{117997190}.
+\boxed{m=259},
+\qquad n=m-6=253.
 \]
 
-At \(S=S_*\), the base pressure line gives exactly
+Then
 
 \[
-g(S_*)+\eta(A_0-S_*)=R,
+A_0=0.0079107\times253
+=\frac{20014071}{10000000}
+=2.0014071,
 \]
 
-because \(S_*<7/6\) and hence \(g(S_*)=S_*\). At \(S=0\), exact arithmetic gives \(\eta A_1>R\), and at \(S=A_0\), the square witness gives \(g(A_0)>R\).
+and, conditional on the auxiliary target,
 
-On each interval cut out by \(0,S_*,A_0\), the function `g(S) + eta * (active affine pressure line)` is concave, so its minimum occurs at an endpoint. Consequently, conditional on the auxiliary local certificate,
+\[
+A_1=0.0089985\times253
+=\frac{4553241}{2000000}
+=2.2766205.
+\]
+
+The two pressure lower bounds
+
+\[
+P\ge A_0-S,
+\qquad
+P\ge\frac56(A_1-S)
+\]
+
+intersect at
+
+\[
+S_*=\frac{(6/5)A_0-A_1}{1/5}
+=\frac{6253401}{10000000}
+=0.6253401.
+\]
+
+Crucially,
+
+\[
+S_*<\frac76.
+\]
+
+### Region 1: \(0\le S\le S_*\)
+
+The root supporting line is active and the banded profile is linear, so
+
+\[
+g(S)+P
+\ge S+(A_0-S)
+=A_0.
+\]
+
+### Region 2: \(S_*\le S\le A_1\)
+
+The auxiliary line is active. The function
+
+\[
+g(S)+\frac56(A_1-S)
+\]
+
+is concave, so its minimum on this interval occurs at an endpoint. At \(S=S_*\) it equals \(A_0\). At \(S=A_1\), it equals \(g(A_1)\), and exact arithmetic proves
+
+\[
+g(A_1)>A_0
+\]
+
+via
+
+\[
+\frac76A_1-
+\left(\frac{A_0+7/6}{2}\right)^2
+=
+\frac{528783848062631}{3600000000000000}>0.
+\]
+
+### Region 3: \(S\ge A_1\)
+
+Here \(P\ge0\), and monotonicity gives
+
+\[
+g(S)\ge g(A_1)>A_0.
+\]
+
+Therefore the two supporting lines remove the Gram loss completely:
 
 \[
 \boxed{
-\Delta+\eta P\ge R.
+\Delta+P\ge A_0.
 }
 \]
 
+Equivalently,
+
+\[
+\boxed{R=A_0,\qquad \eta=1.}
+\]
+
+This is the central point of the experiment: the second certificate does not merely raise a local epsilon. It changes the **shape of the admissible energy-pressure region** enough to eliminate the scalar Gram discount at the selected block length.
+
 ## Conditional exact projection
 
-Using
+Using the already interval-certified
 
 \[
 H>0.6721881580,
 \qquad
 B=\frac{93}{23000},
-\qquad
-m=173,
 \]
 
-the shifted-block expression is exactly
+and \(R=A_0\), \(\eta=1\), the shifted-block expression becomes
 
 \[
-\frac{mH-\eta B(m-6)}{m-R}
+\frac{mH-B(m-6)}{m-A_0}
 =
-\frac{93944445751924037}{139502543089048315}
+\frac{86536866461}{128499296450}
 \]
 
 \[
-=0.6734246105603732\ldots.
+=0.6734423366642487\ldots.
 \]
 
-Thus, **if** the auxiliary target `0.0079445` closes and **if** the banded-Gram analytic profile passes independent review, the two-certificate multi-lag construction yields
+Thus, **conditional on** the auxiliary interval certificate and independent acceptance of the banded-Gram analytic profile, the construction gives
 
 \[
-\boxed{67.3424610560\ldots\%}
+\boxed{67.3442336664\ldots\%}
 \]
 
-with safe floor
+with safe decimal floor
 
 \[
-\boxed{0.6734246105}.
+\boxed{0.6734423366}.
 \]
 
-This is not a root record yet. The exact arithmetic is checked by
+That is about **0.002585 percentage points** above the current root scalar-Gram record 67.3416490971%.
+
+## Certification strategy
+
+The auxiliary window is identical to the root 17-term window. Only the pressure coefficients change. Moreover the pressure is scaled upward by \(6/5\), so the interval table range required by target `0.0089985` is actually *shorter* than the range required by the exploratory `0.0079445` auxiliary run already generating the shared kernel tables.
+
+Therefore the next strict test reuses those outward-rounded tables and recompiles only the exact auxiliary coefficients.
+
+Exact conditional arithmetic is checked by
 
 ```bash
 python3 src/check_multilag.py
 ```
 
-while the auxiliary interval computation is run by `.github/workflows/multilag-certificate.yml`.
+The result must not replace the root record unless both of the following hold:
+
+1. the auxiliary local target returns `VERIFIED=true` in the hardened interval verifier;
+2. the continuous banded-Gram profile and its insertion into shifted-block pinching pass independent mathematical review.

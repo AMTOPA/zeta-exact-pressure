@@ -1,42 +1,42 @@
 {
-  "description": "Anisotropic-trust 17-term final-bound-directed refinement of the certified joint-pressure seven-point construction; local interval certification pending.",
+  "description": "Second adversarial-exchange 17-term final-bound-directed refinement of the joint-pressure seven-point construction; local interval certification pending.",
   "status": "discovery-level research-draft candidate; local interval certification pending; not the current certified record",
   "date": "2026-08-12",
   "lineage": [
     "AMTOPA/zeta-exact-pressure certified final-bound-directed 67.3415313957% record",
-    "extend the analytic basis by 30*pi and 32*pi harmonics",
-    "anisotropic trust-region min-max optimization of the final global bound"
+    "first anisotropic 17-term final-bound window",
+    "second final-bound-directed adversarial exchange around the new 17-term active basins"
   ],
   "points": 7,
   "gaps_per_local_window": 6,
   "window": {
     "term_count": 17,
     "denominator": 1000000000,
-    "numerators": [1000000000,12578982,-12794181,4364033,5607036,-1924025,6019280,-7847828,6121519,-5227758,-1092658,360544,-231207,157969,-110433,200000,-200000],
+    "numerators": [1000000000,12378982,-12602495,4164033,5741405,-1724025,6219280,-8047828,6321519,-5241981,-892658,560544,-431207,357969,-310433,100000,-100000],
     "frequencies": ["sqrt(2)","2*pi","4*pi","6*pi","8*pi","10*pi","12*pi","14*pi","16*pi","18*pi","20*pi","22*pi","24*pi","26*pi","28*pi","30*pi","32*pi"],
-    "computed_h": "0.6721868864393216175987940916066452545258998839991179420728004313587442...",
-    "projection_h_floor": {"numerator":6721868863,"denominator":10000000000},
+    "computed_h": "0.6721881581182345851694563877256548411463766196857994939795075115150882...",
+    "projection_h_floor": {"numerator":336094079,"denominator":500000000},
     "h_floor_interval_verified": false,
     "positivity_subdivision_cells": 4096
   },
   "local_search": {
-    "method": "extend the certified 15-term final-bound-directed window by 30*pi and 32*pi; linearize the final m=145 global proportion in H and epsilon; solve a min-max LP with anisotropic coefficient trust radii (about 3.8e-4 on the original 15 directions and 2.0e-4 on the two new high-frequency directions); quantize to denominator 1e9; repolish all {1,2,3,4}^6 and {1,2,3,5}^6 starts without screening; stress with six multi-range differential-evolution runs",
+    "method": "starting from the robust anisotropic 17-term candidate, recompute H and local-functional gradients at the newly discovered low basins; perform a second trust-region LP directly on the final m=145 global bound; quantize to denominator 1e9; repolish all {1,2,3,4}^6 and {1,2,3,5}^6 starts without screening; stress with six multi-range differential-evolution runs",
     "template_start_count_primary": 4096,
     "template_start_count_secondary": 4096,
     "template_screening": false,
     "differential_evolution_runs": 6,
-    "float_minimum_observed": "0.007912451773933356...",
-    "float_minimum_location": ["1.036332030534","1.038186258708","1.965737012891","1.045465746015","1.967906735030","1.041009087906"],
-    "candidate_target_for_certification": {"numerator":989,"denominator":125000},
+    "float_minimum_observed": "0.007911105155226424...",
+    "float_minimum_location": ["1.978079145369","1.044055102239","1.973013931233","1.045981098706","1.974452906922","1.042299648208"],
+    "candidate_target_for_certification": {"numerator":79107,"denominator":10000000},
     "verified": false,
-    "note": "The proposed exact target 0.007912 lies about 4.52e-7 below the observed floating minimum. Both unscreened resonance families found the same minimum; all six DE stress runs were higher."
+    "note": "The proposed exact target 0.0079107 lies about 4.05e-7 below the observed floating minimum. Both unscreened resonance families found the same minimum; all six DE stress runs were higher."
   },
   "local_certificate": {
-    "target": {"numerator":989,"denominator":125000},
+    "target": {"numerator":79107,"denominator":10000000},
     "verified": false,
     "independent_reproduction": false,
-    "method": "planned fresh outward-rounded 17-term kernel tables plus hardened six-dimensional C++ branch-and-bound",
-    "note": "Pending. The 17-term projected percentage is not promoted until VERIFIED=true."
+    "method": "planned fresh outward-rounded second-exchange 17-term kernel tables plus hardened six-dimensional C++ branch-and-bound",
+    "note": "Pending. Do not promote the projected percentage until VERIFIED=true."
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -52,14 +52,14 @@
     "pressure_shift_factor": "m-6",
     "block_length": 145,
     "projection_inputs": {
-      "h_floor": {"numerator":6721868863,"denominator":10000000000},
-      "epsilon_target": {"numerator":989,"denominator":125000},
+      "h_floor": {"numerator":336094079,"denominator":500000000},
+      "epsilon_target": {"numerator":79107,"denominator":10000000},
       "pressure_total": {"numerator":93,"denominator":23000}
     },
-    "computed_bound_from_conservative_discovery_inputs": "0.67341604528237208130025194290061003784210593669269764112425507415162197870324152...",
-    "computed_percent_from_conservative_discovery_inputs": "67.341604528237208130025194290061003784210593669269764112425507415162197870324152...",
-    "projected_safe_decimal_if_local_certificate_closes": {"numerator":6734160452,"denominator":10000000000},
-    "float_discovery_percent": "67.3416335842...",
+    "computed_bound_from_conservative_discovery_inputs": "0.673416490971499294950035533107490317499777279...",
+    "computed_percent_from_conservative_discovery_inputs": "67.3416490971499294950035533107490317499777279...",
+    "projected_safe_decimal_if_local_certificate_closes": {"numerator":6734164909,"denominator":10000000000},
+    "float_discovery_percent": "67.3416751549...",
     "certified": false
   },
   "archive": {
@@ -67,6 +67,6 @@
     "current_certified_safe_floor": "0.6734153139"
   },
   "provenance": {
-    "analytic_interface": "Imported unchanged from the Anthropic / trmdy / sxuff lineage. The 17-term discovery changes only the finite analytic window while keeping the certified joint-pressure pair/position weights and exact B=93/23000."
+    "analytic_interface": "Imported unchanged from the Anthropic / trmdy / sxuff lineage. The second-exchange 17-term discovery keeps the certified joint-pressure pair/position weights and exact B=93/23000."
   }
 }

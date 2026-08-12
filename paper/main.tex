@@ -4,19 +4,19 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{microtype}
-\title{Eight-Point Exact-Pressure Optimization for Simple Zeros of the Riemann Zeta Function}
+\title{Joint-Pressure Exact-Pressure Optimization for Simple Zeros of the Riemann Zeta Function}
 \author{AMTOPA}
 \date{August 12, 2026}
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We record a computer-assisted research-draft refinement of the positioned-pressure method for simple zeros of the Riemann zeta function on the critical line. The current certified construction uses an eight-point local inequality, a re-optimized rational 15-term analytic window, exact shifted-pressure accounting, and a seven-dimensional outward-rounded interval certificate. Subject to the imported analytic interface and finite-dimensional Gram profile of the predecessor lineage, the certified numerical inputs yield
+We record a computer-assisted research-draft refinement of the positioned-pressure method for simple zeros of the Riemann zeta function on the critical line. In addition to optimizing a rational 15-term analytic window and exact local pair/position weights, the current construction releases the total local pressure itself as an optimization variable. The resulting seven-point, six-gap inequality is closed by an outward-rounded interval branch-and-bound computation. Subject to the imported analytic interface and finite-dimensional Gram profile of the predecessor lineage, the certified numerical inputs yield
 \[
 \liminf_{T\to\infty}\frac{N_0^s(T,2T)}{N(T,2T)}
-\ge0.67340621629894866656\ldots,
+\ge0.67341308528684939167\ldots,
 \]
-i.e. $67.3406216299\%$ before conservative decimal truncation. A further joint-pressure construction is being tested separately and is not included in this certified headline. This manuscript is a research draft, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
+i.e. $67.3413085287\%$ before conservative decimal truncation. This manuscript is a research draft, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
 \end{abstract}
 
 \section{Imported analytic interface}
@@ -33,7 +33,7 @@ E/m+2\sqrt{(m-1)E/m}-1,&E\ge m/(m-1).
 \]
 These ingredients belong to the Anthropic / \texttt{trmdy} / \texttt{sxuff} lineage and are not reproved here.
 
-\section{Certified analytic window}
+\section{Joint-pressure analytic window}
 We use
 \[
 v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
@@ -42,105 +42,106 @@ v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
 with common denominator $10^9$ and numerator vector
 \[
 \begin{split}
-(&1000000000,7862237,-11036157,3734450,1402396,-1412889,3402026,\\
-&-1739485,4930665,-4255468,3101956,-2601879,146498,398565,-271068).
+(&1000000000,12948011,-12114181,3684033,5911261,-1663892,5928575,\\
+&-7167828,6229914,-5147758,-756341,440544,-311207,237969,-190433).
 \end{split}
 \]
 Direct interval arithmetic encloses
 \[
-H(v)=0.672340545121386742008925898118525\ldots
+H(v)=0.672199902667575775421269384482413\ldots
 \]
 and verifies
 \[
-H_{\rm cert}=0.672340545<H(v).
+H_{\rm cert}=0.6721999026<H(v).
 \]
 The same interval subdivision proves positivity of the window on the required support.
 
-\section{Eight-point local functional}
-Let $g_1,\ldots,g_7\ge0$ and $y_0=0$, $y_j=g_1+\cdots+g_j$. We use
+\section{Variable-total-pressure local functional}
+For six nonnegative gaps let $y_0=0$ and $y_j=g_1+\cdots+g_j$, and set
 \[
-F_8(g)=\sum_{r=1}^{7}b_rg_r+
-\sum_{0\le i<j\le7}a_{ij}W(y_j-y_i).
+F(g)=\sum_{r=1}^{6}b_rg_r+
+\sum_{0\le i<j\le6}a_{ij}W(y_j-y_i).
 \]
-The exact pair weights are recorded in \texttt{candidate.json}. They are nonnegative and satisfy
+The exact nonnegative pair weights are recorded in \texttt{candidate.json} and satisfy
 \[
-\sum_{i=0}^{7-s}a_{i,i+s}=2\qquad(1\le s\le7).
+\sum_{i=0}^{6-s}a_{i,i+s}=2\qquad(1\le s\le6).
 \]
-The position-pressure coefficients are
+The position-pressure vector is
 \[
-\frac1{2300000000}(474488,829921,1102531,1186120,1102531,829921,474488),
+\frac1{46000000000}(22420713,32878293,37700994,37700994,32878293,22420713),
 \]
 so
 \[
-B=\sum_{r=1}^{7}b_r=\frac3{1150}.
+B=\sum_{r=1}^{6}b_r=\frac{93}{23000}.
 \]
+The predecessor block proof uses the position pressure through the symbolic total $B=\sum b_r$, via the summed inequality $E_B+B\,\mathrm{span}(B)\ge A$. Therefore varying $B$ is admissible provided the new exact total is carried into the global penalty, all pressures remain nonnegative, and the pair-span capacities remain bounded by 2.
 
-\section{Seven-dimensional interval certificate}
-Window--basin min--max exchange followed by unscreened stress over the relevant resonance families found a lowest floating basin near
+\section{Six-dimensional interval certificate}
+Joint adversarial exchange over total pressure, the window, pair weights, and position-pressure distribution found a lowest floating basin near
 \[
-0.005516121966580929\ldots.
+0.0078878193504693\ldots.
 \]
 We certify the smaller rational target
 \[
-\varepsilon_8=\frac{1103}{200000}=0.005515.
+\varepsilon=\frac{7887}{10^6}=0.007887.
 \]
 The rigorous verifier uses 4000 interval cells per normalized unit, 50 decimal digits in the outward-rounded table builder, and C++ compiled with \texttt{-ffp-contract=off}. It reports
 \[
 \begin{aligned}
-\text{nodes}&=66686224, & \text{pruned}&=33343136,\\
-\text{splits}&=33343088, & \text{convex}&=27190260,\\
-\text{tangent}&=12043940, & \text{max depth}&=86.
+\text{nodes}&=3424276, & \text{pruned}&=1712170,\\
+\text{splits}&=1712106, & \text{convex}&=1756299,\\
+\text{tangent}&=801918, & \text{max depth}&=71.
 \end{aligned}
 \]
-The output is \texttt{VERIFIED=true}. Exact table hashes, workflow run \texttt{31598015611}, artifact \texttt{9142888339}, and its digest are stored in the repository metadata.
+The output is \texttt{VERIFIED=true}. Exact table hashes, workflow run \texttt{31603343875}, artifact \texttt{9144421792}, and its digest are stored in the repository metadata.
 
 \section{Exact shifted-pressure averaging}
-For an $m$-point block there are $m-7$ translated eight-point windows. Set
+For an $m$-point block there are $m-6$ translated seven-point windows. Set
 \[
-A_m=\varepsilon_8(m-7),\qquad
+A_m=\varepsilon(m-6),\qquad
 R_m=h_m(A_m),\qquad
 \eta_m=\frac{R_m}{A_m}.
 \]
-The span-capacity identities control the summed pair contribution by the predecessor block energy, while exact shifted averaging gives pressure charge $(m-7)B$. Thus
+The span-capacity identities control the summed pair contribution by the predecessor block energy, while exact shifted averaging gives pressure charge $(m-6)B$. Thus
 \[
-\Delta(M)\ge\frac{R_m}{m}S-\frac{\eta_mB(m-7)}{m}N-o(N),
+\Delta(M)\ge\frac{R_m}{m}S-\frac{\eta_mB(m-6)}{m}N-o(N),
 \]
 and therefore
 \[
-\boxed{\frac SN\ge\frac{mH_{\rm cert}-\eta_mB(m-7)}{m-R_m}-o(1).}
+\boxed{\frac SN\ge\frac{mH_{\rm cert}-\eta_mB(m-6)}{m-R_m}-o(1).}
 \]
 
 \section{Final arithmetic}
 With
 \[
-H_{\rm cert}=0.672340545,\qquad
-\varepsilon_8=0.005515,\qquad B=3/1150,
+H_{\rm cert}=0.6721999026,\qquad
+\varepsilon=0.007887,\qquad B=93/23000,
 \]
-the integer scan selects $m=203$. Then
+the integer scan selects $m=145$. Then
 \[
-A_{203}=1.08094,
+A_{145}=1.096293,
 \]
 \[
-R_{203}=1.07956220302209765100385204312294\ldots,
+R_{145}=1.09440740970772755724598196593800412029\ldots,
 \]
 and
 \[
-\eta_{203}=0.99872537145641538938687812748436\ldots.
+\eta_{145}=0.99828003071051950276612362382866999998\ldots.
 \]
 Hence
 \[
-\frac SN\ge0.67340621629894866656390422423548\ldots-o(1),
+\frac SN\ge0.67341308528684939167090457164160\ldots-o(1),
 \]
 and safely
 \[
-\boxed{\liminf_{T\to\infty}\frac{N_0^s(T,2T)}{N(T,2T)}>0.6734062162.}
+\boxed{\liminf_{T\to\infty}\frac{N_0^s(T,2T)}{N(T,2T)}>0.6734130852.}
 \]
 
-\section{Joint-pressure extension under test}
-The predecessor block argument uses the total position pressure symbolically as $B=\sum b_r$. The active \texttt{discovery\_candidate.json} tests the further degree of freedom obtained by optimizing this total together with the window and local weights, while preserving nonnegative pressures and pair-span capacities. Its full local interval certificate is not assumed in the certified result above.
+\section{Current tightening experiment}
+With the exact window and weights fixed, the observed floating minimum still lies about $8.19\times10^{-7}$ above the certified target. A separate hardened run is probing the upward ladder $0.0078875,0.0078874,0.0078873,0.0078872$. No value from that ladder enters the statement above unless its interval run closes.
 
 \section{Trust boundary and status}
-The interval window bound, exact pair-span identities, exact pressure total, seven-dimensional local certificate, shifted-pressure bookkeeping, and final arithmetic are directly checkable from this repository. The explicit-formula / trace interface and finite-$m$ Gram profile remain imported from prior work. Independent reproduction of the seven-dimensional certificate is requested; accordingly, the percentage should be read as an interval-certified research-draft candidate rather than a publication-ready theorem.
+The interval window bound, exact pair-span identities, exact pressure total, six-dimensional local certificate, shifted-pressure bookkeeping, and final arithmetic are directly checkable from this repository. The explicit-formula / trace interface and finite-$m$ Gram profile remain imported from prior work. Independent reproduction of the six-dimensional certificate is requested; accordingly, the percentage should be read as an interval-certified research-draft candidate rather than a publication-ready theorem.
 
 \section*{Reproducibility}
 The repository contains exact current parameters in \texttt{candidate.json}, verifier evidence in \texttt{certificates/}, arithmetic and interval code in \texttt{src/}, and superseded records in \texttt{archive/}. The repository follows a single-\texttt{main} workflow.

@@ -1,27 +1,31 @@
-Current discovery record
-========================
+Current interval-certified research-draft record
+===============================================
 
 Date: 2026-08-12
-Status: DISCOVERY ONLY; NOT INTERVAL-CERTIFIED
+Status: INTERVAL-CERTIFIED LOCALLY; INDEPENDENT REPRODUCTION REQUESTED
 
-11-term window numerator vector (denominator 1e9):
+15-term window numerator vector (denominator 1e9):
 1000000000
-8421762
--9816829
-1448046
-1412305
--2228329
-2374999
--4885560
-8393483
--3137216
-2381462
+8629738
+-10085378
+1746803
+1125700
+-2203905
+1904615
+-4559603
+7930665
+-3022627
+2165339
+398121
+-255934
+188899
+-148305
 
 High-precision H(v):
-0.6723307581635602536...
+0.672333886657942...
 
-Projection H floor:
-6723307/10000000 = 0.6723307
+Interval-verified projection H floor:
+6723338/10000000 = 0.6723338
 
 Position pressure numerator vector (denominator 2300000000):
 831522
@@ -30,28 +34,58 @@ Position pressure numerator vector (denominator 2300000000):
 1071888
 1096590
 831522
+B = 3/1150 exactly
 
-Discovery adversary:
-method = pressure-feasible lattice enumeration + local polishing
-adversarial starts = 2823
-observed float minimum = 0.00540611079920...
+Discovery hardening:
+- the earlier score-screened 15-term target 0.005561 was rejected after the interval verifier exposed missed basins;
+- the counterexamples were fed back into an adversarial exchange optimization;
+- all {1,2,3,4}^6 resonance templates were polished without score screening;
+- an additional {1,2,3,5}^6 stress family and multi-range differential evolution did not find a lower basin;
+- observed floating-point minimum for the retained rational window: 0.005402429240910082...
 
-Next interval-certification target:
-5405/1000000 = 0.005405
-VERIFIED=false
+Certified local target:
+5401/1000000 = 0.005401
+VERIFIED=true
+independent_reproduction=false
 
-Conditional arithmetic projection using H=0.6723307 and epsilon=0.005405:
-best m = 204
-projected bound = 0.6733300852750384514284515550763303038641...
-projected percent = 67.333008527503845142...%
-projected decimal floor = 0.6733300852
+Interval table build:
+grid=4000
+precision_decimal_digits=50
+coarse_cells=59790
+midpoint_values=119581
 
-Floating-point discovery projection:
-0.673330866624887... = 67.3330866624887...%
+SHA-256 (big-endian float stream):
+w_lower.bin             a9aec0b9c422129a126bc4ccca82fe08c233cc38c111314b82be486b0d5b5f81
+w_second_lower.bin      d772fffe91a6f2105b1cb5840ecf24f0db75358093102c46b4793fb74db2ec62
+w_mid_lower.bin         da401aeae6091e651c6e09a634be7f57742af876803f099f98d47a79e72cd637
+w_mid_upper.bin         a79dd4d689481f0deffc2b1ad349557f8c9eb410c48aad15dd34f89fa087b3b5
+w_prime_mid_lower.bin   f6a728fca354c87bf69d87505d8f534ad1c88fdef56efd5213652e2878c2bf8f
+w_prime_mid_upper.bin   dd3ba0243b35e4cc9c0ed2083b606ffa92df48b38845967401e37db61cd7143f
 
-IMPORTANT:
-The projected values above are conditional on proving the new local target.
-They are not yet certified mathematical lower bounds.
+Verifier record:
+source commit=7c7df2f617318883593dd414b6fc77691c9f480e
+workflow run=31589096212
+artifact id=9138629773
+nodes=3171002
+pruned=1585573
+splits=1585429
+convex=1776812
+tangent=751200
+max_depth=62
+VERIFIED=true
 
-Previous certified research-draft record:
+Final exact-pressure arithmetic:
+H_floor=0.6723338
+epsilon=0.005401
+best m=204
+bound=0.6733305982879586830508445665624969011279...
+percent=67.333059828795868305...%
+safe decimal floor=0.6733305982
+
+Trust boundary:
+The local numerical inequality and H floor are interval-checked in this repository.
+The analytic interface inherited from the lineage repositories remains imported.
+Independent reproduction of the new local certificate is still requested before treating the research-draft result as publication-ready.
+
+Previous interval-certified research-draft record:
 archive/2026-08-12-certified-6732907560/

@@ -1,35 +1,56 @@
 import mpmath as mp
 from mpmath import iv
 
+from candidate_data import load_candidate, rational
+
 mp.mp.dps = 80
 iv.dps = 60
 
-DEN = 1_000_000_000
-NUM = [1_000_000_000, 6_907_835, -9_359_173, 528_441, 1_509_267, -4_923_883, 1_358_707]
+candidate = load_candidate()
+window = candidate["window"]
+DEN = int(window["denominator"])
+NUM = [int(x) for x in window["numerators"]]
+H_CERT = rational(window["analytic_h_cert"])
+
 
 def sinc(z):
     return mp.sin(z) / z if z else mp.mpf(1)
 
+
 def C(a, b):
     return (sinc((a - b) / 2) + sinc((a + b) / 2)) / 2
 
+
 def A(a, b):
-    return (mp.sin(a / 2) / a + 2 * mp.cos(a / 2) / a**2) * sinc(b / 2) - 2 * C(a, b) / a**2
+    return (
+        (mp.sin(a / 2) / a + 2 * mp.cos(a / 2) / a**2) * sinc(b / 2)
+        - 2 * C(a, b) / a**2
+    )
+
 
 c = [mp.mpf(n) / DEN for n in NUM]
-omega = [mp.sqrt(2)] + [2 * j * mp.pi for j in range(1, 7)]
+omega = [mp.sqrt(2)] + [2 * j * mp.pi for j in range(1, len(NUM))]
 i1 = sum(ci * sinc(w / 2) for ci, w in zip(c, omega))
-i2 = sum(c[i] * c[j] * C(omega[i], omega[j]) for i in range(7) for j in range(7))
-J = sum(c[i] * c[j] * A(omega[i], omega[j]) for i in range(7) for j in range(7))
+i2 = sum(
+    c[i] * c[j] * C(omega[i], omega[j])
+    for i in range(len(NUM))
+    for j in range(len(NUM))
+)
+J = sum(
+    c[i] * c[j] * A(omega[i], omega[j])
+    for i in range(len(NUM))
+    for j in range(len(NUM))
+)
 c1 = i1 * i1 / (i2 + J)
 H = 2 - 1 / c1
 
 print("H =", mp.nstr(H, 70))
-assert H > mp.mpf("0.6724057")
+h_cert = mp.mpf(H_CERT.numerator) / H_CERT.denominator
+assert H > h_cert
 
 # Rigorous interval positivity check on [-1/2, 1/2].
 ci = [iv.mpf(n) / DEN for n in NUM]
-oi = [iv.sqrt(2)] + [2 * j * iv.pi for j in range(1, 7)]
+oi = [iv.sqrt(2)] + [2 * j * iv.pi for j in range(1, len(NUM))]
 N = 4096
 global_lo = float("inf")
 for k in range(N):

@@ -1,136 +1,96 @@
 # Zeta exact-pressure optimization
 
-> **Current research-draft candidate.** A joint window / exact-pressure refinement of the positioned-pressure method gives the candidate lower bound
->
-> $$
-> \liminf_{T\to\infty}\frac{N_0^s(T,2T)}{N(T,2T)}
-> \ge 0.67329075601922263576\ldots,
-> $$
->
-> i.e. **67.3290756019%** of the nontrivial zeros are simple zeros on the critical line, subject to the imported analytic interface and the certified seven-point input described below.
-
-This repository is intended to be **continuously updated** as the window, local certificate, pressure weights, or block deduction improve. The repository name therefore does not contain a numerical suffix.
-
-**Manuscript:** [LaTeX source](paper/main.tex) · [compiled PDF](paper/main.pdf) (generated automatically by GitHub Actions)
-
 > [!IMPORTANT]
-> This is a research draft, not a peer-reviewed theorem and not a proof of the Riemann hypothesis. The current finite-dimensional certificate has been reproduced in the development environment using an outward-rounded interval branch-and-bound verifier adapted from `sxuff/zeta-positioned-pressure`, but independent reproduction on a separate implementation/machine is still requested.
+> **Current status: discovery candidate, not yet a certified lower bound.**
+>
+> The latest 11-term window search projects
+>
+> $$
+> \frac{N_0^s(T,2T)}{N(T,2T)}\approx 0.673330866624887\ldots,
+> $$
+>
+> i.e. **67.3330866625%**, using floating-point adversarial search. A deliberately conservative certification target, if proved, projects **67.3330085275%**. The required interval certificate for the new local target has **not** yet been completed.
 
-## Current headline
+The previous interval-certified research-draft record, **67.3290756019%**, is preserved under [`archive/2026-08-12-certified-6732907560/`](archive/2026-08-12-certified-6732907560/).
 
-Using
+This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis. All statements inherit the same imported analytic interface described in the earlier manuscript and lineage repositories.
 
-$$
-H_{\rm cert}=0.6724057,\qquad
-\varepsilon=0.0052289,\qquad
-B=\frac{3}{1150},
-$$
+## Current discovery candidate
 
-and the exact shifted-pressure average, the optimal scanned block length is
+The local method still uses seven consecutive simple zeros, six gaps, the same exact position-pressure vector, and exact shifted-pressure averaging. The new lever is a larger window basis optimized against an adversarial lattice search rather than optimizing the window functional $H$ alone.
 
-$$
-m=210,
-$$
-
-giving
-
-$$
-\boxed{0.6732907560192226357616716519\ldots}
-$$
-
-or
+The 11-term window is
 
 $$
-\boxed{\mathbf{67.3290756019\%}}.
-$$
-
-A conservative decimal lower bound is
-
-$$
-\frac{6732907560}{10^{10}}=0.6732907560.
-$$
-
-## Comparison
-
-| Source | Candidate / reported lower bound |
-| --- | ---: |
-| Anthropic / Claude, Theorem D | 67.2500703679% |
-| `ainta/zeta-simple-zeros` | 67.3008527927% |
-| `trmdy/zeta-simple-zeros-673137` | 67.3137630699% |
-| `sxuff/zeta-positioned-pressure` | 67.3205978423% |
-| `AMTOPA/zeta-exact-pressure-673262` | 67.3262375585% |
-| **this repository** | **67.3290756019%** |
-
-The comparison is meaningful only under the same imported analytic interface.
-
-## What changed
-
-The predecessor `AMTOPA/zeta-exact-pressure-673262` retained the exact position-dependent pressure multiplicities through shifted-block averaging. That improvement is retained here.
-
-The new contribution is to **feed the exact-pressure global objective back into the window design**.
-
-The seven-term window is
-
-$$
-v(s)=\sum_{j=0}^{6} c_j\cos(\omega_j s),
+v(s)=\sum_{j=0}^{10}c_j\cos(\omega_j s),
 $$
 
 with
 
 $$
-\omega_0=\sqrt2,\qquad \omega_j=2j\pi\quad(1\le j\le6),
+\omega_0=\sqrt2,\qquad \omega_j=2j\pi\quad(1\le j\le10),
 $$
 
-and exact rational coefficients
+and rational coefficients with denominator $10^9$:
+
+```text
+1000000000
+   8421762
+  -9816829
+   1448046
+   1412305
+  -2228329
+   2374999
+  -4885560
+   8393483
+  -3137216
+   2381462
+```
+
+High-precision evaluation gives
 
 $$
-(c_0,\ldots,c_6)=10^{-9}
-(1000000000,6907835,-9359173,528441,1509267,-4923883,1358707).
+H(v)=0.6723307581635602536\ldots
 $$
 
-For this window,
+and the arithmetic projection uses the lower working value
 
 $$
-H(v)=0.67240570242660302900695918\ldots,
+H_{\rm floor}=0.6723307.
 $$
 
-so the repository uses the safe rational value
-
-$$
-H_{\rm cert}=\frac{6724057}{10^7}.
-$$
-
-The position-dependent pressure weights remain
+The pressure coefficients remain
 
 $$
 \frac1{2300000000}(831522,1096590,1071888,1071888,1096590,831522),
+\qquad B=\frac3{1150}.
 $$
 
-whose exact sum is
+## Adversarial local search
+
+Naive multistart searches can miss low lattice-like configurations. The current discovery search therefore used pressure-feasible integer-lattice starts with reflection reduction and local polishing. Across 2,823 adversarial starts, the current observed floating-point minimum is
 
 $$
-B=\frac3{1150}.
+\varepsilon_{\rm float}\approx0.00540611079920.
 $$
 
-The interval branch-and-bound computation certified
+The next certification target is intentionally lower:
 
 $$
-F(g_1,\ldots,g_6)\ge\frac{52289}{10^7}=0.0052289
+\varepsilon_{\rm target}=0.005405.
 $$
 
-for all $g_i\ge0$, using the same pair-weight layout as `sxuff/zeta-positioned-pressure`.
+**This target is not yet interval-certified.** It must not be cited as a proved inequality until the branch-and-bound verifier closes all boxes.
 
-The floating-point search found a slightly higher apparent minimum, but a target of `0.00522895` was **not** accepted by the interval verifier. The published target therefore stops at the proven `0.0052289`.
+## Global projection
 
-## Exact-pressure deduction
-
-For an $m$-point block, let
+For an $m$-point block, retain
 
 $$
-A_m=\varepsilon(m-6),\qquad R_m=h_m(A_m),\qquad \eta_m=\frac{R_m}{A_m},
+A_m=\varepsilon(m-6),\qquad R_m=h_m(A_m),\qquad \eta_m=R_m/A_m,
 $$
 
-where
+with
 
 $$
 h_m(E)=
@@ -140,86 +100,73 @@ E/m+2\sqrt{(m-1)E/m}-1,&E\ge m/(m-1).
 \end{cases}
 $$
 
-Retaining the exact local pressure multiplicities through all $m$ shifted partitions gives
+and the exact shifted-pressure deduction
 
 $$
 \frac{N_0^s(T,2T)}{N(T,2T)}\ge
-\frac{mH_{\rm cert}-\eta_mB(m-6)}{m-R_m}-o(1).
+\frac{mH-\eta_mB(m-6)}{m-R_m}-o(1).
 $$
 
-Scanning integer $m$ selects $m=210$.
+Using the conservative discovery inputs
 
-## Reproduction
+$$
+H=0.6723307,\qquad \varepsilon=0.005405,
+$$
 
-Python checks:
+an integer scan selects
 
-```bash
-python3 src/check_window.py
-python3 src/check_multiplicity.py
-python3 src/check_final_bound.py
-```
+$$
+m=204
+$$
 
-or:
+and gives the arithmetic projection
+
+$$
+0.6733300852750384514\ldots=67.3330085275\ldots\%.
+$$
+
+The rational decimal floor
+
+$$
+0.6733300852
+$$
+
+is therefore an arithmetic floor **conditional on certifying the new local target**, not a currently established mathematical bound.
+
+Using the floating-point discovery values instead gives approximately **67.3330866625%**.
+
+## Reproduction and checks
+
+Run
 
 ```bash
 sh run.sh
 ```
 
-The local seven-point certificate is heavier. See [`docs/reproduce-local-certificate.md`](docs/reproduce-local-certificate.md).
+for structural consistency, high-precision window evaluation, interval positivity subdivision, exact pressure multiplicity, and final projection arithmetic.
+
+The current self-check deliberately does **not** claim that the new local certificate is verified. See [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt) for machine-readable/current status.
+
+## Archive and manuscript
+
+- [`archive/2026-08-12-certified-6732907560/`](archive/2026-08-12-certified-6732907560/) freezes the previous 67.3290756019% record and its certificate statistics.
+- [`paper/main.tex`](paper/main.tex) and [`paper/main.pdf`](paper/main.pdf) correspond to the previous certified-baseline manuscript until the 11-term candidate receives a rigorous local certificate and is promoted into the manuscript.
 
 ## Trust boundary
 
-### Checked directly in this repository
+Currently checked directly in this repository:
 
-- exact pressure-position multiplicity identity;
-- the exact shifted-partition global deduction;
-- high-precision and interval evaluation of the final bound;
-- high-precision / interval evaluation of the new window functional $H(v)$;
-- a subdivision check of positivity of the new window on $[-1/2,1/2]$.
+- exact position-pressure total and shifted multiplicity identity;
+- high-precision evaluation of the 11-term $H(v)$;
+- interval subdivision positivity of the 11-term window;
+- arithmetic scan of the conditional final projection.
 
-### Certificate record from the current computation
+Not yet checked for the new candidate:
 
-For target
+- a rigorous interval proof of $F(g_1,\ldots,g_6)\ge0.005405$ for all $g_i\ge0$;
+- independent reproduction of that new certificate.
 
-$$
-\varepsilon=0.0052289
-$$
-
-the adapted interval verifier returned:
-
-```text
-VERIFIED=true
-nodes=2334226
-pruned=1167275
-splits=1166951
-convex=1407996
-tangent=595297
-max_depth=77
-```
-
-A lower target was also checked in a no-tangent exhaustive mode as an additional robustness check. Independent reproduction remains desirable.
-
-### Imported analytic inputs
-
-This repository does not reprove:
-
-- the explicit-formula / trace inequality underlying the method;
-- the finite-$m$ Gram spectral profile $h_m$;
-- the asymptotic normalized-gap bookkeeping;
-- the analytic derivation linking the window functional $H(v)$ to the zero count.
-
-These belong to the Anthropic / `trmdy` / `sxuff` lineage.
-
-## Repository policy
-
-This repository intentionally has **no numerical suffix**. Future improvements should update:
-
-- `candidate.json`;
-- this README headline;
-- certificate records;
-- parameters / reproduction notes;
-
-rather than creating a new repository for every decimal improvement.
+Imported analytic inputs remain the explicit-formula / trace interface, finite-$m$ Gram spectral profile, normalized-gap bookkeeping, and the analytic link from $H(v)$ to the zero count.
 
 ## License and attribution
 

@@ -1,25 +1,31 @@
 {
-  "description": "Joint window and exact shifted-pressure optimization for simple zeros of the Riemann zeta function.",
-  "status": "research draft; independent reproduction requested",
+  "description": "11-term window discovery candidate for exact shifted-pressure optimization of simple zeros of the Riemann zeta function.",
+  "status": "discovery candidate; NOT interval-certified",
   "date": "2026-08-12",
   "lineage": [
     "Anthropic zeta simple-zero work",
     "trmdy/zeta-simple-zeros-673137",
     "sxuff/zeta-positioned-pressure",
-    "AMTOPA/zeta-exact-pressure-673262"
+    "AMTOPA/zeta-exact-pressure-673262",
+    "AMTOPA/zeta-exact-pressure archived 67.3290756019% record"
   ],
   "points": 7,
   "gaps_per_local_window": 6,
   "window": {
+    "term_count": 11,
     "denominator": 1000000000,
     "numerators": [
       1000000000,
-      6907835,
-      -9359173,
-      528441,
-      1509267,
-      -4923883,
-      1358707
+      8421762,
+      -9816829,
+      1448046,
+      1412305,
+      -2228329,
+      2374999,
+      -4885560,
+      8393483,
+      -3137216,
+      2381462
     ],
     "frequencies": [
       "sqrt(2)",
@@ -28,29 +34,28 @@
       "6*pi",
       "8*pi",
       "10*pi",
-      "12*pi"
+      "12*pi",
+      "14*pi",
+      "16*pi",
+      "18*pi",
+      "20*pi"
     ],
-    "computed_h": "0.67240570242660302900695918199373849423...",
-    "analytic_h_cert": {
-      "numerator": 6724057,
+    "computed_h": "0.6723307581635602536...",
+    "projection_h_floor": {
+      "numerator": 6723307,
       "denominator": 10000000
     }
   },
-  "local_certificate": {
-    "target": {
-      "numerator": 52289,
-      "denominator": 10000000
+  "local_search": {
+    "method": "pressure-feasible lattice adversary enumeration with local polishing; discovery only",
+    "adversarial_start_count": 2823,
+    "float_minimum_observed": "0.00540611079920...",
+    "candidate_target_for_certification": {
+      "numerator": 5405,
+      "denominator": 1000000
     },
-    "verified": true,
-    "independent_reproduction": false,
-    "reported_stats": {
-      "nodes": 2334226,
-      "pruned": 1167275,
-      "splits": 1166951,
-      "convex": 1407996,
-      "tangent": 595297,
-      "max_depth": 77
-    }
+    "verified": false,
+    "note": "The target 0.005405 is intentionally below the observed floating-point adversarial minimum but has not yet been proved by interval branch-and-bound."
   },
   "position_pressure": {
     "denominator": 2300000000,
@@ -67,15 +72,22 @@
       "denominator": 1150
     }
   },
-  "final_deduction": {
+  "final_projection": {
     "pressure_shift_factor": "m-6",
-    "block_length": 210,
-    "safe_published_lower": {
-      "numerator": 6732907560,
+    "block_length": 204,
+    "projected_safe_decimal": {
+      "numerator": 6733300852,
       "denominator": 10000000000
     },
-    "computed_bound": "0.6732907560192226357616716518812750378481...",
-    "computed_percent": "67.329075601922263576..."
+    "computed_bound_from_conservative_inputs": "0.6733300852750384514284515550763303038641...",
+    "computed_percent_from_conservative_inputs": "67.333008527503845142...",
+    "float_discovery_bound": "0.673330866624887...",
+    "float_discovery_percent": "67.3330866624887...",
+    "certified": false
+  },
+  "archive": {
+    "previous_certified_record": "archive/2026-08-12-certified-6732907560/",
+    "previous_source_commit": "1acaef2e7cb322fc1912a881397e7abafa82c43c"
   },
   "provenance": {
     "positioned_pressure_predecessor": {

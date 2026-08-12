@@ -3,7 +3,7 @@ from fractions import Fraction
 from candidate_data import load_candidate, rational
 
 candidate = load_candidate()
-M = int(candidate["final_deduction"]["block_length"])
+M = int(candidate["final_projection"]["block_length"])
 Q = int(candidate["gaps_per_local_window"])
 pressure = candidate["position_pressure"]
 DEN = int(pressure["denominator"])

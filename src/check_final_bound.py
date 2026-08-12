@@ -1,4 +1,4 @@
-"""High precision arithmetic verification of the current final bound."""
+"""High-precision arithmetic check of the current conditional projection."""
 from fractions import Fraction
 
 import mpmath as mp
@@ -7,12 +7,12 @@ from candidate_data import load_candidate, rational
 
 mp.mp.dps = 100
 candidate = load_candidate()
-EPS = rational(candidate["local_certificate"]["target"])
+EPS = rational(candidate["local_search"]["candidate_target_for_certification"])
 B = rational(candidate["position_pressure"]["total"])
-H = rational(candidate["window"]["analytic_h_cert"])
-SAFE = rational(candidate["final_deduction"]["safe_published_lower"])
+H = rational(candidate["window"]["projection_h_floor"])
+SAFE = rational(candidate["final_projection"]["projected_safe_decimal"])
 Q = int(candidate["gaps_per_local_window"])
-EXPECTED_M = int(candidate["final_deduction"]["block_length"])
+EXPECTED_M = int(candidate["final_projection"]["block_length"])
 
 
 def q(x: Fraction):
@@ -35,7 +35,8 @@ for m in range(Q + 1, 5000):
         best = (v, m)
 
 print("scan_best_m=", best[1])
-print("float_bound=", mp.nstr(best[0], 100))
+print("projected_bound=", mp.nstr(best[0], 100))
 assert best[1] == EXPECTED_M
 assert best[0] > q(SAFE)
-print("interval_verified=True")
+print("projection_arithmetic_verified=True")
+print("local_interval_certificate_verified=False")

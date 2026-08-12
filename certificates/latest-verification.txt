@@ -1,17 +1,27 @@
-Current local-certificate record
-================================
+Current discovery record
+========================
 
 Date: 2026-08-12
-Target epsilon: 52289/10000000 = 0.0052289
+Status: DISCOVERY ONLY; NOT INTERVAL-CERTIFIED
 
-Window numerator vector (denominator 1e9):
+11-term window numerator vector (denominator 1e9):
 1000000000
-6907835
--9359173
-528441
-1509267
--4923883
-1358707
+8421762
+-9816829
+1448046
+1412305
+-2228329
+2374999
+-4885560
+8393483
+-3137216
+2381462
+
+High-precision H(v):
+0.6723307581635602536...
+
+Projection H floor:
+6723307/10000000 = 0.6723307
 
 Position pressure numerator vector (denominator 2300000000):
 831522
@@ -21,17 +31,27 @@ Position pressure numerator vector (denominator 2300000000):
 1096590
 831522
 
-Verifier record:
-VERIFIED=true
-nodes=2334226
-pruned=1167275
-splits=1166951
-convex=1407996
-tangent=595297
-max_depth=77
+Discovery adversary:
+method = pressure-feasible lattice enumeration + local polishing
+adversarial starts = 2823
+observed float minimum = 0.00540611079920...
 
-Higher attempted target:
-0.00522895 -> not certified in the development run.
+Next interval-certification target:
+5405/1000000 = 0.005405
+VERIFIED=false
 
-Status:
-Research certificate record. Independent reproduction requested.
+Conditional arithmetic projection using H=0.6723307 and epsilon=0.005405:
+best m = 204
+projected bound = 0.6733300852750384514284515550763303038641...
+projected percent = 67.333008527503845142...%
+projected decimal floor = 0.6733300852
+
+Floating-point discovery projection:
+0.673330866624887... = 67.3330866624887...%
+
+IMPORTANT:
+The projected values above are conditional on proving the new local target.
+They are not yet certified mathematical lower bounds.
+
+Previous certified research-draft record:
+archive/2026-08-12-certified-6732907560/

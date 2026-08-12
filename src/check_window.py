@@ -10,7 +10,7 @@ candidate = load_candidate()
 window = candidate["window"]
 DEN = int(window["denominator"])
 NUM = [int(x) for x in window["numerators"]]
-H_CERT = rational(window["analytic_h_cert"])
+H_FLOOR = rational(window["projection_h_floor"])
 
 
 def sinc(z):
@@ -45,10 +45,10 @@ c1 = i1 * i1 / (i2 + J)
 H = 2 - 1 / c1
 
 print("H =", mp.nstr(H, 70))
-h_cert = mp.mpf(H_CERT.numerator) / H_CERT.denominator
-assert H > h_cert
+h_floor = mp.mpf(H_FLOOR.numerator) / H_FLOOR.denominator
+assert H > h_floor
 
-# Rigorous interval positivity check on [-1/2, 1/2].
+# Rigorous interval positivity subdivision on [-1/2, 1/2].
 ci = [iv.mpf(n) / DEN for n in NUM]
 oi = [iv.sqrt(2)] + [2 * j * iv.pi for j in range(1, len(NUM))]
 N = 4096

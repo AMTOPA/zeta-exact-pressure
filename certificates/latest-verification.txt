@@ -5,104 +5,107 @@ Date: 2026-08-12
 Status: INTERVAL-CERTIFIED LOCALLY; INDEPENDENT REPRODUCTION REQUESTED
 
 Local geometry:
-points=8
-gaps=7
+points=7
+gaps=6
 
-15-term window numerator vector (denominator 1e9):
+Joint-pressure 15-term window numerator vector (denominator 1e9):
 1000000000
-7862237
--11036157
-3734450
-1402396
--1412889
-3402026
--1739485
-4930665
--4255468
-3101956
--2601879
-146498
-398565
--271068
+12948011
+-12114181
+3684033
+5911261
+-1663892
+5928575
+-7167828
+6229914
+-5147758
+-756341
+440544
+-311207
+237969
+-190433
 
 Interval-verified window input:
-H(v)=0.67234054512138674200892589811852515766646...
-H_interval=[0.672340545121386742008925898118525157666463940959018436058814138150398417227...,
-            0.67234054512138674200892589811852515766646394095901843605881413817410504404...]
-H_floor=672340545/1000000000=0.672340545
-interval_window_lower_bound=0.7599349197402899...
+H(v)=0.6721999026675757754212693844824134965885997231953...
+H_interval=[0.672199902667575775421269384482413496588599723195359313123857471942660251994...,
+            0.672199902667575775421269384482413496588599723195359313123857471942668764332...]
+H_floor=3360999513/5000000000=0.6721999026
+interval_window_lower_bound=0.7616106600142013...
 
-Eight-point exact position pressure (denominator 2300000000):
-474488
-829921
-1102531
-1186120
-1102531
-829921
-474488
-B=3/1150 exactly
+Exact position pressure (denominator 46000000000):
+22420713
+32878293
+37700994
+37700994
+32878293
+22420713
+B=93/23000 exactly
 
 Pair-weight invariant:
-For every index span s=1,...,7, the sum of exact pair weights of span s is exactly 2.
+For every index span s=1,...,6, the sum of exact pair weights of span s is exactly 2.
+All pair and pressure coefficients are nonnegative.
 
-Discovery hardening for the promoted window:
-- eight-point window-basin min-max exchange;
-- all 8,320 reflection representatives of {1,2,3,4}^7 polished without score screening;
-- all 8,320 reflection representatives of {1,2,3,5}^7 polished without score screening;
-- six multi-range differential-evolution runs;
-- observed floating-point minimum: 0.005516121966580929...
+Discovery hardening:
+- adversarial exchange over total pressure, the 15-term window, pair weights, and position-pressure weights;
+- exact rational span capacities and exact declared pressure total preserved;
+- broad resonance-template polishing and multi-range differential-evolution stress;
+- observed floating-point minimum: 0.0078878193504693...
+- observed lowest basin near (1.042887125276,1.974404852204,1.046257771352,1.972360347862,1.044510345045,1.978097154680).
 
 Promoted rigorous local target:
-1103/200000 = 0.005515
+7887/1000000 = 0.007887
 VERIFIED=true
 independent_reproduction=false
 
 Hardened interval verifier:
 grid=4000
 precision_decimal_digits=50
-coarse_cells=106966
-midpoint_values=213933
-initial_boxes=48
-components_per_gap=1,2,2,3,2,2,1
+coarse_cells=64760
+midpoint_values=129521
+initial_boxes=64
+components_per_gap=2,2,2,2,2,2
 compiler flag=-ffp-contract=off
 
 SHA-256 (big-endian float stream):
-w_lower.bin             a218becde84edd6f9168d76ca39ea69047d8a591ad3a829817822be9ae98194d
-w_second_lower.bin      4292ab064e0fce5d1584ae0e7ce7ba7f3dc3fe9fd1944c64ea2c0bbd9566f605
-w_mid_lower.bin         639ba060fccf587e4a015c91120d6ef01fb85f26f8f926512ab0286bd6de4504
-w_mid_upper.bin         44662294009a15d7af5e2e40454178bda422fd6f7d720e9c19f416bbd28e3ae4
-w_prime_mid_lower.bin   67d5e3b8b422a8600b5849a8b28c8a76362bb0465b463b46f5b3f4309140dea7
-w_prime_mid_upper.bin   513b5a81d71942e045897c6ac01cbdd8b1b8f36f72a0b15db4fd014e36848cea
+w_lower.bin             6029be4ca062cc5d336060cd50cbae862d0394a4cd3d9c226052f46685f21996
+w_second_lower.bin      0e8cbb5b775ac844902978943dba957fd23c6ee0e48b327c36fca65752c5224a
+w_mid_lower.bin         83147ca21efd2f10574af64cf742634c5b10736ffcfd563d1ea730a41b48a76d
+w_mid_upper.bin         1f5c3ca9c908e18f00b2f8a59256f615011ef83a603fdd48d5fb2898d78cd54b
+w_prime_mid_lower.bin   41558ea71ef06c851a758608d34f61e97be87d9be9075f5b5e2b895c61554799
+w_prime_mid_upper.bin   c93278fc0173b29115fc971600c3ca754083edb299bd70020e1ecb1e769c5942
 
 Verifier record:
-source commit=524834fc0dc37b3ed58904bff664f2ea1c65caf3
-workflow run=31598015611
-artifact id=9142888339
-artifact digest sha256=d813434834906932ffdbfc6ae8a3c0830ffc36f01225bae79c3636ac31fc017a
-verified at UTC=2026-08-12T13:16:24Z
-nodes=66686224
-pruned=33343136
-splits=33343088
-convex=27190260
-tangent=12043940
-max_depth=86
+source commit=1f6715705ad69423b2b22069e13daa6843ccc58c
+workflow run=31603343875
+artifact id=9144421792
+artifact digest sha256=09ff629ed821e560222f13e92ad9d093bc85f766f940cba5c3bdd7704a36033d
+verified at UTC=2026-08-12T13:59:17Z
+nodes=3424276
+pruned=1712170
+splits=1712106
+convex=1756299
+tangent=801918
+max_depth=71
 VERIFIED=true
 
 Exact-pressure projection:
-H_floor=0.672340545
-epsilon=0.005515
-B=3/1150
-local gaps Q=7
-best m=203
-bound=0.6734062162989486665639042242354817188494596957361...
-percent=67.34062162989486665639042242354817188494596957361...%
-safe decimal floor=0.6734062162
+H_floor=0.6721999026
+epsilon=0.007887
+B=93/23000
+local gaps Q=6
+best m=145
+A_m=1.096293
+R_m=1.0944074097077275572459819659380041202918171...
+eta_m=0.9982800307105195027661236238286699999834142...
+bound=0.6734130852868493916709045716416011658781093353454...
+percent=67.34130852868493916709045716416011658781093353454...%
+safe decimal floor=0.6734130852
+
+Analytic-interface note:
+The positioned-pressure predecessor defines B symbolically as the total position pressure and carries that B through E_B+B*span >= A and the block penalty. The present construction varies B while preserving nonnegative pressures and pair-span capacities at 2, and uses the new exact B=93/23000 in the final penalty.
 
 Trust boundary:
-The local seven-gap numerical inequality and H floor are interval-checked in this repository.
-The predecessor local-to-global argument uses nonnegative pair weights with per-span capacity at most 2 and the declared total position pressure B; the same counting gives m-7 local windows here.
-The explicit-formula / trace interface and finite-m Gram profile remain imported from the lineage repositories.
-Independent reproduction of this seven-dimensional certificate is requested before publication-quality use.
+The local six-gap numerical inequality, exact total pressure, pair-span capacities, H floor, and final arithmetic are checked in this repository. The explicit-formula / trace interface and finite-m Gram profile remain imported from the lineage repositories. Independent reproduction of this joint-pressure certificate is requested before publication-quality use.
 
 Previous interval-certified research-draft record:
-archive/2026-08-12-certified-6733781954/
+archive/2026-08-12-certified-6734062162/

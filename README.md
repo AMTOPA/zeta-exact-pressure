@@ -1,15 +1,31 @@
 # Zeta exact-pressure optimization
 
 > [!IMPORTANT]
-> **Current interval-certified research-draft record: 67.3406216299%.**
+> **Current interval-certified research-draft record: 67.3413085287%.**
 >
-> **Active joint-pressure discovery:** a seven-point / six-gap candidate with variable total pressure projects above the certified record. Its window and exact combinatorics are checked; its full six-dimensional local interval certificate is being tested separately. Until that returns `VERIFIED=true`, it is not the certified record.
+> The current construction jointly optimizes the total local pressure, the rational 15-term window, pair weights, and position-pressure distribution. The six-gap target `epsilon = 0.007887` is closed by the hardened outward-rounded interval verifier. A same-parameter upward epsilon tightening is now the active experiment.
 
 This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
 
-## Current interval-certified record
+## Current joint-pressure certified record
 
-The current certified construction uses eight points / seven gaps and a re-optimized rational 15-term window
+The local construction returns to seven points / six gaps, but releases a parameter held fixed in earlier positioned-pressure searches: the total local pressure
+
+\[
+B=\sum_{r=1}^{6}b_r.
+\]
+
+The predecessor block argument uses this quantity symbolically through
+
+\[
+E_B+B\,\operatorname{span}(B)\ge A,
+\]
+
+and carries the same \(B\) into the global pressure penalty. Thus \(B\) may itself be optimized provided the position pressures remain nonnegative, the exact new total is used globally, and every pair-span capacity remains at most 2.
+
+### Analytic window
+
+We use
 
 \[
 v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
@@ -20,130 +36,141 @@ with denominator \(10^9\) and numerator vector
 
 ```text
 1000000000
-   7862237
- -11036157
-   3734450
-   1402396
-  -1412889
-   3402026
-  -1739485
-   4930665
-  -4255468
-   3101956
-  -2601879
-    146498
-    398565
-   -271068
+  12948011
+ -12114181
+   3684033
+   5911261
+  -1663892
+   5928575
+  -7167828
+   6229914
+  -5147758
+   -756341
+    440544
+   -311207
+    237969
+   -190433
 ```
 
 Direct interval arithmetic gives
 
 \[
-H(v)=0.6723405451213867420089258981185\ldots
+H(v)=0.6721999026675757754212693844824\ldots
 \]
 
-and verifies the conservative floor
+and verifies the tighter conservative floor
 
 \[
-\boxed{H(v)>0.672340545}.
+\boxed{H(v)>0.6721999026}.
 \]
 
-The exact eight-point pressure vector remains
+The same 4096-cell interval subdivision gives a window lower bound above `0.7616106600`.
+
+### Exact local weights and pressure
+
+The exact position-pressure vector is
 
 \[
-\frac1{2300000000}(474488,829921,1102531,1186120,1102531,829921,474488),
-\qquad B=\frac3{1150}.
+\frac1{46000000000}
+(22420713,32878293,37700994,37700994,32878293,22420713),
 \]
 
-For every pair span \(s=1,\ldots,7\), the exact pair weights in [`candidate.json`](candidate.json) have total capacity exactly 2.
-
-The hardened seven-dimensional outward-rounded verifier proves
+with
 
 \[
-\boxed{F_8(g_1,\ldots,g_7)\ge0.005515}\qquad(g_i\ge0).
+\boxed{B=\frac{93}{23000}=0.004043478260869565\ldots}.
 \]
 
-The successful run used a 4000 grid, 50-digit interval tables, and `-ffp-contract=off`, and reported
+For every span \(s=1,\ldots,6\), the exact pair weights in [`candidate.json`](candidate.json) sum to exactly 2. All pair and pressure coefficients are nonnegative.
+
+### Certified local inequality
+
+Adversarial exchange over \(B\), the window, pair weights, and pressure distribution produced an observed floating minimum near
+
+\[
+0.0078878193504693\ldots.
+\]
+
+The hardened six-dimensional interval verifier proves
+
+\[
+\boxed{F(g_1,\ldots,g_6)\ge0.007887}\qquad(g_i\ge0).
+\]
+
+The successful 4000-grid / 50-digit run, compiled with `-ffp-contract=off`, reports
 
 ```text
 VERIFIED=true
-nodes=66686224
-pruned=33343136
-splits=33343088
-convex=27190260
-tangent=12043940
-max_depth=86
+nodes=3424276
+pruned=1712170
+splits=1712106
+convex=1756299
+tangent=801918
+max_depth=71
 ```
 
-The exact table hashes, workflow run `31598015611`, artifact `9142888339`, and artifact digest are recorded in [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt).
+It begins from 64 boxes with component counts `2,2,2,2,2,2`. Exact table hashes, workflow run `31603343875`, artifact `9144421792`, and artifact digest are recorded in [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt).
 
-With
+## Exact-pressure projection
 
-\[
-H=0.672340545,\qquad \varepsilon_8=0.005515,\qquad B=3/1150,
-\]
-
-the exact-pressure scan selects \(m=203\) and gives
+For an \(m\)-point block,
 
 \[
-\boxed{0.67340621629894866656\ldots},
+A_m=\varepsilon(m-6),\qquad
+R_m=h_m(A_m),\qquad
+\eta_m=R_m/A_m,
 \]
 
-hence the safe decimal floor
+and exact shifted-pressure bookkeeping gives
 
 \[
-\boxed{0.6734062162},
+\frac{N_0^s(T,2T)}{N(T,2T)}
+\ge
+\frac{mH-\eta_mB(m-6)}{m-R_m}-o(1).
 \]
 
-i.e. **67.3406216299%** before truncation.
-
-The immediately previous interval-certified state is frozen under [`archive/2026-08-12-certified-6733781954/`](archive/2026-08-12-certified-6733781954/).
-
-## Active joint-pressure discovery
-
-[`discovery_candidate.json`](discovery_candidate.json) releases a parameter previously held fixed during position-pressure optimization: the total local pressure \(B=\sum b_r\). The local-to-global proof uses \(B\) symbolically through
+Using only certified conservative inputs
 
 \[
-E_B+B\,\operatorname{span}(B)\ge A,
+H=0.6721999026,\qquad
+\varepsilon=0.007887,\qquad
+B=\frac{93}{23000},
 \]
 
-so changing \(B\) is admissible provided the exact pressure total is used in the final penalty, all pressure coefficients remain nonnegative, and every pair-span capacity remains at most 2.
-
-The current discovery candidate uses seven points / six gaps with
+the integer scan selects
 
 \[
-B=\frac{93}{23000}=0.004043478260869565\ldots,
+\boxed{m=145}
 \]
 
-a different rational 15-term window, and proposed local target
+and gives
 
 \[
-\varepsilon=0.007887.
+\boxed{0.6734130852868493916709\ldots}.
 \]
 
-Its exact structural checks give all six pair-span capacities equal to 2 and the declared pressure total exactly. Interval arithmetic encloses
+Therefore the safe decimal floor is
 
 \[
-H(v)=0.67219990266757577542126938448\ldots
+\boxed{0.6734130852},
 \]
 
-and verifies positivity of the window. The floating adversarial minimum is approximately
+i.e. **67.3413085287%** before truncation.
 
-\[
-0.00788781935047,
-\]
+The immediately previous interval-certified state, **67.3406216299%**, is frozen under [`archive/2026-08-12-certified-6734062162/`](archive/2026-08-12-certified-6734062162/).
 
-so the proposed target has about \(8.19\times10^{-7}\) floating margin.
+## Active epsilon tightening
 
-The machine-readable discovery file currently uses the deliberately loose floor `H=0.6721998` and therefore records a conditional projection of **67.3412981907%**. The already-computed interval enclosure supports the tighter safe floor
+The observed floating minimum remains above the certified target by about \(8.19\times10^{-7}\). The current interval-table range also has enough length to test a modest upward ladder without changing the window or weights. The active hardened workflow therefore probes
 
-\[
-H_{\rm floor}=0.6721999026,
-\]
+```text
+0.0078875
+0.0078874
+0.0078873
+0.0078872
+```
 
-which would raise the same `epsilon=0.007887` projection to approximately **67.3413085287%** if the full local certificate closes.
-
-A dedicated workflow, [`.github/workflows/discovery-certificate.yml`](.github/workflows/discovery-certificate.yml), runs the hardened full six-dimensional interval test. No joint-pressure percentage is promoted until that run produces `VERIFIED=true`.
+in descending order until one closes. These values are not promoted until the verifier returns `VERIFIED=true`.
 
 ## Reproduction and trust boundary
 
@@ -153,9 +180,9 @@ Run
 sh run.sh
 ```
 
-for the current certified structural checks, interval \(H\) verification, window positivity, exact multiplicity bookkeeping, final arithmetic, and verifier smoke test.
+for structural checks, interval \(H\) verification, window positivity, exact pressure multiplicity, final arithmetic, and verifier smoke testing. Heavy full-certificate workflows run on `main`.
 
-Checked directly in this repository: exact pair-span capacities, exact declared pressure totals, interval window bounds/positivity, the current seven-dimensional local certificate, and final exact-pressure arithmetic. Imported from the lineage: the explicit-formula / trace interface, finite-\(m\) Gram spectral profile, normalized-gap bookkeeping, and analytic link from \(H(v)\) to the zero count.
+Checked directly in this repository: exact pair-span capacities, exact declared pressure totals, interval window bounds/positivity, the current six-dimensional local certificate, and final exact-pressure arithmetic. Imported from the lineage: the explicit-formula / trace interface, finite-\(m\) Gram spectral profile, normalized-gap bookkeeping, and analytic link from \(H(v)\) to the zero count.
 
 Independent reproduction of the latest local certificate remains requested before publication-quality use. Historical certified states remain under `archive/` in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md).
 

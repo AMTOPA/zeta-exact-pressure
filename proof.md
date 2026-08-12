@@ -1,6 +1,6 @@
 # Current deduction outline
 
-> **Status:** the current 15-term local target `0.005401` is interval-certified in this repository. The analytic interface in §1 remains imported from the lineage repositories, and independent reproduction of the new local certificate is still requested.
+> **Status:** the current 15-term local target `0.0054022` and the working window floor `H > 0.6723338866` are interval-certified in this repository. The analytic interface in §1 remains imported from the lineage repositories, and independent reproduction of the local certificate is still requested.
 
 ## 1. Imported analytic interface
 
@@ -51,16 +51,16 @@ with denominator $10^9$ and numerator vector
 -148305
 ```
 
-High-precision evaluation gives
+Direct interval arithmetic encloses
 
 $$
-H(v)=0.672333886657942\ldots,
+H(v)=0.67233388665794215883536822355662\ldots
 $$
 
-and direct interval arithmetic verifies the working floor
+and verifies the rational working floor
 
 $$
-\boxed{H(v)>0.6723338}.
+\boxed{H(v)>0.6723338866}.
 $$
 
 ## 3. Certified local seven-point inequality
@@ -74,22 +74,22 @@ $$
 the repository-native interval verifier proves
 
 $$
-\boxed{F(g_1,\ldots,g_6)\ge0.005401}\qquad(g_i\ge0).
+\boxed{F(g_1,\ldots,g_6)\ge0.0054022}\qquad(g_i\ge0).
 $$
 
 The successful 4000-grid / 50-digit run reports
 
 ```text
 VERIFIED=true
-nodes=3171002
-pruned=1585573
-splits=1585429
-convex=1776812
-tangent=751200
-max_depth=62
+nodes=3380026
+pruned=1690085
+splits=1689941
+convex=1980120
+tangent=852267
+max_depth=70
 ```
 
-The exact table hashes and provenance are in `candidate.json` and `certificates/latest-verification.txt`.
+This target was obtained from a shared-table ladder: `0.0054015`, `0.0054020`, and `0.0054022` all closed; `0.0054024` and `0.00540242` were inconclusive at a terminal cell and are not treated as certified or falsified. Exact table hashes and provenance are in `candidate.json` and `certificates/latest-verification.txt`.
 
 The pressure total is exactly
 
@@ -134,7 +134,7 @@ $$
 Use the interval-certified working values
 
 $$
-H=0.6723338,\qquad \varepsilon=0.005401,\qquad B=3/1150.
+H=0.6723338866,\qquad \varepsilon=0.0054022,\qquad B=3/1150.
 $$
 
 The integer scan selects
@@ -146,7 +146,7 @@ $$
 and gives
 
 $$
-\frac SN\ge0.6733305982879586830508445665\ldots-o(1).
+\frac SN\ge0.6733314663744424509804847844858\ldots-o(1).
 $$
 
 Therefore the safely truncated research-draft candidate is
@@ -154,12 +154,12 @@ Therefore the safely truncated research-draft candidate is
 $$
 \boxed{
 \liminf_{T\to\infty}\frac{N_0^s(T,2T)}{N(T,2T)}
->0.6733305982
+>0.6733314663
 }.
 $$
 
-Numerically this corresponds to **67.3330598288%** before decimal truncation.
+Numerically this corresponds to **67.3331466374%** before decimal truncation.
 
 ## Trust boundary
 
-The new numerical ingredients in §§2–3 and the arithmetic in §§4–6 are checked in this repository. The analytic interface in §1 remains imported. The new local certificate has not yet received an independent second implementation/reproduction, so the result remains a research-draft candidate rather than a publication-ready theorem.
+The numerical ingredients in §§2–3 and the arithmetic in §§4–6 are checked in this repository. The analytic interface in §1 remains imported. The local certificate has not yet received an independent second implementation/reproduction, so the result remains a research-draft candidate rather than a publication-ready theorem.

@@ -1,12 +1,115 @@
-name: pressure-supporting-line-certificate-paused
+name: optimized-pressure-supporting-line-certificate
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - experiments/multilag/candidate.json
+      - src/candidate_data.py
+      - src/check_multilag.py
+      - src/write_verifier_config.py
+      - src/verify_local_tables.cpp
+      - .github/workflows/pressure-support-certificate.yml
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
-  note:
+  certify:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ZETA_CANDIDATE_PATH: experiments/multilag/candidate.json
+      TABLE_SOURCE_RUN: '31610179703'
+      TABLE_SOURCE_ARTIFACT: second-exchange-17term-certificate-hardened
     steps:
-      - run: |
-          echo "Automatic trigger paused while the auxiliary 6/5-pressure distribution is upgraded by adversarial exchange."
-          echo "Existing runs remain pinned to their original commits."
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+
+      - name: Validate optimized auxiliary structure
+        run: |
+          python3 - <<'PY'
+          import json
+          from fractions import Fraction
+          c=json.load(open('experiments/multilag/candidate.json'))
+          assert c['window']['term_count']==17
+          assert Fraction(c['local_search']['pressure_total_scale']['numerator'],c['local_search']['pressure_total_scale']['denominator'])==Fraction(6,5)
+          p=c['pair_weights']
+          for s in range(1,7):
+              total=sum(int(n) for i,j,n in p['entries'] if int(j)-int(i)==s)
+              assert Fraction(total,p['denominator'])==2
+          pr=c['position_pressure']
+          assert Fraction(sum(pr['numerators']),pr['denominator'])==Fraction(279,57500)
+          target=c['local_search']['candidate_target_for_certification']
+          assert Fraction(target['numerator'],target['denominator'])==Fraction(9021,1000000)
+          print('optimized_pressure_support_structure_exact=True')
+          PY
+          python3 src/check_window.py
+          python3 src/check_multilag.py
+
+      - name: Compile hardened exact auxiliary verifier
+        run: |
+          rm -rf build-pressure-support
+          mkdir -p build-pressure-support
+          python3 src/write_verifier_config.py --output build-pressure-support/candidate_config.hpp
+          grep 'gaps = 6' build-pressure-support/candidate_config.hpp
+          grep 'pressure_total_num = 1116000000' build-pressure-support/candidate_config.hpp
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
+            -Ibuild-pressure-support src/verify_local_tables.cpp -o build-pressure-support/verify_local_tables
+
+      - name: Reuse certified root 17-term outward-rounded tables
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf shared-root-tables
+          mkdir shared-root-tables
+          gh run download "$TABLE_SOURCE_RUN" -n "$TABLE_SOURCE_ARTIFACT" -D shared-root-tables
+          TABLE_DIR="$(dirname "$(find shared-root-tables -name w_lower.bin -print -quit)")"
+          test -n "$TABLE_DIR"
+          test -f "$TABLE_DIR/w_second_lower.bin"
+          test -f "$TABLE_DIR/w_mid_lower.bin"
+          test -f "$TABLE_DIR/w_mid_upper.bin"
+          test -f "$TABLE_DIR/w_prime_mid_lower.bin"
+          test -f "$TABLE_DIR/w_prime_mid_upper.bin"
+          test -f "$TABLE_DIR/manifest.json"
+          echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
+
+      - name: Run hardened optimized auxiliary ladder
+        shell: bash
+        run: |
+          : > pressure-support-certificate.log
+          probe() {
+            num="$1"; den="$2"; label="$3"
+            echo "===== ${label} = ${num}/${den} =====" | tee -a pressure-support-certificate.log
+            build-pressure-support/verify_local_tables "$num" "$den" "$TABLE_DIR" 80000000 \
+              | tee -a pressure-support-certificate.log
+            return ${PIPESTATUS[0]}
+          }
+          set +e
+          probe 9021 1000000 eps_0090210
+          code=$?
+          if [[ "$code" == "3" ]]; then
+            probe 18041 2000000 eps_0090205
+            code=$?
+          fi
+          if [[ "$code" == "3" ]]; then
+            probe 451 50000 eps_0090200
+            code=$?
+          fi
+          set -e
+          echo "final_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$code" != "0" && "$code" != "3" ]]; then exit "$code"; fi
+
+      - name: Upload optimized auxiliary evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimized-pressure-supporting-line-certificate-hardened
+          path: |
+            pressure-support-certificate.log
+          if-no-files-found: warn

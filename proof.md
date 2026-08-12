@@ -1,6 +1,6 @@
 # Current deduction outline
 
-> **Status:** the current eight-point / seven-gap local target `0.005482` and the working window floor `H > 0.6723338866` are interval-certified in this repository. The analytic interface in §1 remains imported from the lineage repositories, and independent reproduction of the new seven-dimensional certificate is still requested.
+> **Status:** the current eight-point / seven-gap target `0.005515` and working window floor `H > 0.672340545` are interval-certified in this repository. The analytic interface in §1 remains imported from the lineage repositories, and independent reproduction of the seven-dimensional certificate is still requested.
 
 ## 1. Imported analytic interface
 
@@ -22,9 +22,9 @@ $$
 
 These analytic ingredients are imported.
 
-## 2. Analytic window
+## 2. Certified analytic window
 
-The certified eight-point result uses the same rational 15-term window
+Use
 
 $$
 v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
@@ -35,105 +35,89 @@ with denominator $10^9$ and numerator vector
 
 ```text
 1000000000,
-8629738,
--10085378,
-1746803,
-1125700,
--2203905,
-1904615,
--4559603,
-7930665,
--3022627,
-2165339,
-398121,
--255934,
-188899,
--148305
+7862237,
+-11036157,
+3734450,
+1402396,
+-1412889,
+3402026,
+-1739485,
+4930665,
+-4255468,
+3101956,
+-2601879,
+146498,
+398565,
+-271068
 ```
 
-Direct interval arithmetic verifies
+Direct interval arithmetic encloses
 
 $$
-\boxed{H(v)>0.6723338866}.
+H(v)=0.672340545121386742008925898118525\ldots
 $$
+
+and proves
+
+$$
+\boxed{H(v)>0.672340545}.
+$$
+
+The same interval subdivision verifies positivity of the window.
 
 ## 3. Eight-point local functional
 
-Let $g_1,\ldots,g_7\ge0$ be seven consecutive normalized gaps and set
-
-$$
-y_0=0,\qquad y_j=g_1+\cdots+g_j.
-$$
-
-The local functional is
+Let $g_1,\ldots,g_7\ge0$, put $y_0=0$ and $y_j=g_1+\cdots+g_j$, and define
 
 $$
 F_8(g)=\sum_{r=1}^7 b_rg_r+
 \sum_{0\le i<j\le7}a_{ij}W(y_j-y_i).
 $$
 
-The exact nonnegative pair weights are recorded in `candidate.json` and satisfy, for every index span,
+The exact nonnegative pair weights in `candidate.json` satisfy
 
 $$
-\boxed{\sum_{i=0}^{7-s}a_{i,i+s}=2}\qquad(1\le s\le7).
+\boxed{\sum_{i=0}^{7-s}a_{i,i+s}=2}\qquad(1\le s\le7),
 $$
 
-The position-pressure vector is
+and the pressure vector is
 
 $$
 \frac1{2300000000}
 (474488,829921,1102531,1186120,1102531,829921,474488),
 $$
 
-and hence
+so
 
 $$
 \boxed{B=\sum_{r=1}^7b_r=\frac3{1150}}.
 $$
 
-These are precisely the pair-capacity and total-pressure facts used in the predecessor block deduction. The proof is not tied to six gaps: replacing six by seven simply gives $m-7$ translated local windows in an $m$-point block.
-
 ## 4. Certified seven-dimensional inequality
 
-For the exact rational parameters above, the repository-native outward-rounded interval verifier proves
+The hardened outward-rounded verifier proves
 
 $$
-\boxed{F_8(g_1,\ldots,g_7)\ge0.005482}\qquad(g_i\ge0).
+\boxed{F_8(g_1,\ldots,g_7)\ge0.005515}\qquad(g_i\ge0).
 $$
 
-The certificate was generated with 4000 cells per normalized unit, 50 decimal digits in the interval-table builder, and C++ compiled with `-ffp-contract=off`. It started from 48 boxes and reports
+The 4000-grid / 50-digit run, compiled with `-ffp-contract=off`, reports
 
 ```text
 VERIFIED=true
-nodes=56348888
-pruned=28174468
-splits=28174420
-convex=21755661
-tangent=9522833
-max_depth=83
+nodes=66686224
+pruned=33343136
+splits=33343088
+convex=27190260
+tangent=12043940
+max_depth=86
 ```
 
-Exact table hashes, workflow run `31594502822`, and artifact `9141284166` are recorded in `candidate.json` and `certificates/latest-verification.txt`.
+The table hashes, workflow run `31598015611`, and artifact `9142888339` are recorded in `candidate.json` and `certificates/latest-verification.txt`.
 
-## 5. Exact pressure multiplicity for seven gaps
+## 5. Exact shifted-pressure deduction
 
-For an $m$-point block there are $m-7$ translated eight-point windows. Summing their local inequalities gives total right-hand side
-
-$$
-A_m=\varepsilon_8(m-7).
-$$
-
-Because each local pressure vector has total $B$, exact shifted-block averaging gives pressure charge
-
-$$
-(m-7)B.
-$$
-
-The span-capacity identities imply that the summed pair contribution is dominated by the same block pair energy used in the predecessor spectral estimate. Thus the predecessor block argument extends with $6$ replaced by $7$.
-
-## 6. Spectral conversion
-
-Set
+For an $m$-point block there are $m-7$ translated eight-point windows. Set
 
 $$
 A_m=\varepsilon_8(m-7),\qquad
@@ -141,7 +125,7 @@ R_m=h_m(A_m),\qquad
 \eta_m=R_m/A_m.
 $$
 
-Then
+Exact shifted-block accounting gives total pressure charge $(m-7)B$, while the span-capacity identities control the pair contribution by the predecessor block energy. Hence
 
 $$
 \Delta(M)\ge\frac{R_m}{m}S-
@@ -157,50 +141,74 @@ $$
 }.
 $$
 
-## 7. Final arithmetic
+## 6. Final arithmetic
 
-Use the certified values
+Use
 
 $$
-H=0.6723338866,\qquad
-\varepsilon_8=0.005482,\qquad
+H=0.672340545,\qquad
+\varepsilon_8=0.005515,\qquad
 B=3/1150.
 $$
 
 The integer scan selects
 
 $$
-m=204.
+\boxed{m=203}.
 $$
 
 Then
 
 $$
-A_{204}=1.079954,
+A_{203}=1.08094,
 $$
 
 $$
-R_{204}=1.0786101804671024521213591572698778\ldots,
+R_{203}=1.07956220302209765100385204312294\ldots,
 $$
 
-and the exact-pressure formula gives
+and
+
+$$
+\eta_{203}=0.99872537145641538938687812748436\ldots.
+$$
+
+Thus
 
 $$
 \frac SN\ge
-0.6733781954777601373716541705496368620\ldots-o(1).
+0.67340621629894866656390422423548\ldots-o(1),
 $$
 
-Hence safely
+so safely
 
 $$
 \boxed{
 \liminf_{T\to\infty}\frac{N_0^s(T,2T)}{N(T,2T)}
->0.6733781954
+>0.6734062162
 }.
 $$
 
-Numerically the conservative inputs give **67.3378195478%** before decimal truncation.
+The conservative inputs therefore give **67.3406216299%** before decimal truncation.
+
+## 7. Joint-pressure extension under test
+
+The local-to-global argument above actually uses the total pressure only through the symbolic quantity $B=\sum b_r$. In the predecessor proof, summing the local inequalities gives
+
+$$
+E_B+B\,\operatorname{span}(B)\ge A,
+$$
+
+and the subsequent block deduction carries that same $B$ into the global penalty. Thus the proof does not intrinsically force $B=3/1150$; that value was held fixed in the positioned-pressure predecessor to isolate redistribution as a new lever.
+
+The active `discovery_candidate.json` therefore tests a legitimate further degree of freedom with
+
+$$
+B=\frac{93}{23000},\qquad \varepsilon=0.007887,
+$$
+
+while preserving nonnegative pressures and exact span capacities 2. Its window and structural constraints are already interval/exact checked. Promotion still requires the dedicated full six-dimensional local verifier to return `VERIFIED=true`.
 
 ## Trust boundary
 
-The window interval bound, exact eight-point span capacities, exact pressure total, seven-dimensional local certificate, shifted-pressure bookkeeping, and final arithmetic are checked in this repository. The explicit-formula / trace interface and finite-$m$ Gram profile remain imported from prior work. Independent reproduction of the new seven-dimensional certificate is requested, so this remains an interval-certified research-draft candidate rather than a publication-ready theorem.
+The current window interval bound, exact eight-point span capacities, exact pressure total, seven-dimensional local certificate, shifted-pressure bookkeeping, and final arithmetic are checked in this repository. The explicit-formula / trace interface and finite-$m$ Gram profile remain imported from prior work. Independent reproduction is still requested, so the result remains an interval-certified research-draft candidate rather than a publication-ready theorem.

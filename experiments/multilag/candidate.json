@@ -15,19 +15,19 @@
     "positivity_subdivision_cells": 4096
   },
   "local_search": {
-    "method": "fix the root 17-term window and pair weights; constrain the auxiliary pressure total to exactly (6/5)*(93/23000); optimize the three reflection-symmetric pressure coordinates by semi-infinite LP / adversarial exchange; quantize to denominator 230e9; repolish all {1,2,3,4}^6 templates without screening; stress with six multi-range differential-evolution runs",
+    "method": "fix the root 17-term window and pair weights; constrain the auxiliary pressure total to exactly (6/5)*(93/23000); optimize the three reflection-symmetric pressure coordinates by semi-infinite LP / adversarial exchange; quantize to denominator 230e9; repolish all {1,2,3,4}^6 templates without screening; stress with six multi-range differential-evolution runs; choose the rigorous target from the global no-Gram-loss threshold rather than from the floating local optimum",
     "pressure_total_scale": {"numerator":6,"denominator":5},
     "template_start_count": 4096,
     "template_screening": false,
     "differential_evolution_runs": 6,
     "float_minimum_observed": "0.00902172205332521...",
     "float_minimum_location": ["1.036097587833","1.038002793236","1.965416856027","1.045335923444","1.967453357559","1.040665593176"],
-    "candidate_target_for_certification": {"numerator":9021,"denominator":1000000},
+    "candidate_target_for_certification": {"numerator":9015,"denominator":1000000},
     "verified": false,
-    "note": "The target 0.0090210 is about 7.22e-7 below the quantized unscreened floating minimum. Six DE runs did not find a lower value; one DE run converged to the same lowest basin. This is an auxiliary energy-pressure supporting-line inequality, not a standalone scalar-Gram candidate."
+    "note": "The target 0.009015 is about 6.72e-6 below the quantized unscreened floating minimum. At m=312 the exact analytic threshold for the full no-Gram-loss deduction is only about 0.009011915, so lowering the local certification target from 0.009021 to 0.009015 preserves the final conditional projection while materially improving certifiability."
   },
   "local_certificate": {
-    "target": {"numerator":9021,"denominator":1000000},
+    "target": {"numerator":9015,"denominator":1000000},
     "verified": false,
     "independent_reproduction": false,
     "method": "reuse outward-rounded tables for the identical 17-term window plus hardened six-dimensional C++ branch-and-bound with the optimized auxiliary pressure vector"
@@ -46,6 +46,6 @@
     "base_pressure": {"numerator":93,"denominator":23000},
     "base_constraint": "S + P >= A0 from root candidate.json, where S is the six-band energy and P=(93/23000)*span",
     "auxiliary_constraint": "S + (6/5) P >= A1 because the optimized auxiliary pressure vector has the same exact total (6/5)B; translated pressure bookkeeping uses only the total",
-    "conditional_projection": "If this auxiliary target closes and the continuous banded-Gram profile is accepted, the two supporting lines remove the Gram discount through m=312: R=A0 and eta=1. Exact conditional projection: 67.3447428731%, safe floor 0.6734474287. At m=313 the exact endpoint square condition changes sign, so m=312 is the last full no-loss block for this target."
+    "conditional_projection": "If the auxiliary target 0.009015 closes and the continuous banded-Gram profile is accepted, the two supporting lines still remove the Gram discount through m=312: R=A0 and eta=1. Exact conditional projection remains 67.3447428731%, safe floor 0.6734474287."
   }
 }

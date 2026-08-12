@@ -32,7 +32,7 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
 
-      - name: Validate optimized auxiliary structure and exact projection
+      - name: Validate certified base auxiliary and bundle target
         run: |
           python3 - <<'PY'
           import json
@@ -40,15 +40,17 @@ jobs:
           c=json.load(open('experiments/multilag/candidate.json'))
           assert c['window']['term_count']==17
           assert Fraction(c['local_search']['pressure_total_scale']['numerator'],c['local_search']['pressure_total_scale']['denominator'])==Fraction(6,5)
+          assert c['local_certificate']['verified'] is True
+          assert Fraction(c['local_certificate']['target']['numerator'],c['local_certificate']['target']['denominator'])==Fraction(9015,1000000)
+          nxt=c['local_search']['next_bundle_target']
+          assert Fraction(nxt['numerator'],nxt['denominator'])==Fraction(9017,1000000)
           p=c['pair_weights']
           for s in range(1,7):
               total=sum(int(n) for i,j,n in p['entries'] if int(j)-int(i)==s)
               assert Fraction(total,p['denominator'])==2
           pr=c['position_pressure']
           assert Fraction(sum(pr['numerators']),pr['denominator'])==Fraction(279,57500)
-          target=c['local_search']['candidate_target_for_certification']
-          assert Fraction(target['numerator'],target['denominator'])==Fraction(9015,1000000)
-          print('optimized_pressure_support_structure_exact=True')
+          print('bundle_target_structure_exact=True')
           PY
           python3 src/check_window.py
           python3 src/check_multilag.py
@@ -64,7 +66,6 @@ jobs:
           git fetch --no-tags --depth=1 origin "$VERIFIER_SOURCE_COMMIT"
           git show "$VERIFIER_SOURCE_COMMIT:src/verify_local_tables.cpp" > build-pressure-support/verify_local_tables.cpp
           test "$(git hash-object build-pressure-support/verify_local_tables.cpp)" = "$VERIFIER_SOURCE_BLOB"
-
           python3 - <<'PY'
           from pathlib import Path
           p=Path('build-pressure-support/verify_local_tables.cpp')
@@ -72,13 +73,9 @@ jobs:
           old='if (total != candidate_config::span_capacity_num)\n                throw std::runtime_error("pair span capacity mismatch");'
           new='if (total != candidate_config::span_capacity_num[span - 1])\n                throw std::runtime_error("pair span capacity mismatch");'
           assert s.count(old)==1
-          s=s.replace(old,new)
-          p.write_text(s)
+          p.write_text(s.replace(old,new))
           print('capacity_compatibility_patch_only=True')
           PY
-          grep -n 'span_capacity_num\[span - 1\]' build-pressure-support/verify_local_tables.cpp
-          grep -n 'prove_positive_definite' build-pressure-support/verify_local_tables.cpp
-
           g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
             -Ibuild-pressure-support build-pressure-support/verify_local_tables.cpp \
             -o build-pressure-support/verify_local_tables
@@ -100,23 +97,23 @@ jobs:
           test -f "$TABLE_DIR/manifest.json"
           echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
 
-      - name: Run hardened certifiability-directed target
+      - name: Run hardened bundle-directed target
         shell: bash
         run: |
-          : > pressure-support-certificate.log
+          : > pressure-support-bundle-target.log
           set +e
-          build-pressure-support/verify_local_tables 9015 1000000 "$TABLE_DIR" 80000000 \
-            | tee -a pressure-support-certificate.log
+          build-pressure-support/verify_local_tables 9017 1000000 "$TABLE_DIR" 80000000 \
+            | tee -a pressure-support-bundle-target.log
           code=${PIPESTATUS[0]}
           set -e
-          echo "eps_009015_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          echo "eps_009017_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
           if [[ "$code" != "0" ]]; then exit "$code"; fi
 
-      - name: Upload optimized auxiliary evidence
+      - name: Upload bundle-target evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: optimized-pressure-supporting-line-certificate-hardened
+          name: pressure-supporting-line-009017-hardened
           path: |
-            pressure-support-certificate.log
+            pressure-support-bundle-target.log
           if-no-files-found: warn

@@ -126,6 +126,7 @@ public:
 private:
     std::size_t size_ = 0;
     std::size_t count_ = 0;
+    std::vector<double> tree_;
 };
 
 struct PairWeight {

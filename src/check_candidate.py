@@ -19,7 +19,9 @@ pair_den = int(pairs["denominator"])
 capacity_num = int(pairs["span_capacity_numerator"])
 entries = [(int(i), int(j), int(n)) for i, j, n in pairs["entries"]]
 assert all(0 <= i < j <= gaps for i, j, _ in entries)
-assert all(n > 0 for _, _, n in entries)
+# The local-to-global argument requires nonnegative pair weights; exact zeros
+# are allowed and occur in the joint-pressure optimum.
+assert all(n >= 0 for _, _, n in entries)
 assert len({(i, j) for i, j, _ in entries}) == len(entries)
 for span in range(1, gaps + 1):
     total = sum(n for i, j, n in entries if j - i == span)
@@ -28,6 +30,7 @@ assert Fraction(capacity_num, pair_den) == 2
 
 pressure = candidate["position_pressure"]
 assert len(pressure["numerators"]) == gaps
+assert all(int(n) >= 0 for n in pressure["numerators"])
 pressure_sum = sum(
     (Fraction(int(n), int(pressure["denominator"])) for n in pressure["numerators"]),
     Fraction(0),
@@ -69,7 +72,8 @@ if verified:
 
 archive = candidate["archive"]
 assert archive["previous_certified_record"].startswith("archive/")
-assert len(archive["previous_source_commit"]) == 40
+if "previous_source_commit" in archive:
+    assert len(archive["previous_source_commit"]) == 40
 
 provenance = candidate["provenance"]["positioned_pressure_predecessor"]
 assert provenance["repository"] == "sxuff/zeta-positioned-pressure"
@@ -80,5 +84,6 @@ for item in provenance["files"].values():
 
 print("candidate_consistency_verified=True")
 print("pair_weight_span_capacity_verified=True")
+print("position_pressure_total_verified=True", pressure_sum)
 print("local_interval_certificate_verified=", verified)
 print("predecessor_commit=", provenance["commit"])

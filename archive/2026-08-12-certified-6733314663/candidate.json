@@ -1,0 +1,58 @@
+{
+  "description": "Archived robust 15-term seven-point record with interval-certified 0.0054022 local target and tightened interval H floor.",
+  "status": "archived; interval-certified locally; independent reproduction not completed",
+  "date": "2026-08-12",
+  "source_commit": "4f3e0d0d6b1e9df6c3c77bed9fcc448766d7d8f0",
+  "points": 7,
+  "gaps_per_local_window": 6,
+  "window": {
+    "term_count": 15,
+    "denominator": 1000000000,
+    "numerators": [1000000000,8629738,-10085378,1746803,1125700,-2203905,1904615,-4559603,7930665,-3022627,2165339,398121,-255934,188899,-148305],
+    "frequencies": ["sqrt(2)","2*pi","4*pi","6*pi","8*pi","10*pi","12*pi","14*pi","16*pi","18*pi","20*pi","22*pi","24*pi","26*pi","28*pi"],
+    "computed_h": "0.6723338866579421588353682235566229019073801717703904779259479012...",
+    "projection_h_floor": {"numerator":3361669433,"denominator":5000000000},
+    "h_floor_interval_verified": true
+  },
+  "local_search": {
+    "float_minimum_observed": "0.005402429240910082...",
+    "candidate_target_for_certification": {"numerator":27011,"denominator":5000000},
+    "verified": true
+  },
+  "local_certificate": {
+    "target": {"numerator":27011,"denominator":5000000},
+    "verified": true,
+    "independent_reproduction": false,
+    "grid": 4000,
+    "precision_decimal_digits": 50,
+    "coarse_cells": 59790,
+    "midpoint_values": 119581,
+    "source_commit": "e762fb7ee75db81aa5e984556113b2795e4a0d6b",
+    "workflow_run_id": 31590835765,
+    "artifact_id": 9139396890,
+    "artifact_digest_sha256": "adbf45ccd4b61df2c53041d3bc5e495af795d2fd5996bf49eb778651eeae559b",
+    "verifier_stats": {"nodes":3380026,"pruned":1690085,"splits":1689941,"convex":1980120,"tangent":852267,"max_depth":70},
+    "table_hashes_sha256_big_endian_float_stream": {
+      "w_lower.bin":"a9aec0b9c422129a126bc4ccca82fe08c233cc38c111314b82be486b0d5b5f81",
+      "w_second_lower.bin":"d772fffe91a6f2105b1cb5840ecf24f0db75358093102c46b4793fb74db2ec62",
+      "w_mid_lower.bin":"da401aeae6091e651c6e09a634be7f57742af876803f099f98d47a79e72cd637",
+      "w_mid_upper.bin":"a79dd4d689481f0deffc2b1ad349557f8c9eb410c48aad15dd34f89fa087b3b5",
+      "w_prime_mid_lower.bin":"f6a728fca354c87bf69d87505d8f534ad1c88fdef56efd5213652e2878c2bf8f",
+      "w_prime_mid_upper.bin":"dd3ba0243b35e4cc9c0ed2083b606ffa92df48b38845967401e37db61cd7143f"
+    }
+  },
+  "pair_weights": {
+    "denominator": 1000000000,
+    "span_capacity_numerator": 2000000000,
+    "entries": [[0,1,219313883],[0,2,870819909],[0,3,325978722],[0,4,1000000000],[0,5,1000000000],[0,6,2000000000],[1,2,330070053],[1,3,129180091],[1,4,674021278],[1,6,1000000000],[2,3,450616064],[2,5,674021278],[2,6,1000000000],[3,4,450616064],[3,5,129180091],[3,6,325978722],[4,5,330070053],[4,6,870819909],[5,6,219313883]]
+  },
+  "position_pressure": {"denominator":2300000000,"numerators":[831522,1096590,1071888,1071888,1096590,831522],"total":{"numerator":3,"denominator":1150}},
+  "final_projection": {
+    "pressure_shift_factor":"m-6",
+    "block_length":204,
+    "projected_safe_decimal":{"numerator":6733314663,"denominator":10000000000},
+    "computed_bound_from_conservative_inputs":"0.67333146637444245098048478448581349906047661620179785024791786378554584082368156528...",
+    "computed_percent_from_conservative_inputs":"67.333146637444245098048478448581349906047661620179785024791786378554584082368157...",
+    "certified":true
+  }
+}

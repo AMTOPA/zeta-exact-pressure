@@ -126,7 +126,6 @@ public:
 private:
     std::size_t size_ = 0;
     std::size_t count_ = 0;
-    std::vector<double> tree_;
 };
 
 struct PairWeight {
@@ -165,8 +164,6 @@ bool prove_positive_definite(
         const double s = second_min.query(left, right, false);
         if (!std::isfinite(s)) return false;
 
-        // The pair coefficient a is positive.  If W'' >= s, then
-        // a*W'' >= a_lo*s for s>=0 and >= a_hi*s for s<0.
         const double scalar = s >= 0
             ? down(p.lower * s)
             : down(p.upper * s);
@@ -176,10 +173,6 @@ bool prove_positive_definite(
                 matrix[r][c] = add(matrix[r][c], term);
     }
 
-    // Rigorous interval LDL^T.  A positive lower endpoint for every pivot
-    // proves the lower Hessian matrix positive definite; the true Hessian is
-    // then PSD because each omitted pair contribution is a nonnegative
-    // multiple of uu^T.
     std::array<std::array<Interval, Q>, Q> L{};
     std::array<Interval, Q> D{};
     for (int r = 0; r < Q; ++r)
@@ -281,7 +274,7 @@ int main(int argc, char** argv) {
 
         std::int64_t pressure_total = 0;
         for (auto n : candidate_config::pressure_num) pressure_total += n;
-        if (pressure_total != 6000000LL)
+        if (pressure_total != candidate_config::pressure_total_num)
             throw std::runtime_error("pressure total mismatch");
 
         const double target = static_cast<double>(target_num) / static_cast<double>(target_den);

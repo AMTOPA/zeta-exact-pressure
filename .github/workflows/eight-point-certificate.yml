@@ -1,11 +1,12 @@
-name: eight-point-robust-certificate
+name: eight-point-window-exchange-certificate
 
 on:
   push:
     branches: [main]
     paths:
-      - experiments/8point-robust/candidate.json
+      - experiments/8point-window-exchange/candidate.json
       - src/candidate_data.py
+      - src/check_window.py
       - src/build_interval_tables.py
       - src/write_verifier_config.py
       - src/verify_local_tables.cpp
@@ -17,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
-      ZETA_CANDIDATE_PATH: experiments/8point-robust/candidate.json
+      ZETA_CANDIDATE_PATH: experiments/8point-window-exchange/candidate.json
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,12 +26,12 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
 
-      - name: Validate exact eight-point capacities
+      - name: Validate exact structure and interval H
         run: |
           python3 - <<'PY'
           import json
           from fractions import Fraction
-          c=json.load(open('experiments/8point-robust/candidate.json'))
+          c=json.load(open('experiments/8point-window-exchange/candidate.json'))
           q=c['gaps_per_local_window']
           p=c['pair_weights']
           for span in range(1,q+1):
@@ -42,8 +43,9 @@ jobs:
           assert c['final_projection']['certified'] is False
           print('eight_point_exact_structure_verified=True')
           PY
+          python3 src/check_window.py
 
-      - name: Compile dynamic seven-gap verifier smoke
+      - name: Compile hardened seven-gap verifier smoke
         run: |
           rm -rf smoke build
           python3 src/build_interval_tables.py --output smoke --smoke-cells 64 --precision 45 --workers 4
@@ -55,9 +57,9 @@ jobs:
 
       - name: Build full outward-rounded tables
         run: |
-          rm -rf tables-8point
+          rm -rf tables-8point-next
           python3 src/build_interval_tables.py \
-            --output tables-8point \
+            --output tables-8point-next \
             --grid 4000 \
             --precision 50 \
             --workers 4
@@ -65,12 +67,12 @@ jobs:
       - name: Run hardened seven-dimensional target ladder
         shell: bash
         run: |
-          : > eight-point-certificate.log
+          : > eight-point-window-exchange.log
           probe() {
             num="$1"; den="$2"; label="$3"
-            echo "===== ${label} = ${num}/${den} =====" | tee -a eight-point-certificate.log
+            echo "===== ${label} = ${num}/${den} =====" | tee -a eight-point-window-exchange.log
             set +e
-            build/verify_local_tables "$num" "$den" tables-8point 80000000 | tee -a eight-point-certificate.log
+            build/verify_local_tables "$num" "$den" tables-8point-next 80000000 | tee -a eight-point-window-exchange.log
             code=${PIPESTATUS[0]}
             set -e
             echo "${label}_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
@@ -79,18 +81,18 @@ jobs:
           }
 
           set +e
-          probe 2741 500000 eps_005482
+          probe 1103 200000 eps_005515
           code=$?
           set -e
           if [[ "$code" == "3" ]]; then
             set +e
-            probe 137 25000 eps_005480
+            probe 5513 1000000 eps_005513
             code=$?
             set -e
           fi
           if [[ "$code" == "3" ]]; then
             set +e
-            probe 219 40000 eps_005475
+            probe 551 100000 eps_005510
             code=$?
             set -e
           fi
@@ -100,9 +102,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eight-point-robust-certificate-hardened
+          name: eight-point-window-exchange-certificate-hardened
           path: |
-            tables-8point/manifest.json
-            tables-8point/*.bin
-            eight-point-certificate.log
+            tables-8point-next/manifest.json
+            tables-8point-next/*.bin
+            eight-point-window-exchange.log
           if-no-files-found: warn

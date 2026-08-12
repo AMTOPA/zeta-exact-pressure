@@ -1,4 +1,4 @@
-name: joint-pressure-discovery-certificate
+name: joint-pressure-epsilon-tighten
 
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
           g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
             -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
 
-      - name: Build full outward-rounded tables
+      - name: Build shared outward-rounded tables
         run: |
           rm -rf tables-discovery
           python3 src/build_interval_tables.py \
@@ -50,7 +50,7 @@ jobs:
             --precision 50 \
             --workers 4
 
-      - name: Run hardened six-dimensional target ladder
+      - name: Run upward hardened epsilon ladder
         shell: bash
         run: |
           : > discovery-certificate.log
@@ -67,24 +67,24 @@ jobs:
           }
 
           set +e
-          probe 7887 1000000 eps_007887
+          probe 631 80000 eps_0078875
           code=$?
           set -e
           if [[ "$code" == "3" ]]; then
             set +e
-            probe 15773 2000000 eps_0078865
+            probe 39437 5000000 eps_0078874
             code=$?
             set -e
           fi
           if [[ "$code" == "3" ]]; then
             set +e
-            probe 3943 500000 eps_007886
+            probe 78873 10000000 eps_0078873
             code=$?
             set -e
           fi
           if [[ "$code" == "3" ]]; then
             set +e
-            probe 1577 200000 eps_007885
+            probe 9859 1250000 eps_0078872
             code=$?
             set -e
           fi
@@ -94,7 +94,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: joint-pressure-discovery-certificate-hardened
+          name: joint-pressure-epsilon-tighten-hardened
           path: |
             tables-discovery/manifest.json
             tables-discovery/*.bin

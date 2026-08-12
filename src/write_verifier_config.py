@@ -26,6 +26,13 @@ def main() -> int:
     if pressure_total_scaled.denominator != 1:
         raise ValueError("declared pressure total is incompatible with pressure denominator")
 
+    if "span_capacity_numerators" in pairs:
+        span_caps = [int(x) for x in pairs["span_capacity_numerators"]]
+        if len(span_caps) != q:
+            raise ValueError("span_capacity_numerators must have one entry per span")
+    else:
+        span_caps = [int(pairs["span_capacity_numerator"])] * q
+
     lines = [
         "#pragma once",
         "#include <array>",
@@ -34,7 +41,9 @@ def main() -> int:
         "namespace candidate_config {",
         f"inline constexpr int gaps = {q};",
         f"inline constexpr std::int64_t pair_den = {int(pairs['denominator'])}LL;",
-        f"inline constexpr std::int64_t span_capacity_num = {int(pairs['span_capacity_numerator'])}LL;",
+        f"inline constexpr std::array<std::int64_t, {q}> span_capacity_num = {{{{",
+        "    " + ", ".join(f"{x}LL" for x in span_caps),
+        "}};",
         f"inline constexpr std::int64_t pressure_den = {pressure_den}LL;",
         f"inline constexpr std::int64_t pressure_total_num = {pressure_total_scaled.numerator}LL;",
         f"inline constexpr std::int64_t target_num = {target.numerator}LL;",

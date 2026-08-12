@@ -21,11 +21,11 @@ Status: INTERVAL-CERTIFIED LOCALLY; INDEPENDENT REPRODUCTION REQUESTED
 188899
 -148305
 
-High-precision H(v):
-0.672333886657942...
+High-precision / interval-enclosed H(v):
+0.67233388665794215883536822355662290190738...
 
 Interval-verified projection H floor:
-6723338/10000000 = 0.6723338
+3361669433/5000000000 = 0.6723338866
 
 Position pressure numerator vector (denominator 2300000000):
 831522
@@ -38,13 +38,20 @@ B = 3/1150 exactly
 
 Discovery hardening:
 - the earlier score-screened 15-term target 0.005561 was rejected after the interval verifier exposed missed basins;
-- the counterexamples were fed back into an adversarial exchange optimization;
+- counterexamples were fed back into an adversarial exchange optimization;
 - all {1,2,3,4}^6 resonance templates were polished without score screening;
 - an additional {1,2,3,5}^6 stress family and multi-range differential evolution did not find a lower basin;
 - observed floating-point minimum for the retained rational window: 0.005402429240910082...
 
-Certified local target:
-5401/1000000 = 0.005401
+Certified epsilon ladder on one shared set of outward-rounded tables:
+0.0054015  VERIFIED=true
+0.0054020  VERIFIED=true
+0.0054022  VERIFIED=true
+0.0054024  INCONCLUSIVE (terminal cell; not a counterexample)
+0.00540242 INCONCLUSIVE (same terminal cell; not a counterexample)
+
+Promoted certified local target:
+27011/5000000 = 0.0054022
 VERIFIED=true
 independent_reproduction=false
 
@@ -62,30 +69,31 @@ w_mid_upper.bin         a79dd4d689481f0deffc2b1ad349557f8c9eb410c48aad15dd34f89f
 w_prime_mid_lower.bin   f6a728fca354c87bf69d87505d8f534ad1c88fdef56efd5213652e2878c2bf8f
 w_prime_mid_upper.bin   dd3ba0243b35e4cc9c0ed2083b606ffa92df48b38845967401e37db61cd7143f
 
-Verifier record:
-source commit=7c7df2f617318883593dd414b6fc77691c9f480e
-workflow run=31589096212
-artifact id=9138629773
-nodes=3171002
-pruned=1585573
-splits=1585429
-convex=1776812
-tangent=751200
-max_depth=62
+Verifier record for epsilon=0.0054022:
+source commit=e762fb7ee75db81aa5e984556113b2795e4a0d6b
+workflow run=31590835765
+artifact id=9139396890
+artifact digest sha256=adbf45ccd4b61df2c53041d3bc5e495af795d2fd5996bf49eb778651eeae559b
+nodes=3380026
+pruned=1690085
+splits=1689941
+convex=1980120
+tangent=852267
+max_depth=70
 VERIFIED=true
 
 Final exact-pressure arithmetic:
-H_floor=0.6723338
-epsilon=0.005401
+H_floor=0.6723338866
+epsilon=0.0054022
 best m=204
-bound=0.6733305982879586830508445665624969011279...
-percent=67.333059828795868305...%
-safe decimal floor=0.6733305982
+bound=0.67333146637444245098048478448581349906047...
+percent=67.333146637444245098...%
+safe decimal floor=0.6733314663
 
 Trust boundary:
 The local numerical inequality and H floor are interval-checked in this repository.
 The analytic interface inherited from the lineage repositories remains imported.
-Independent reproduction of the new local certificate is still requested before treating the research-draft result as publication-ready.
+Independent reproduction of the local certificate is still requested before treating the research-draft result as publication-ready.
 
 Previous interval-certified research-draft record:
-archive/2026-08-12-certified-6732907560/
+archive/2026-08-12-certified-6733305982/

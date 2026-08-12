@@ -1,127 +1,115 @@
 # Zeta exact-pressure optimization
 
 > [!IMPORTANT]
-> **Current interval-certified research-draft record: 67.3413085287%.**
+> **Current interval-certified research-draft record under the existing scalar Gram interface: 67.3416490971%.**
 >
-> The current construction jointly optimizes the total local pressure, the rational 15-term window, pair weights, and position-pressure distribution. The six-gap target `epsilon = 0.007887` is closed by the hardened outward-rounded interval verifier. A same-parameter upward epsilon tightening is now the active experiment.
+> A new analytic-extension experiment that retains six-band Gram information projects to **67.3423563564%**, but that new matrix lemma is not yet promoted to the root record; it requires independent mathematical review.
 
 This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
 
-## Current joint-pressure certified record
+## Current certified baseline
 
-The local construction returns to seven points / six gaps, but releases a parameter held fixed in earlier positioned-pressure searches: the total local pressure
-
-\[
-B=\sum_{r=1}^{6}b_r.
-\]
-
-The predecessor block argument uses this quantity symbolically through
+The current root construction uses seven points / six gaps, exact total position pressure
 
 \[
-E_B+B\,\operatorname{span}(B)\ge A,
+B=\frac{93}{23000},
 \]
 
-and carries the same \(B\) into the global pressure penalty. Thus \(B\) may itself be optimized provided the position pressures remain nonnegative, the exact new total is used globally, and every pair-span capacity remains at most 2.
-
-### Analytic window
-
-We use
+and a second-exchange 17-term analytic window
 
 \[
-v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
-\omega_0=\sqrt2,\quad \omega_j=2j\pi\ (1\le j\le14),
+v(s)=\sum_{j=0}^{16}c_j\cos(\omega_js),
+\qquad
+\omega_0=\sqrt2,
+\quad \omega_j=2j\pi\ (1\le j\le16).
 \]
 
-with denominator \(10^9\) and numerator vector
+The rational coefficient denominator is \(10^9\), with numerator vector
 
 ```text
 1000000000
-  12948011
- -12114181
-   3684033
-   5911261
-  -1663892
-   5928575
-  -7167828
-   6229914
-  -5147758
-   -756341
-    440544
-   -311207
-    237969
-   -190433
+   12378982
+  -12602495
+    4164033
+    5741405
+   -1724025
+    6219280
+   -8047828
+    6321519
+   -5241981
+    -892658
+     560544
+    -431207
+     357969
+    -310433
+     100000
+    -100000
 ```
 
-Direct interval arithmetic gives
+Interval arithmetic gives
 
 \[
-H(v)=0.6721999026675757754212693844824\ldots
+H(v)=0.67218815811823458516945638772565\ldots
 \]
 
-and verifies the tighter conservative floor
+and proves the conservative floor
 
 \[
-\boxed{H(v)>0.6721999026}.
+\boxed{H(v)>0.6721881580}.
 \]
 
-The same 4096-cell interval subdivision gives a window lower bound above `0.7616106600`.
-
-### Exact local weights and pressure
-
-The exact position-pressure vector is
-
-\[
-\frac1{46000000000}
-(22420713,32878293,37700994,37700994,32878293,22420713),
-\]
-
-with
-
-\[
-\boxed{B=\frac{93}{23000}=0.004043478260869565\ldots}.
-\]
-
-For every span \(s=1,\ldots,6\), the exact pair weights in [`candidate.json`](candidate.json) sum to exactly 2. All pair and pressure coefficients are nonnegative.
+The same 4096-cell interval subdivision gives a positive window lower bound above `0.7616418486`.
 
 ### Certified local inequality
 
-Adversarial exchange over \(B\), the window, pair weights, and pressure distribution produced an observed floating minimum near
+The local functional has the exact pair and position-pressure coefficients stored in [`candidate.json`](candidate.json). Every pair span \(s=1,\ldots,6\) has exact total capacity 2, and the position pressures sum exactly to \(93/23000\).
+
+Unscreened adversarial exchange found a floating minimum near
 
 \[
-0.0078878193504693\ldots.
+0.007911105155226424\ldots.
 \]
 
-The hardened six-dimensional interval verifier proves
+The hardened six-dimensional outward-rounded verifier proves
 
 \[
-\boxed{F(g_1,\ldots,g_6)\ge0.007887}\qquad(g_i\ge0).
+\boxed{F(g_1,\ldots,g_6)\ge0.0079107}
+\qquad(g_i\ge0).
 \]
 
 The successful 4000-grid / 50-digit run, compiled with `-ffp-contract=off`, reports
 
 ```text
 VERIFIED=true
-nodes=3424276
-pruned=1712170
-splits=1712106
-convex=1756299
-tangent=801918
-max_depth=71
+nodes=3768186
+pruned=1884125
+splits=1884061
+convex=2030240
+tangent=936616
+max_depth=74
 ```
 
-It begins from 64 boxes with component counts `2,2,2,2,2,2`. Exact table hashes, workflow run `31603343875`, artifact `9144421792`, and artifact digest are recorded in [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt).
+Evidence is recorded in `candidate.json`:
 
-## Exact-pressure projection
+```text
+workflow run = 31610179703
+artifact id = 9147378469
+artifact digest sha256 = 871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1
+```
 
-For an \(m\)-point block,
+## Existing scalar-Gram projection
+
+Under the inherited finite-dimensional profile
 
 \[
-A_m=\varepsilon(m-6),\qquad
-R_m=h_m(A_m),\qquad
+R_m=h_m(A_m),
+\qquad
+A_m=\varepsilon(m-6),
+\qquad
 \eta_m=R_m/A_m,
 \]
 
-and exact shifted-pressure bookkeeping gives
+the shifted-pressure deduction gives
 
 \[
 \frac{N_0^s(T,2T)}{N(T,2T)}
@@ -129,11 +117,13 @@ and exact shifted-pressure bookkeeping gives
 \frac{mH-\eta_mB(m-6)}{m-R_m}-o(1).
 \]
 
-Using only certified conservative inputs
+Using only the certified conservative inputs
 
 \[
-H=0.6721999026,\qquad
-\varepsilon=0.007887,\qquad
+H=0.6721881580,
+\qquad
+\varepsilon=0.0079107,
+\qquad
 B=\frac{93}{23000},
 \]
 
@@ -146,31 +136,60 @@ the integer scan selects
 and gives
 
 \[
-\boxed{0.6734130852868493916709\ldots}.
+\boxed{0.67341649097149929495\ldots}.
 \]
 
 Therefore the safe decimal floor is
 
 \[
-\boxed{0.6734130852},
+\boxed{0.6734164909},
 \]
 
-i.e. **67.3413085287%** before truncation.
+i.e. **67.3416490971%** before truncation.
 
-The immediately previous interval-certified state, **67.3406216299%**, is frozen under [`archive/2026-08-12-certified-6734062162/`](archive/2026-08-12-certified-6734062162/).
+The immediately previous certified state, **67.3415313957%**, is frozen under [`archive/2026-08-12-certified-6734153139/`](archive/2026-08-12-certified-6734153139/).
 
-## Active epsilon tightening
+## New direction: retain band-position information
 
-The observed floating minimum remains above the certified target by about \(8.19\times10^{-7}\). The current interval-table range also has enough length to test a modest upward ladder without changing the window or weights. The active hardened workflow therefore probes
+The scalar profile \(h_m\) is sharp if only total off-diagonal energy is known. The translated local certificate, however, gives more structure: it only uses pairs with index span at most six. The active analytic-extension experiment therefore retains
 
-```text
-0.0078875
-0.0078874
-0.0078873
-0.0078872
-```
+\[
+E_6=2\sum_{1\le j-i\le6}|G_{ij}|^2
+\]
 
-in descending order until one closes. These values are not promoted until the verifier returns `VERIFIED=true`.
+instead of immediately relaxing it to the full off-diagonal energy.
+
+A coloring / Frobenius-distance argument gives the proposed continuous banded profile
+
+\[
+g_q(E)=
+\begin{cases}
+E,&E\le(q+1)/q,\\
+2\sqrt{\frac{q+1}{q}E}-\frac{q+1}{q},&E\ge(q+1)/q.
+\end{cases}
+\]
+
+Using the already interval-certified 17-term local input, exact rational arithmetic with this profile selects \(m=165\) and projects to
+
+\[
+\boxed{0.6734235635636362491\ldots}
+\]
+
+or
+
+\[
+\boxed{67.3423563564\%}
+\]
+
+with safe floor `0.6734235635`.
+
+This is **not yet the root certified record**: the local numerical certificate is rigorous and the final arithmetic is exact, but the new banded-Gram analytic lemma and its insertion into shifted-block pinching need independent mathematical review. The full proof sketch and machine-readable arithmetic are under [`experiments/banded-gram/`](experiments/banded-gram/).
+
+## Why mixed local geometries were not enough
+
+A same-window 7-point / 8-point mixture was tested first. The interior pair-capacity constraint forces the mixture coefficients to form a convex combination, and after the usual scalar \(A_m\to h_m(A_m)\) compression the optimizer selected an endpoint rather than an interior mixture. This negative result is what motivated changing the Gram step instead of continuing to mix certificates before the scalar bottleneck.
+
+A preliminary five-gap experiment was also tested because its band threshold is larger. Free LP weights initially overfit badly; adversarial exchange pushed the robust local minimum well below the level required to beat the six-gap construction. For now, six gaps appears to be the better geometry for the new banded profile.
 
 ## Reproduction and trust boundary
 
@@ -180,10 +199,8 @@ Run
 sh run.sh
 ```
 
-for structural checks, interval \(H\) verification, window positivity, exact pressure multiplicity, final arithmetic, and verifier smoke testing. Heavy full-certificate workflows run on `main`.
+for root structural checks, interval-window verification, final arithmetic, verifier smoke testing, and the exact arithmetic of the banded-Gram experiment.
 
-Checked directly in this repository: exact pair-span capacities, exact declared pressure totals, interval window bounds/positivity, the current six-dimensional local certificate, and final exact-pressure arithmetic. Imported from the lineage: the explicit-formula / trace interface, finite-\(m\) Gram spectral profile, normalized-gap bookkeeping, and analytic link from \(H(v)\) to the zero count.
+Checked directly in this repository: exact pair-span capacities, exact declared pressure totals, interval window bounds/positivity, the current six-dimensional local certificate, existing scalar-Gram final arithmetic, and the rational arithmetic of the new banded experiment. Imported from the lineage: the explicit-formula / trace interface and shifted-block framework. The new banded-Gram matrix inequality is documented locally but still awaits independent review.
 
-Independent reproduction of the latest local certificate remains requested before publication-quality use. Historical certified states remain under `archive/` in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md).
-
-Original repository material is MIT-licensed. Third-party analytic inputs are referenced rather than vendored; see [`THIRD_PARTY.md`](THIRD_PARTY.md).
+Historical certified states remain under `archive/` in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md). Original repository material is MIT-licensed. Third-party analytic inputs are referenced rather than vendored; see [`THIRD_PARTY.md`](THIRD_PARTY.md).

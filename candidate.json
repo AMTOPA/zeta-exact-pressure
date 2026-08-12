@@ -1,5 +1,5 @@
 {
-  "description": "11-term window discovery candidate for exact shifted-pressure optimization of simple zeros of the Riemann zeta function.",
+  "description": "15-term window discovery candidate for exact shifted-pressure optimization of simple zeros of the Riemann zeta function.",
   "status": "discovery candidate; NOT interval-certified",
   "date": "2026-08-12",
   "lineage": [
@@ -7,25 +7,30 @@
     "trmdy/zeta-simple-zeros-673137",
     "sxuff/zeta-positioned-pressure",
     "AMTOPA/zeta-exact-pressure-673262",
-    "AMTOPA/zeta-exact-pressure archived 67.3290756019% record"
+    "AMTOPA/zeta-exact-pressure archived 67.3290756019% record",
+    "AMTOPA/zeta-exact-pressure 11-term 67.3330085275% discovery candidate"
   ],
   "points": 7,
   "gaps_per_local_window": 6,
   "window": {
-    "term_count": 11,
+    "term_count": 15,
     "denominator": 1000000000,
     "numerators": [
       1000000000,
-      8421762,
-      -9816829,
-      1448046,
-      1412305,
-      -2228329,
-      2374999,
-      -4885560,
-      8393483,
-      -3137216,
-      2381462
+      7715770,
+      -15127849,
+      -277796,
+      1460676,
+      -4061917,
+      4967584,
+      -4903364,
+      5054213,
+      -2570688,
+      3857592,
+      459037,
+      -292106,
+      211779,
+      -164957
     ],
     "frequencies": [
       "sqrt(2)",
@@ -38,24 +43,55 @@
       "14*pi",
       "16*pi",
       "18*pi",
-      "20*pi"
+      "20*pi",
+      "22*pi",
+      "24*pi",
+      "26*pi",
+      "28*pi"
     ],
-    "computed_h": "0.6723307581635602536...",
+    "computed_h": "0.672265428696397298692842905520471174674953775831422813524032012700582621469298390070896647...",
     "projection_h_floor": {
-      "numerator": 6723307,
+      "numerator": 6722654,
       "denominator": 10000000
     }
   },
   "local_search": {
-    "method": "pressure-feasible lattice adversary enumeration with local polishing; discovery only",
-    "adversarial_start_count": 2823,
-    "float_minimum_observed": "0.00540611079920...",
+    "method": "fixed predecessor pair/pressure weights; robust floating-point adversary search using full 0..8 integer lattice scoring, analytic-gradient local polishing, accumulated counterexamples, and multi-range differential evolution; discovery only",
+    "integer_lattice_points_scored": 531441,
+    "integer_lattice_polished_starts": 220,
+    "differential_evolution_runs": 9,
+    "float_minimum_observed": "0.005561991478045605...",
     "candidate_target_for_certification": {
-      "numerator": 5405,
+      "numerator": 5561,
       "denominator": 1000000
     },
     "verified": false,
-    "note": "The target 0.005405 is intentionally below the observed floating-point adversarial minimum but has not yet been proved by interval branch-and-bound."
+    "note": "The target 0.005561 is below the observed floating-point adversarial minimum. This is discovery evidence only; a rigorous interval branch-and-bound certificate is still required."
+  },
+  "pair_weights": {
+    "denominator": 1000000000,
+    "span_capacity_numerator": 2000000000,
+    "entries": [
+      [0, 1, 219313883],
+      [0, 2, 870819909],
+      [0, 3, 325978722],
+      [0, 4, 1000000000],
+      [0, 5, 1000000000],
+      [0, 6, 2000000000],
+      [1, 2, 330070053],
+      [1, 3, 129180091],
+      [1, 4, 674021278],
+      [1, 6, 1000000000],
+      [2, 3, 450616064],
+      [2, 5, 674021278],
+      [2, 6, 1000000000],
+      [3, 4, 450616064],
+      [3, 5, 129180091],
+      [3, 6, 325978722],
+      [4, 5, 330070053],
+      [4, 6, 870819909],
+      [5, 6, 219313883]
+    ]
   },
   "position_pressure": {
     "denominator": 2300000000,
@@ -74,15 +110,15 @@
   },
   "final_projection": {
     "pressure_shift_factor": "m-6",
-    "block_length": 204,
+    "block_length": 199,
     "projected_safe_decimal": {
-      "numerator": 6733300852,
+      "numerator": 6733659002,
       "denominator": 10000000000
     },
-    "computed_bound_from_conservative_inputs": "0.6733300852750384514284515550763303038641...",
-    "computed_percent_from_conservative_inputs": "67.333008527503845142...",
-    "float_discovery_bound": "0.673330866624887...",
-    "float_discovery_percent": "67.3330866624887...",
+    "computed_bound_from_conservative_inputs": "0.673365900257025371907543883558956329504649979486267195486027479757833082871120597063434353...",
+    "computed_percent_from_conservative_inputs": "67.33659002570253719075438835589563295046499794862671954860274797578330828711206...",
+    "float_discovery_bound": "0.673366573285773...",
+    "float_discovery_percent": "67.3366573285773...",
     "certified": false
   },
   "archive": {

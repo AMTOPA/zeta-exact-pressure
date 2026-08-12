@@ -14,6 +14,18 @@ assert len(window["numerators"]) == term_count
 assert len(window["frequencies"]) == term_count
 assert term_count >= points
 
+pairs = candidate["pair_weights"]
+pair_den = int(pairs["denominator"])
+capacity_num = int(pairs["span_capacity_numerator"])
+entries = [(int(i), int(j), int(n)) for i, j, n in pairs["entries"]]
+assert all(0 <= i < j <= gaps for i, j, _ in entries)
+assert all(n > 0 for _, _, n in entries)
+assert len({(i, j) for i, j, _ in entries}) == len(entries)
+for span in range(1, gaps + 1):
+    total = sum(n for i, j, n in entries if j - i == span)
+    assert total == capacity_num
+assert Fraction(capacity_num, pair_den) == 2
+
 pressure = candidate["position_pressure"]
 assert len(pressure["numerators"]) == gaps
 pressure_sum = sum(
@@ -44,5 +56,6 @@ for item in provenance["files"].values():
     assert len(item["blob_sha"]) == 40
 
 print("candidate_consistency_verified=True")
+print("pair_weight_span_capacity_verified=True")
 print("candidate_status=discovery_not_interval_certified")
 print("predecessor_commit=", provenance["commit"])

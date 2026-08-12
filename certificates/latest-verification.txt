@@ -10,24 +10,27 @@ gaps=7
 
 15-term window numerator vector (denominator 1e9):
 1000000000
-8629738
--10085378
-1746803
-1125700
--2203905
-1904615
--4559603
-7930665
--3022627
-2165339
-398121
--255934
-188899
--148305
+7862237
+-11036157
+3734450
+1402396
+-1412889
+3402026
+-1739485
+4930665
+-4255468
+3101956
+-2601879
+146498
+398565
+-271068
 
 Interval-verified window input:
-H(v)=0.67233388665794215883536822355662290190738...
-H_floor=3361669433/5000000000=0.6723338866
+H(v)=0.67234054512138674200892589811852515766646...
+H_interval=[0.672340545121386742008925898118525157666463940959018436058814138150398417227...,
+            0.67234054512138674200892589811852515766646394095901843605881413817410504404...]
+H_floor=672340545/1000000000=0.672340545
+interval_window_lower_bound=0.7599349197402899...
 
 Eight-point exact position pressure (denominator 2300000000):
 474488
@@ -42,66 +45,64 @@ B=3/1150 exactly
 Pair-weight invariant:
 For every index span s=1,...,7, the sum of exact pair weights of span s is exactly 2.
 
-Discovery hardening:
-- reflection-symmetric trust-region optimization of exact eight-point pair/pressure weights;
+Discovery hardening for the promoted window:
+- eight-point window-basin min-max exchange;
 - all 8,320 reflection representatives of {1,2,3,4}^7 polished without score screening;
-- all 8,320 reflection representatives of {1,2,3,5}^7 used as an additional stress family;
+- all 8,320 reflection representatives of {1,2,3,5}^7 polished without score screening;
 - six multi-range differential-evolution runs;
-- observed floating-point minimum: 0.005482799831021096...
-- observed lowest basin is reflection symmetric near
-  (1.98080644549,1.04407975352,1.97230408798,1.04421711637,1.97230408798,1.04407975352,1.98080644549).
+- observed floating-point minimum: 0.005516121966580929...
 
 Promoted rigorous local target:
-2741/500000 = 0.005482
+1103/200000 = 0.005515
 VERIFIED=true
 independent_reproduction=false
 
 Hardened interval verifier:
 grid=4000
 precision_decimal_digits=50
-coarse_cells=106326
-midpoint_values=212653
+coarse_cells=106966
+midpoint_values=213933
 initial_boxes=48
 components_per_gap=1,2,2,3,2,2,1
 compiler flag=-ffp-contract=off
 
 SHA-256 (big-endian float stream):
-w_lower.bin             6785e89d81a0a32dbccc82b99a749102ea23293a24c26aebfd27787fd9e072b2
-w_second_lower.bin      71581818bb4d1e87443e36b52fb54d3310258bd19e8953c8bcfc56c7031f5135
-w_mid_lower.bin         4f72269ac20951a6e487e8b2d6bc5ee52e02f0082c4b948cdcb667039ec3fcdf
-w_mid_upper.bin         bf85c2045e4dccb1b03dfabe1ca66e06e4f27e96bf2d87d48667f346bcfab275
-w_prime_mid_lower.bin   bebd2f7811080703783e90447912fb0d608bd80a1510488a477b390418a990cf
-w_prime_mid_upper.bin   e1c7d483af07cc4219280a49b8583abe84e07122f929209ab7a16e3fb7470cca
+w_lower.bin             a218becde84edd6f9168d76ca39ea69047d8a591ad3a829817822be9ae98194d
+w_second_lower.bin      4292ab064e0fce5d1584ae0e7ce7ba7f3dc3fe9fd1944c64ea2c0bbd9566f605
+w_mid_lower.bin         639ba060fccf587e4a015c91120d6ef01fb85f26f8f926512ab0286bd6de4504
+w_mid_upper.bin         44662294009a15d7af5e2e40454178bda422fd6f7d720e9c19f416bbd28e3ae4
+w_prime_mid_lower.bin   67d5e3b8b422a8600b5849a8b28c8a76362bb0465b463b46f5b3f4309140dea7
+w_prime_mid_upper.bin   513b5a81d71942e045897c6ac01cbdd8b1b8f36f72a0b15db4fd014e36848cea
 
 Verifier record:
-source commit=7d7b02ad4a5f4269286043973f13512216ea9127
-workflow run=31594502822
-artifact id=9141284166
-artifact digest sha256=e0205c8b00810e014f8068d06d59ebd4a3b8c2a6768802a98a7fdad84aeaf7ce
-verified at UTC=2026-08-12T12:28:09Z
-nodes=56348888
-pruned=28174468
-splits=28174420
-convex=21755661
-tangent=9522833
-max_depth=83
+source commit=524834fc0dc37b3ed58904bff664f2ea1c65caf3
+workflow run=31598015611
+artifact id=9142888339
+artifact digest sha256=d813434834906932ffdbfc6ae8a3c0830ffc36f01225bae79c3636ac31fc017a
+verified at UTC=2026-08-12T13:16:24Z
+nodes=66686224
+pruned=33343136
+splits=33343088
+convex=27190260
+tangent=12043940
+max_depth=86
 VERIFIED=true
 
 Exact-pressure projection:
-H_floor=0.6723338866
-epsilon=0.005482
+H_floor=0.672340545
+epsilon=0.005515
 B=3/1150
 local gaps Q=7
-best m=204
-bound=0.67337819547776013737165417054963686201093...
-percent=67.337819547776013737...%
-safe decimal floor=0.6733781954
+best m=203
+bound=0.6734062162989486665639042242354817188494596957361...
+percent=67.34062162989486665639042242354817188494596957361...%
+safe decimal floor=0.6734062162
 
 Trust boundary:
 The local seven-gap numerical inequality and H floor are interval-checked in this repository.
-The predecessor local-to-global argument uses nonnegative pair weights with per-span capacity at most 2 and total position pressure B=3/1150; the same counting gives m-7 local windows here.
+The predecessor local-to-global argument uses nonnegative pair weights with per-span capacity at most 2 and the declared total position pressure B; the same counting gives m-7 local windows here.
 The explicit-formula / trace interface and finite-m Gram profile remain imported from the lineage repositories.
-Independent reproduction of this new seven-dimensional certificate is requested before publication-quality use.
+Independent reproduction of this seven-dimensional certificate is requested before publication-quality use.
 
 Previous interval-certified research-draft record:
-archive/2026-08-12-certified-6733314663/
+archive/2026-08-12-certified-6733781954/

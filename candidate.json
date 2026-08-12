@@ -1,5 +1,5 @@
 {
-  "description": "15-term window discovery candidate for exact shifted-pressure optimization of simple zeros of the Riemann zeta function.",
+  "description": "Robust 15-term window discovery candidate for exact shifted-pressure optimization of simple zeros of the Riemann zeta function.",
   "status": "discovery candidate; NOT interval-certified",
   "date": "2026-08-12",
   "lineage": [
@@ -8,7 +8,7 @@
     "sxuff/zeta-positioned-pressure",
     "AMTOPA/zeta-exact-pressure-673262",
     "AMTOPA/zeta-exact-pressure archived 67.3290756019% record",
-    "AMTOPA/zeta-exact-pressure 11-term 67.3330085275% discovery candidate"
+    "AMTOPA/zeta-exact-pressure screened 15-term candidate rejected after interval-guided counterexample discovery"
   ],
   "points": 7,
   "gaps_per_local_window": 6,
@@ -17,20 +17,20 @@
     "denominator": 1000000000,
     "numerators": [
       1000000000,
-      7715770,
-      -15127849,
-      -277796,
-      1460676,
-      -4061917,
-      4967584,
-      -4903364,
-      5054213,
-      -2570688,
-      3857592,
-      459037,
-      -292106,
-      211779,
-      -164957
+      8629738,
+      -10085378,
+      1746803,
+      1125700,
+      -2203905,
+      1904615,
+      -4559603,
+      7930665,
+      -3022627,
+      2165339,
+      398121,
+      -255934,
+      188899,
+      -148305
     ],
     "frequencies": [
       "sqrt(2)",
@@ -49,24 +49,24 @@
       "26*pi",
       "28*pi"
     ],
-    "computed_h": "0.672265428696397298692842905520471174674953775831422813524032012700582621469298390070896647...",
+    "computed_h": "0.672333886657942...",
     "projection_h_floor": {
-      "numerator": 6722654,
+      "numerator": 6723338,
       "denominator": 10000000
     }
   },
   "local_search": {
-    "method": "fixed predecessor pair/pressure weights; robust floating-point adversary search using full 0..8 integer lattice scoring, analytic-gradient local polishing, accumulated counterexamples, and multi-range differential evolution; discovery only",
-    "integer_lattice_points_scored": 531441,
-    "integer_lattice_polished_starts": 220,
+    "method": "adversarial exchange optimization with fixed predecessor pair/pressure weights; all {1,2,3,4}^6 resonance templates polished without score screening, plus multi-range differential-evolution stress",
+    "template_start_count": 4096,
+    "template_screening": false,
     "differential_evolution_runs": 9,
-    "float_minimum_observed": "0.005561991478045605...",
+    "float_minimum_observed": "0.005402429240910082...",
     "candidate_target_for_certification": {
-      "numerator": 5561,
+      "numerator": 5401,
       "denominator": 1000000
     },
     "verified": false,
-    "note": "The target 0.005561 is below the observed floating-point adversarial minimum. This is discovery evidence only; a rigorous interval branch-and-bound certificate is still required."
+    "note": "The earlier 0.005561 target was rejected after the interval verifier exposed basins missed by score-screened lattice starts. The present 0.005401 target is below the unscreened 4096-template minimum by about 1.43e-6 and still requires a rigorous interval branch-and-bound certificate."
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -110,15 +110,15 @@
   },
   "final_projection": {
     "pressure_shift_factor": "m-6",
-    "block_length": 199,
+    "block_length": 204,
     "projected_safe_decimal": {
-      "numerator": 6733659002,
+      "numerator": 6733305982,
       "denominator": 10000000000
     },
-    "computed_bound_from_conservative_inputs": "0.673365900257025371907543883558956329504649979486267195486027479757833082871120597063434353...",
-    "computed_percent_from_conservative_inputs": "67.33659002570253719075438835589563295046499794862671954860274797578330828711206...",
-    "float_discovery_bound": "0.673366573285773...",
-    "float_discovery_percent": "67.3366573285773...",
+    "computed_bound_from_conservative_inputs": "0.67333059828795868305084456656249690112795551923695387941459443959673183809216937...",
+    "computed_percent_from_conservative_inputs": "67.333059828795868305084456656249690112795551923695387941459443959673183809216937...",
+    "float_discovery_bound": "0.6733316156327896...",
+    "float_discovery_percent": "67.33316156327896...",
     "certified": false
   },
   "archive": {

@@ -30,6 +30,47 @@ inline double down(double x) {
 inline double up(double x) {
     return std::nextafter(x, std::numeric_limits<double>::infinity());
 }
+inline long double ldown(long double x) {
+    return std::nextafterl(x, -std::numeric_limits<long double>::infinity());
+}
+inline long double lup(long double x) {
+    return std::nextafterl(x, std::numeric_limits<long double>::infinity());
+}
+
+struct Interval {
+    long double lo;
+    long double hi;
+};
+
+Interval point(long double x) { return {x, x}; }
+Interval add(Interval a, Interval b) { return {ldown(a.lo + b.lo), lup(a.hi + b.hi)}; }
+Interval neg(Interval a) { return {-a.hi, -a.lo}; }
+Interval sub(Interval a, Interval b) { return add(a, neg(b)); }
+Interval mul(Interval a, Interval b) {
+    const long double p[4] = {a.lo*b.lo, a.lo*b.hi, a.hi*b.lo, a.hi*b.hi};
+    return {
+        ldown(*std::min_element(p, p + 4)),
+        lup(*std::max_element(p, p + 4))
+    };
+}
+Interval square(Interval a) {
+    const long double hi = std::max(a.lo*a.lo, a.hi*a.hi);
+    const long double lo = (a.lo <= 0 && a.hi >= 0)
+        ? 0
+        : std::min(a.lo*a.lo, a.hi*a.hi);
+    return {lo == 0 ? 0 : ldown(lo), lup(hi)};
+}
+Interval div_positive(Interval a, Interval b) {
+    if (!(b.lo > 0)) throw std::runtime_error("interval division by nonpositive denominator");
+    return mul(a, {ldown(1.0L / b.hi), lup(1.0L / b.lo)});
+}
+long double abs_upper(Interval a) {
+    return lup(std::max(std::fabs(a.lo), std::fabs(a.hi)));
+}
+Interval rational_interval(std::int64_t num, std::int64_t den) {
+    const long double q = static_cast<long double>(num) / static_cast<long double>(den);
+    return {ldown(q), lup(q)};
+}
 
 std::vector<double> read_f64(const std::string& path) {
     std::ifstream in(path, std::ios::binary | std::ios::ate);
@@ -43,9 +84,17 @@ std::vector<double> read_f64(const std::string& path) {
     return out;
 }
 
+bool file_exists(const std::string& path) {
+    std::ifstream in(path, std::ios::binary);
+    return static_cast<bool>(in);
+}
+
 class MinTree {
 public:
-    explicit MinTree(const std::vector<double>& values) {
+    MinTree() = default;
+    explicit MinTree(const std::vector<double>& values) { reset(values); }
+
+    void reset(const std::vector<double>& values) {
         size_ = 1;
         while (size_ < values.size()) size_ <<= 1;
         tree_.assign(2 * size_, std::numeric_limits<double>::infinity());
@@ -55,13 +104,11 @@ public:
         count_ = values.size();
     }
 
-    double query(int left, int right) const {
+    double query(int left, int right, bool nonnegative_fallback) const {
         if (left < 0 || right < left)
             return -std::numeric_limits<double>::infinity();
-        // W=(K/K(0))^2 is globally nonnegative.  If a requested distance
-        // interval extends past the tabulated region, zero is therefore a
-        // rigorous lower bound for the whole interval.
-        if (static_cast<std::size_t>(right) >= count_) return 0.0;
+        if (static_cast<std::size_t>(right) >= count_)
+            return nonnegative_fallback ? 0.0 : -std::numeric_limits<double>::infinity();
         std::size_t l = static_cast<std::size_t>(left) + size_;
         std::size_t r = static_cast<std::size_t>(right) + size_;
         double ans = std::numeric_limits<double>::infinity();
@@ -86,14 +133,127 @@ struct PairWeight {
     int i;
     int j;
     double lower;
+    double upper;
+    Interval interval;
 };
 
 struct Stats {
     std::uint64_t nodes = 0;
     std::uint64_t pruned = 0;
     std::uint64_t splits = 0;
+    std::uint64_t convex = 0;
+    std::uint64_t tangent = 0;
     int max_depth = 0;
 };
+
+bool prove_positive_definite(
+    const Box& box,
+    const std::array<int, Q + 1>& prefix_lo,
+    const std::array<int, Q + 1>& prefix_hi,
+    const std::vector<PairWeight>& pairs,
+    const MinTree& second_min
+) {
+    std::array<std::array<Interval, Q>, Q> matrix{};
+    for (int r = 0; r < Q; ++r)
+        for (int c = 0; c < Q; ++c)
+            matrix[r][c] = point(0);
+
+    for (const auto& p : pairs) {
+        const int span = p.j - p.i;
+        const int left = prefix_lo[p.j] - prefix_lo[p.i];
+        const int right = prefix_hi[p.j] - prefix_hi[p.i] + span - 1;
+        const double s = second_min.query(left, right, false);
+        if (!std::isfinite(s)) return false;
+
+        // The pair coefficient a is positive.  If W'' >= s, then
+        // a*W'' >= a_lo*s for s>=0 and >= a_hi*s for s<0.
+        const double scalar = s >= 0
+            ? down(p.lower * s)
+            : down(p.upper * s);
+        const Interval term = point(static_cast<long double>(scalar));
+        for (int r = p.i; r < p.j; ++r)
+            for (int c = p.i; c < p.j; ++c)
+                matrix[r][c] = add(matrix[r][c], term);
+    }
+
+    // Rigorous interval LDL^T.  A positive lower endpoint for every pivot
+    // proves the lower Hessian matrix positive definite; the true Hessian is
+    // then PSD because each omitted pair contribution is a nonnegative
+    // multiple of uu^T.
+    std::array<std::array<Interval, Q>, Q> L{};
+    std::array<Interval, Q> D{};
+    for (int r = 0; r < Q; ++r)
+        for (int c = 0; c < Q; ++c)
+            L[r][c] = point(0);
+
+    for (int col = 0; col < Q; ++col) {
+        Interval pivot = matrix[col][col];
+        for (int k = 0; k < col; ++k)
+            pivot = sub(pivot, mul(square(L[col][k]), D[k]));
+        if (!(pivot.lo > 0)) return false;
+        D[col] = pivot;
+        L[col][col] = point(1);
+        for (int row = col + 1; row < Q; ++row) {
+            Interval value = matrix[row][col];
+            for (int k = 0; k < col; ++k)
+                value = sub(value, mul(mul(L[row][k], L[col][k]), D[k]));
+            L[row][col] = div_positive(value, pivot);
+        }
+    }
+    return true;
+}
+
+long double tangent_lower_bound(
+    const Box& box,
+    const std::vector<PairWeight>& pairs,
+    const std::array<Interval, Q>& pressure,
+    const std::vector<double>& w_mid_lo,
+    const std::vector<double>& w_mid_hi,
+    const std::vector<double>& d_mid_lo,
+    const std::vector<double>& d_mid_hi
+) {
+    std::array<int, Q> mid_num{};
+    std::array<int, Q + 1> prefix_mid{};
+    std::array<Interval, Q> gradient{};
+    Interval value = point(0);
+
+    for (int c = 0; c < Q; ++c) {
+        mid_num[c] = box.gap[c].first + box.gap[c].second + 1;
+        prefix_mid[c + 1] = prefix_mid[c] + mid_num[c];
+        const long double xq = static_cast<long double>(mid_num[c]) / (2.0L * GRID);
+        const Interval x = {ldown(xq), lup(xq)};
+        value = add(value, mul(pressure[c], x));
+        gradient[c] = pressure[c];
+    }
+
+    for (const auto& p : pairs) {
+        const int index = prefix_mid[p.j] - prefix_mid[p.i];
+        if (index < 0 || static_cast<std::size_t>(index) >= w_mid_lo.size())
+            return -std::numeric_limits<long double>::infinity();
+        const Interval w = {
+            static_cast<long double>(w_mid_lo[index]),
+            static_cast<long double>(w_mid_hi[index])
+        };
+        const Interval derivative = {
+            static_cast<long double>(d_mid_lo[index]),
+            static_cast<long double>(d_mid_hi[index])
+        };
+        value = add(value, mul(p.interval, w));
+        const Interval slope = mul(p.interval, derivative);
+        for (int c = p.i; c < p.j; ++c)
+            gradient[c] = add(gradient[c], slope);
+    }
+
+    long double lower = value.lo;
+    for (int c = 0; c < Q; ++c) {
+        const long double radius = lup(
+            static_cast<long double>(box.gap[c].second - box.gap[c].first + 1)
+            / (2.0L * GRID)
+        );
+        lower = ldown(lower - lup(abs_upper(gradient[c]) * radius));
+    }
+    return lower;
+}
 
 } // namespace
 
@@ -130,10 +290,38 @@ int main(int argc, char** argv) {
         const auto lower_values = read_f64(table_dir + "/w_lower.bin");
         MinTree wmin(lower_values);
 
+        const bool accelerated =
+            file_exists(table_dir + "/w_second_lower.bin") &&
+            file_exists(table_dir + "/w_mid_lower.bin") &&
+            file_exists(table_dir + "/w_mid_upper.bin") &&
+            file_exists(table_dir + "/w_prime_mid_lower.bin") &&
+            file_exists(table_dir + "/w_prime_mid_upper.bin");
+
+        std::vector<double> second_values;
+        MinTree second_min;
+        std::vector<double> w_mid_lo, w_mid_hi, d_mid_lo, d_mid_hi;
+        if (accelerated) {
+            second_values = read_f64(table_dir + "/w_second_lower.bin");
+            second_min.reset(second_values);
+            w_mid_lo = read_f64(table_dir + "/w_mid_lower.bin");
+            w_mid_hi = read_f64(table_dir + "/w_mid_upper.bin");
+            d_mid_lo = read_f64(table_dir + "/w_prime_mid_lower.bin");
+            d_mid_hi = read_f64(table_dir + "/w_prime_mid_upper.bin");
+            if (second_values.size() != lower_values.size() ||
+                w_mid_lo.size() != w_mid_hi.size() ||
+                w_mid_lo.size() != d_mid_lo.size() ||
+                w_mid_lo.size() != d_mid_hi.size())
+                throw std::runtime_error("accelerator table size mismatch");
+        }
+
         std::array<double, Q> pressure_lo{};
-        for (int i = 0; i < Q; ++i)
+        std::array<Interval, Q> pressure_interval{};
+        for (int i = 0; i < Q; ++i) {
             pressure_lo[i] = down(static_cast<double>(candidate_config::pressure_num[i]) /
                                   static_cast<double>(candidate_config::pressure_den));
+            pressure_interval[i] = rational_interval(
+                candidate_config::pressure_num[i], candidate_config::pressure_den);
+        }
         const double min_pressure = *std::min_element(pressure_lo.begin(), pressure_lo.end());
         const int required_cells = static_cast<int>(std::ceil(target_up * GRID / min_pressure)) + 1;
         if (static_cast<int>(wmin.count()) < required_cells) {
@@ -145,8 +333,12 @@ int main(int argc, char** argv) {
         std::vector<PairWeight> pairs;
         pairs.reserve(candidate_config::pairs.size());
         for (const auto& p : candidate_config::pairs) {
-            pairs.push_back({p.i, p.j,
-                down(static_cast<double>(p.num) / static_cast<double>(candidate_config::pair_den))});
+            const double lo = down(static_cast<double>(p.num) /
+                                   static_cast<double>(candidate_config::pair_den));
+            const double hi = up(static_cast<double>(p.num) /
+                                 static_cast<double>(candidate_config::pair_den));
+            pairs.push_back({p.i, p.j, lo, hi,
+                rational_interval(p.num, candidate_config::pair_den)});
         }
 
         std::array<double, Q> adjacent{};
@@ -195,7 +387,9 @@ int main(int argc, char** argv) {
         std::cout << "target=" << std::setprecision(17) << target
                   << " table_cells=" << wmin.count()
                   << " required_cells=" << required_cells
-                  << " initial_boxes=" << initial.size() << " components=";
+                  << " initial_boxes=" << initial.size()
+                  << " accelerated=" << (accelerated ? "true" : "false")
+                  << " components=";
         for (int i = 0; i < Q; ++i)
             std::cout << components[i].size() << (i + 1 == Q ? '\n' : ',');
 
@@ -209,6 +403,7 @@ int main(int argc, char** argv) {
                 if (max_nodes && stats.nodes >= max_nodes) {
                     std::cout << "INCONCLUSIVE=true reason=node_limit nodes=" << stats.nodes
                               << " pruned=" << stats.pruned << " splits=" << stats.splits
+                              << " convex=" << stats.convex << " tangent=" << stats.tangent
                               << " max_depth=" << stats.max_depth << "\n";
                     return 3;
                 }
@@ -232,25 +427,31 @@ int main(int argc, char** argv) {
                     continue;
                 }
 
-                bool table_ok = true;
                 for (const auto& p : pairs) {
                     const int span = p.j - p.i;
                     const int left = prefix_lo[p.j] - prefix_lo[p.i];
                     const int right = prefix_hi[p.j] - prefix_hi[p.i] + span - 1;
-                    const double w = wmin.query(left, right);
-                    if (!std::isfinite(w)) {
-                        table_ok = false;
-                        break;
-                    }
+                    const double w = wmin.query(left, right, true);
+                    if (!std::isfinite(w))
+                        throw std::runtime_error("invalid lower-table query");
                     lower = down(lower + down(p.lower * w));
-                }
-                if (!table_ok) {
-                    std::cout << "INCONCLUSIVE=true reason=table_range nodes=" << stats.nodes << "\n";
-                    return 3;
                 }
                 if (lower >= target_up) {
                     ++stats.pruned;
                     continue;
+                }
+
+                if (accelerated && prove_positive_definite(
+                        box, prefix_lo, prefix_hi, pairs, second_min)) {
+                    ++stats.convex;
+                    const long double tangent = tangent_lower_bound(
+                        box, pairs, pressure_interval,
+                        w_mid_lo, w_mid_hi, d_mid_lo, d_mid_hi);
+                    if (tangent >= static_cast<long double>(target_up)) {
+                        ++stats.pruned;
+                        ++stats.tangent;
+                        continue;
+                    }
                 }
 
                 int split = 0;
@@ -267,7 +468,9 @@ int main(int argc, char** argv) {
                               << std::setprecision(17) << lower << " box=";
                     for (const auto& r : box.gap)
                         std::cout << '[' << r.first << ',' << r.second << ']';
-                    std::cout << " nodes=" << stats.nodes << "\n";
+                    std::cout << " nodes=" << stats.nodes
+                              << " convex=" << stats.convex << " tangent=" << stats.tangent
+                              << "\n";
                     return 3;
                 }
 
@@ -288,6 +491,8 @@ int main(int argc, char** argv) {
         std::cout << "VERIFIED=true nodes=" << stats.nodes
                   << " pruned=" << stats.pruned
                   << " splits=" << stats.splits
+                  << " convex=" << stats.convex
+                  << " tangent=" << stats.tangent
                   << " max_depth=" << stats.max_depth << "\n";
         return 0;
     } catch (const std::exception& e) {

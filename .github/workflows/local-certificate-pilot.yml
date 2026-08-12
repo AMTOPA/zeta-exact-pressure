@@ -25,18 +25,28 @@ jobs:
         run: |
           mkdir -p build
           python3 src/write_verifier_config.py --output build/candidate_config.hpp
-          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG \
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
             -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
 
-      - name: Run accelerated robust-target pilot
+      - name: Run current candidate target
         shell: bash
         run: |
+          read target_num target_den < <(python3 - <<'PY'
+          import json
+          from fractions import Fraction
+          c=json.load(open('candidate.json'))
+          q=c['local_search']['candidate_target_for_certification']
+          f=Fraction(int(q['numerator']),int(q['denominator']))
+          print(f.numerator, f.denominator)
+          PY
+          )
           set +e
-          build/verify_local_tables 5401 1000000 tables-15term 20000000 \
+          build/verify_local_tables "$target_num" "$target_den" tables-15term 50000000 \
             | tee certificate-pilot.log
           code=${PIPESTATUS[0]}
           set -e
-          echo "target_5401_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "target=${target_num}/${target_den}" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "verifier_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
           if [[ "$code" != "0" && "$code" != "3" ]]; then
             exit "$code"
           fi
@@ -45,7 +55,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: 15term-robust-certificate-pilot
+          name: current-local-certificate-pilot
           path: |
             tables-15term/manifest.json
             certificate-pilot.log

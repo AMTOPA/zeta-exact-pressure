@@ -2,15 +2,6 @@ name: local-certificate-pilot
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - research/15term-verifier-pilot
-    paths:
-      - candidate.json
-      - src/build_interval_tables.py
-      - src/write_verifier_config.py
-      - src/verify_local_tables.cpp
-      - .github/workflows/local-certificate-pilot.yml
 
 jobs:
   pilot:

@@ -1,43 +1,15 @@
 # Zeta exact-pressure optimization
 
 > [!IMPORTANT]
-> **Current interval-certified research-draft record: 67.3378195478%.**
+> **Current interval-certified research-draft record: 67.3406216299%.**
 >
-> **Active discovery target: 67.3412981907%.** The discovery target uses a jointly re-optimized total pressure, 15-term window, pair weights, and position-pressure vector. Its window contribution has been interval-checked, but the new six-gap local target \(F\ge0.007887\) has **not yet** been closed by the full outward-rounded branch-and-bound verifier. It is therefore not promoted to the certified record.
+> **Active joint-pressure discovery:** a seven-point / six-gap candidate with variable total pressure projects above the certified record. Its window and exact combinatorics are checked; its full six-dimensional local interval certificate is being tested separately. Until that returns `VERIFIED=true`, it is not the certified record.
 
 This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
 
 ## Current interval-certified record
 
-The certified record remains the eight-point / seven-gap construction with
-
-\[
-H>0.6723338866,\qquad
-\varepsilon_8=0.005482,\qquad
-B=\frac3{1150},
-\]
-
-and exact shifted-pressure averaging. The integer scan selects \(m=204\) and gives
-
-\[
-\boxed{0.67337819547776013737\ldots}
-\]
-
-or
-
-\[
-\boxed{\mathbf{67.3378195478\%}}.
-\]
-
-The full machine-readable parameters remain in [`candidate.json`](candidate.json). The exact state that was current before the new discovery experiment is frozen under [`archive/2026-08-12-certified-6733781954/`](archive/2026-08-12-certified-6733781954/).
-
-## Active joint-pressure discovery candidate
-
-The new search deliberately releases a parameter that the certified lineage had kept fixed: the **total local pressure**. It then re-optimizes the pressure strength together with the analytic window, pair weights, and position-pressure distribution while preserving all exact local-to-global capacity identities.
-
-The candidate returns to seven points / six gaps so that the finite inequality remains six-dimensional and can reuse the hardened verifier architecture.
-
-### 15-term window
+The current certified construction uses eight points / seven gaps and a re-optimized rational 15-term window
 
 \[
 v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
@@ -48,157 +20,143 @@ with denominator \(10^9\) and numerator vector
 
 ```text
 1000000000
-  12948011
- -12114181
-   3684033
-   5911261
-  -1663892
-   5928575
-  -7167828
-   6229914
-  -5147758
-   -756341
-    440544
-   -311207
-    237969
-   -190433
+   7862237
+ -11036157
+   3734450
+   1402396
+  -1412889
+   3402026
+  -1739485
+   4930665
+  -4255468
+   3101956
+  -2601879
+    146498
+    398565
+   -271068
 ```
 
-High-precision evaluation gives
+Direct interval arithmetic gives
 
 \[
-H(v)=0.67219990266757577542126938448\ldots.
+H(v)=0.6723405451213867420089258981185\ldots
 \]
 
-A direct `mpmath.iv` enclosure gives
+and verifies the conservative floor
 
 \[
-H(v)\in
-[0.67219990266757577542126938448241349658\ldots,
- 0.67219990266757577542126938448241349659\ldots],
+\boxed{H(v)>0.672340545}.
 \]
 
-so the conservative projection uses
+The exact eight-point pressure vector remains
 
 \[
-\boxed{H_{\rm floor}=0.6721998}.
+\frac1{2300000000}(474488,829921,1102531,1186120,1102531,829921,474488),
+\qquad B=\frac3{1150}.
 \]
 
-A 4096-cell interval subdivision of \([0,1/2]\) gives a window lower bound above \(0.76161066\).
+For every pair span \(s=1,\ldots,7\), the exact pair weights in [`candidate.json`](candidate.json) have total capacity exactly 2.
 
-### Exact pair and pressure constraints
-
-The exact pair weights are listed in [`discovery_candidate.json`](discovery_candidate.json). They are nonnegative and satisfy, **for every span** \(s=1,\ldots,6\),
+The hardened seven-dimensional outward-rounded verifier proves
 
 \[
-\boxed{\sum_i a_{i,i+s}=2}.
+\boxed{F_8(g_1,\ldots,g_7)\ge0.005515}\qquad(g_i\ge0).
 \]
 
-The exact position-pressure vector is
+The successful run used a 4000 grid, 50-digit interval tables, and `-ffp-contract=off`, and reported
+
+```text
+VERIFIED=true
+nodes=66686224
+pruned=33343136
+splits=33343088
+convex=27190260
+tangent=12043940
+max_depth=86
+```
+
+The exact table hashes, workflow run `31598015611`, artifact `9142888339`, and artifact digest are recorded in [`candidate.json`](candidate.json) and [`certificates/latest-verification.txt`](certificates/latest-verification.txt).
+
+With
 
 \[
-\frac1{46000000000}
-(22420713,32878293,37700994,37700994,32878293,22420713),
+H=0.672340545,\qquad \varepsilon_8=0.005515,\qquad B=3/1150,
 \]
 
-with exact total
+the exact-pressure scan selects \(m=203\) and gives
 
 \[
-\boxed{
-B=\frac{93}{23000}=0.004043478260869565\ldots
-}.
+\boxed{0.67340621629894866656\ldots},
 \]
 
-This is the main new global degree of freedom relative to the previous certified constructions.
-
-### Adversarial local search
-
-The rounded rational candidate has an observed floating local minimum
+hence the safe decimal floor
 
 \[
-F_{\min}^{\rm float}\approx0.00788781935
+\boxed{0.6734062162},
 \]
 
-near
+i.e. **67.3406216299%** before truncation.
+
+The immediately previous interval-certified state is frozen under [`archive/2026-08-12-certified-6733781954/`](archive/2026-08-12-certified-6733781954/).
+
+## Active joint-pressure discovery
+
+[`discovery_candidate.json`](discovery_candidate.json) releases a parameter previously held fixed during position-pressure optimization: the total local pressure \(B=\sum b_r\). The local-to-global proof uses \(B\) symbolically through
 
 \[
-(1.042887,\ 1.974405,\ 1.046258,\ 1.972360,\ 1.044510,\ 1.978097).
+E_B+B\,\operatorname{span}(B)\ge A,
 \]
 
-The proposed rigorous target is deliberately lower:
+so changing \(B\) is admissible provided the exact pressure total is used in the final penalty, all pressure coefficients remain nonnegative, and every pair-span capacity remains at most 2.
+
+The current discovery candidate uses seven points / six gaps with
 
 \[
-\boxed{\varepsilon=\frac{7887}{10^6}=0.007887}.
+B=\frac{93}{23000}=0.004043478260869565\ldots,
 \]
 
-The remaining gap is therefore about \(8.19\times10^{-7}\).
-
-This target is **not yet interval-certified**. It must return `VERIFIED=true` from the full six-dimensional outward-rounded branch-and-bound before the discovery value can replace the current certified record.
-
-## Exact-pressure projection of the pending target
-
-For six gaps,
+a different rational 15-term window, and proposed local target
 
 \[
-A_m=\varepsilon(m-6),\qquad
-R_m=h_m(A_m),\qquad
-\eta_m=\frac{R_m}{A_m},
+\varepsilon=0.007887.
 \]
 
-where
+Its exact structural checks give all six pair-span capacities equal to 2 and the declared pressure total exactly. Interval arithmetic encloses
 
 \[
-h_m(E)=
-\begin{cases}
-E,&E\le m/(m-1),\\
-E/m+2\sqrt{(m-1)E/m}-1,&E\ge m/(m-1).
-\end{cases}
+H(v)=0.67219990266757577542126938448\ldots
 \]
 
-The shifted-pressure deduction is
+and verifies positivity of the window. The floating adversarial minimum is approximately
 
 \[
-\frac{N_0^s(T,2T)}{N(T,2T)}
-\ge
-\frac{mH-\eta_mB(m-6)}{m-R_m}-o(1).
+0.00788781935047,
 \]
 
-Using only the conservative discovery inputs
+so the proposed target has about \(8.19\times10^{-7}\) floating margin.
+
+The machine-readable discovery file currently uses the deliberately loose floor `H=0.6721998` and therefore records a conditional projection of **67.3412981907%**. The already-computed interval enclosure supports the tighter safe floor
 
 \[
-H=0.6721998,\qquad
-\varepsilon=0.007887,\qquad
-B=\frac{93}{23000},
+H_{\rm floor}=0.6721999026,
 \]
 
-the integer scan selects
+which would raise the same `epsilon=0.007887` projection to approximately **67.3413085287%** if the full local certificate closes.
 
-\[
-\boxed{m=145}
-\]
-
-and projects
-
-\[
-0.67341298190657255729\ldots,
-\]
-
-hence, **conditional only on closing the pending finite local certificate**,
-
-\[
-\boxed{\mathbf{67.3412981907\%}}.
-\]
-
-The stronger floating discovery projection is about **67.34136123%**, but it is not used as a certification target.
+A dedicated workflow, [`.github/workflows/discovery-certificate.yml`](.github/workflows/discovery-certificate.yml), runs the hardened full six-dimensional interval test. No joint-pressure percentage is promoted until that run produces `VERIFIED=true`.
 
 ## Reproduction and trust boundary
 
-- [`candidate.json`](candidate.json) remains the current interval-certified record.
-- [`discovery_candidate.json`](discovery_candidate.json) is the machine-readable active discovery candidate.
-- [`src/check_discovery_candidate.py`](src/check_discovery_candidate.py) checks exact span capacities, exact total pressure, the interval window floor/positivity, and the final conservative projection. It does **not** certify the six-gap local inequality.
-- The full local interval closure remains pending; until it succeeds, 67.3412981907% must not be described as interval-certified.
-- The explicit-formula / trace interface, finite-\(m\) Gram spectral profile, normalized-gap bookkeeping, and analytic link from \(H(v)\) to the zero count remain imported from the existing lineage.
+Run
 
-Historical certified states and rejected/superseded experiments remain under `archive/`, in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md).
+```bash
+sh run.sh
+```
+
+for the current certified structural checks, interval \(H\) verification, window positivity, exact multiplicity bookkeeping, final arithmetic, and verifier smoke test.
+
+Checked directly in this repository: exact pair-span capacities, exact declared pressure totals, interval window bounds/positivity, the current seven-dimensional local certificate, and final exact-pressure arithmetic. Imported from the lineage: the explicit-formula / trace interface, finite-\(m\) Gram spectral profile, normalized-gap bookkeeping, and analytic link from \(H(v)\) to the zero count.
+
+Independent reproduction of the latest local certificate remains requested before publication-quality use. Historical certified states remain under `archive/` in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md).
 
 Original repository material is MIT-licensed. Third-party analytic inputs are referenced rather than vendored; see [`THIRD_PARTY.md`](THIRD_PARTY.md).

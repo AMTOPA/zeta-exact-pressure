@@ -37,15 +37,15 @@ jobs:
           g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG \
             -Ibuild src/verify_local_tables.cpp -o build/verify_local_tables
 
-      - name: Run accelerated top-target pilot
+      - name: Run accelerated robust-target pilot
         shell: bash
         run: |
           set +e
-          build/verify_local_tables 5561 1000000 tables-15term 20000000 \
+          build/verify_local_tables 5401 1000000 tables-15term 20000000 \
             | tee certificate-pilot.log
           code=${PIPESTATUS[0]}
           set -e
-          echo "target_5561_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "target_5401_exit_code=$code" | tee -a "$GITHUB_STEP_SUMMARY"
           if [[ "$code" != "0" && "$code" != "3" ]]; then
             exit "$code"
           fi
@@ -54,7 +54,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: 15term-certificate-pilot
+          name: 15term-robust-certificate-pilot
           path: |
             tables-15term/manifest.json
             certificate-pilot.log

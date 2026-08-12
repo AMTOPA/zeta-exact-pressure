@@ -1,220 +1,314 @@
 # Current deduction outline
 
-> **Status:** the current seven-point / six-gap joint-pressure target `0.007887` and working window floor `H > 0.6721999026` are interval-certified in this repository. The analytic interface in §1 remains imported from the lineage repositories, and independent reproduction of the new six-dimensional certificate is still requested.
+> **Certified baseline:** the current root seven-point / six-gap certificate has interval-verified `epsilon = 0.0079107` and `H > 0.6721881580`. Under the inherited scalar Gram profile this gives **67.3416490971%** before truncation, with safe floor `0.6734164909`.
+>
+> **Analytic extension under review:** retaining six-band Gram energy gives a proposed continuous profile and an exact projection to **67.3423563564%**. The local numerical input is interval-certified, but the new matrix lemma is not yet promoted to the root result.
 
 ## 1. Imported analytic interface
 
-Let $S=N_0^s(T,2T)$ and $N=N(T,2T)$. The predecessor framework supplies
+Let \(S=N_0^s(T,2T)\) and \(N=N(T,2T)\). The lineage framework supplies
 
-$$
+\[
 S\ge HN+\Delta(M)-o(N),
-$$
+\]
 
-together with
+and the unrestricted finite-dimensional Gram profile
 
-$$
+\[
 h_m(E)=
 \begin{cases}
 E,&E\le m/(m-1),\\
 E/m+2\sqrt{(m-1)E/m}-1,&E\ge m/(m-1).
 \end{cases}
-$$
+\]
 
-These analytic ingredients are imported.
+For a PSD Gram block \(G\),
 
-## 2. Joint-pressure analytic window
+\[
+E=2\sum_{i<j}|G_{ij}|^2,
+\qquad
+\Delta(G)=\operatorname{tr}\Psi(G),
+\]
+
+where
+
+\[
+\Psi(t)=
+\begin{cases}
+(t-1)^2,&0\le t\le2,\\
+2t-3,&t\ge2.
+\end{cases}
+\]
+
+The unrestricted profile is sharp if only total off-diagonal energy is retained.
+
+## 2. Certified 17-term window
 
 Use
 
-$$
-v(s)=\sum_{j=0}^{14}c_j\cos(\omega_js),\qquad
-\omega_0=\sqrt2,\quad\omega_j=2j\pi\ (1\le j\le14),
-$$
+\[
+v(s)=\sum_{j=0}^{16}c_j\cos(\omega_js),
+\qquad
+\omega_0=\sqrt2,
+\quad \omega_j=2j\pi\;(1\le j\le16),
+\]
 
-with denominator $10^9$ and numerator vector
+with denominator \(10^9\) and numerator vector
 
 ```text
 1000000000,
-12948011,
--12114181,
-3684033,
-5911261,
--1663892,
-5928575,
--7167828,
-6229914,
--5147758,
--756341,
-440544,
--311207,
-237969,
--190433
+12378982,
+-12602495,
+4164033,
+5741405,
+-1724025,
+6219280,
+-8047828,
+6321519,
+-5241981,
+-892658,
+560544,
+-431207,
+357969,
+-310433,
+100000,
+-100000
 ```
 
-Direct interval arithmetic encloses
+Outward-rounded interval arithmetic encloses
 
-$$
-H(v)=0.672199902667575775421269384482413\ldots
-$$
+\[
+H(v)=0.6721881581182345851694563877256548\ldots
+\]
 
 and proves
 
-$$
-\boxed{H(v)>0.6721999026}.
-$$
+\[
+\boxed{H(v)>0.6721881580}.
+\]
 
-The same interval subdivision proves positivity of the window.
+The same interval subdivision proves a positive window lower bound above `0.7616418486`.
 
-## 3. Local functional with variable total pressure
+## 3. Certified local inequality
 
-For six nonnegative gaps set $y_0=0$ and $y_j=g_1+\cdots+g_j$. Define
+For six nonnegative gaps, put \(y_0=0\) and \(y_j=g_1+\cdots+g_j\), and define
 
-$$
+\[
 F(g)=\sum_{r=1}^{6}b_rg_r+
 \sum_{0\le i<j\le6}a_{ij}W(y_j-y_i).
-$$
+\]
 
-The exact nonnegative pair weights in `candidate.json` satisfy
+The exact pair weights in `candidate.json` are nonnegative and satisfy
 
-$$
-\boxed{\sum_{i=0}^{6-s}a_{i,i+s}=2}\qquad(1\le s\le6).
-$$
+\[
+\sum_{i=0}^{6-s}a_{i,i+s}=2
+\qquad(1\le s\le6).
+\]
 
-The exact pressure vector is
+The exact position-pressure vector is
 
-$$
+\[
 \frac1{46000000000}
 (22420713,32878293,37700994,37700994,32878293,22420713),
-$$
+\]
 
 so
 
-$$
-\boxed{B=\sum_{r=1}^{6}b_r=\frac{93}{23000}}.
-$$
+\[
+\boxed{B=\sum b_r=\frac{93}{23000}}.
+\]
 
-The predecessor proof uses the position pressure only through the symbolic total $B=\sum b_r$: after summing translated local inequalities it obtains
+The second adversarial exchange found a floating minimum
 
-$$
-E_B+B\,\operatorname{span}(B)\ge A.
-$$
-
-Thus fixing $B=3/1150$ was a design restriction of the predecessor optimization, not an analytic requirement. The present construction legitimately varies $B$, preserves nonnegative pressures and span capacities 2, and uses the new exact $B$ in the final penalty.
-
-## 4. Certified six-dimensional inequality
-
-Adversarial exchange over the total pressure, window, pair weights, and pressure distribution found a floating minimum near
-
-$$
-0.0078878193504693\ldots.
-$$
+\[
+0.007911105155226424\ldots.
+\]
 
 The hardened outward-rounded verifier proves
 
-$$
-\boxed{F(g_1,\ldots,g_6)\ge0.007887}\qquad(g_i\ge0).
-$$
+\[
+\boxed{F(g_1,\ldots,g_6)\ge0.0079107}
+\qquad(g_i\ge0).
+\]
 
-The 4000-grid / 50-digit run, compiled with `-ffp-contract=off`, reports
+The successful run records
 
 ```text
+workflow run = 31610179703
+artifact id = 9147378469
+artifact digest sha256 = 871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1
 VERIFIED=true
-nodes=3424276
-pruned=1712170
-splits=1712106
-convex=1756299
-tangent=801918
-max_depth=71
+nodes=3768186
+pruned=1884125
+splits=1884061
+convex=2030240
+tangent=936616
+max_depth=74
 ```
 
-It starts from 64 initial boxes with component counts `2,2,2,2,2,2`. The table hashes, workflow run `31603343875`, artifact `9144421792`, and artifact digest are recorded in `candidate.json` and `certificates/latest-verification.txt`.
+The run uses grid `1/4000`, 50 decimal digits for table construction, and `-ffp-contract=off`.
 
-## 5. Exact shifted-pressure deduction
+## 4. Existing scalar-Gram deduction
 
-For an $m$-point block there are $m-6$ translated seven-point windows. Set
+Summing the \(m-6\) translated local inequalities gives
 
-$$
-A_m=\varepsilon(m-6),\qquad
-R_m=h_m(A_m),\qquad
+\[
+E+B\,\operatorname{span}(B)\ge
+A_m:=\varepsilon(m-6).
+\]
+
+Set
+
+\[
+R_m=h_m(A_m),
+\qquad
 \eta_m=R_m/A_m.
-$$
+\]
 
-The span-capacity identities control the summed pair contribution by the predecessor block energy, while exact shifted accounting gives pressure charge $(m-6)B$. Hence
+Concavity and monotonicity of \(h_m\), followed by the inherited shifted-block pinching and averaging, give
 
-$$
-\Delta(M)\ge\frac{R_m}{m}S-
-\frac{\eta_mB(m-6)}{m}N-o(N),
-$$
-
-and therefore
-
-$$
-\boxed{
+\[
 \frac SN\ge
-\frac{mH-\eta_mB(m-6)}{m-R_m}-o(1)
-}.
-$$
+\frac{mH-\eta_mB(m-6)}{m-R_m}-o(1).
+\]
 
-## 6. Final arithmetic
+Using the certified conservative inputs
 
-Use the certified conservative values
+\[
+H=0.6721881580,
+\qquad
+\varepsilon=0.0079107,
+\qquad
+B=\frac{93}{23000},
+\]
 
-$$
-H=0.6721999026,\qquad
-\varepsilon=0.007887,\qquad
-B=\frac{93}{23000}.
-$$
+the integer scan selects \(m=145\) and gives
 
-The integer scan selects
+\[
+\boxed{0.67341649097149929495\ldots},
+\]
 
-$$
-\boxed{m=145}.
-$$
+hence the safe root statement
 
-Then
-
-$$
-A_{145}=1.096293,
-$$
-
-$$
-R_{145}=1.09440740970772755724598196593800412029\ldots,
-$$
-
-and
-
-$$
-\eta_{145}=0.99828003071051950276612362382866999998\ldots.
-$$
-
-Thus
-
-$$
-\frac SN\ge
-0.67341308528684939167090457164160\ldots-o(1),
-$$
-
-so safely
-
-$$
+\[
 \boxed{
 \liminf_{T\to\infty}\frac{N_0^s(T,2T)}{N(T,2T)}
->0.6734130852
+>0.6734164909
 }.
-$$
+\]
 
-The certified conservative inputs therefore give **67.3413085287%** before decimal truncation.
+This is **67.3416490971%** before truncation.
 
-## 7. Current tightening experiment
+## 5. New band-position-aware Gram profile
 
-The same exact window and local weights have an observed floating margin of about $8.19\times10^{-7}$ above the certified target. The current hardened workflow probes the upward ladder
+The translated certificate contains more information than total energy: it only uses pairs of index span at most six. For general bandwidth \(q\), define
 
-$$
-0.0078875,\quad0.0078874,\quad0.0078873,\quad0.0078872,
-$$
+\[
+E_q=2\sum_{1\le j-i\le q}|G_{ij}|^2,
+\qquad
+T_q=\frac{q+1}{q}.
+\]
 
-without changing any other parameter. None of these values is part of the certified statement above until the interval verifier closes it.
+The analytic-extension experiment proposes
+
+\[
+\boxed{
+\Delta(G)\ge g_q(E_q)
+}
+\]
+
+with
+
+\[
+g_q(E)=
+\begin{cases}
+E,&E\le T_q,\\
+2\sqrt{T_qE}-T_q,&E\ge T_q.
+\end{cases}
+\]
+
+A proof is given in `experiments/banded-gram/README.md`. Its two ingredients are:
+
+1. coloring the q-band graph by residues modulo \(q+1\), giving
+   \[
+   \|Y\|_{\rm op}^2\le \frac{q}{q+1}E_q;
+   \]
+2. the identity
+   \[
+   \Delta(G)=\|G-I\|_F^2-\|(G-2I)_+\|_F^2,
+   \]
+   together with the Frobenius distance to the negative-semidefinite cone.
+
+The resulting \(g_q\) is increasing, concave, and satisfies \(g_q(0)=0\), so if
+
+\[
+E_q+P\ge A,
+\]
+then with \(R=g_q(A)\) and \(\eta=R/A\),
+
+\[
+\Delta+\eta P\ge R.
+\]
+
+Thus the inherited shifted-block step has exactly the same algebraic form, with \(h_m\) replaced by \(g_q\).
+
+## 6. Exact banded-Gram projection under review
+
+For the certified local input, take \(q=6\) and \(m=165\). Then
+
+\[
+A=0.0079107\times159
+=\frac{12578013}{10000000}.
+\]
+
+Rather than use a floating square root, take
+
+\[
+R_{\rm floor}=1.2560878
+=\frac{6280439}{5000000}.
+\]
+
+The exact checker verifies
+
+\[
+\frac76A-
+\left(\frac{R_{\rm floor}+7/6}{2}\right)^2
+=
+\frac{43705511}{900000000000000}>0,
+\]
+
+so \(R_{\rm floor}<g_6(A)\). With
+
+\[
+\eta=\frac{R_{\rm floor}}A
+=\frac{12560878}{12578013},
+\]
+
+the final exact ratio is
+
+\[
+\frac{607970185271419}{902805037076740}
+=0.6734235635636362491\ldots.
+\]
+
+Therefore the analytic extension projects to
+
+\[
+\boxed{67.3423563564\%}
+\]
+
+with safe floor `0.6734235635`.
+
+**This number is not yet the root certified record.** The local numerical certificate is rigorous and the final arithmetic is exact, but the new banded-Gram lemma and its insertion into the inherited pinching argument require independent mathematical review.
+
+## 7. Current research direction
+
+A same-window 7-point / 8-point mixture was tested first. Under the scalar \(A\mapsto h_m(A)\) compression the optimizer selected an endpoint, so mixing geometries did not break the bottleneck.
+
+The next experiment therefore keeps multiple lag constraints instead of a single scalar local inequality. In particular, a second certificate with odd span capacities scaled by \(1+\delta\) and even spans by \(1-\delta\) can constrain how much of the local lower bound is paid by band energy versus the linear pressure term. This is a controlled step toward a multi-lag SDP while retaining an auditable finite-dimensional proof structure.
 
 ## Trust boundary
 
-The current interval window bound, exact six-span capacities, exact pressure total, six-dimensional local certificate, shifted-pressure bookkeeping, and final arithmetic are checked in this repository. The explicit-formula / trace interface and finite-$m$ Gram profile remain imported from prior work. Independent reproduction is still requested, so the result remains an interval-certified research-draft candidate rather than a publication-ready theorem.
+Directly checked here: the 17-term interval window bound, positivity, exact local coefficients and pressure total, the six-dimensional local certificate, the existing scalar-Gram final arithmetic, and the exact rational arithmetic of the banded experiment.
+
+Imported from the lineage: the explicit-formula / trace interface and shifted-block pinching/averaging framework. New and still under review: the banded-Gram matrix profile and any multi-lag extension built on top of it.

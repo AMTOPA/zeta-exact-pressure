@@ -1,6 +1,6 @@
 {
   "description": "Adversarially optimized c=8/5 auxiliary pressure supporting line for the 17-term six-gap pressure-frontier bundle.",
-  "status": "discovery-level auxiliary certificate; interval certification pending; not a standalone root record",
+  "status": "auxiliary local interval-certified at epsilon=0.011129; independent reproduction requested; not a standalone root record",
   "date": "2026-08-13",
   "points": 7,
   "gaps_per_local_window": 6,
@@ -22,14 +22,33 @@
     "differential_evolution_runs": 6,
     "float_minimum_observed": "0.0111322917418...",
     "candidate_target_for_certification": {"numerator":11129,"denominator":1000000},
-    "verified": false,
-    "note": "The exact target 0.011129 is about 3.29e-6 below the quantized unscreened floating minimum. For c=8/5 at m=464 the exact full no-Gram-loss threshold is about 0.011128736, so this target preserves the m=464 projection while improving certifiability."
+    "verified": true,
+    "note": "The exact target 0.011129 is about 3.29e-6 below the quantized unscreened floating minimum and closed in the hardened interval verifier. For c=8/5 at m=464 the exact full no-Gram-loss threshold is about 0.011128736, so this target preserves the m=464 projection while retaining certifiability margin."
   },
   "local_certificate": {
     "target": {"numerator":11129,"denominator":1000000},
-    "verified": false,
+    "verified": true,
     "independent_reproduction": false,
-    "method": "reuse the outward-rounded tables for the identical certified 17-term window plus the root-certified accelerated six-dimensional verifier with only the per-span-capacity compatibility edit"
+    "method": "reuse the outward-rounded tables for the identical certified 17-term window plus the root-certified accelerated six-dimensional verifier with only the per-span-capacity compatibility edit",
+    "source_commit": "5d39234d7971949923b2b9d4f86206666e2434c3",
+    "workflow_run_id": 31652453223,
+    "artifact_id": 9163097415,
+    "artifact_digest_sha256": "8c95eec703b4389f7ce4806156ed59546decd091f1b4d9091c7ec8f9e63fb071",
+    "verified_at_utc": "2026-08-12T23:53:01Z",
+    "verifier_source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
+    "verifier_source_blob": "b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21",
+    "capacity_compatibility_patch_only": true,
+    "table_source_workflow_run_id": 31610179703,
+    "table_source_artifact_id": 9147378469,
+    "table_source_artifact_digest_sha256": "871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1",
+    "verifier_stats": {
+      "nodes": 1109560,
+      "pruned": 554788,
+      "splits": 554772,
+      "convex": 512379,
+      "tangent": 244553,
+      "max_depth": 66
+    }
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -44,7 +63,7 @@
   "frontier_role": {
     "base_pressure": {"numerator":93,"denominator":23000},
     "auxiliary_constraint": "S + (8/5) P >= A2 after translated pressure bookkeeping",
-    "single_line_projection": "Conditional on this local certificate and the continuous banded-Gram profile, c=8/5 removes the Gram discount through m=464 and gives 67.3455581009%.",
-    "bundle_projection": "Together with the base line and a c=6/5 target epsilon=0.009017, this line yields a three-supporting-line full no-loss block at m=496 with exact conditional projection 67.3456660659%."
+    "single_line_projection": "With this now interval-certified local line and conditional on the continuous banded-Gram profile, c=8/5 removes the Gram discount through m=464 and gives 67.3455581009%.",
+    "bundle_projection": "Together with the interval-certified c=6/5 target epsilon=0.009017 and the root line, this interval-certified auxiliary line yields a three-supporting-line full no-loss block at m=496 with exact conditional projection 67.3456660659% and safe floor 0.6734566606."
   }
 }

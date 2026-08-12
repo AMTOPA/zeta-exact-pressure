@@ -8,7 +8,6 @@ on:
       - src/candidate_data.py
       - src/check_multilag.py
       - src/write_verifier_config.py
-      - src/verify_local_tables.cpp
       - .github/workflows/pressure-support-certificate.yml
   workflow_dispatch:
 
@@ -24,6 +23,8 @@ jobs:
       ZETA_CANDIDATE_PATH: experiments/multilag/candidate.json
       TABLE_SOURCE_RUN: '31610179703'
       TABLE_SOURCE_ARTIFACT: second-exchange-17term-certificate-hardened
+      VERIFIER_SOURCE_COMMIT: b3b7784ed0089c3c2197d740aaae1a424d142e44
+      VERIFIER_SOURCE_BLOB: b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,15 +53,35 @@ jobs:
           python3 src/check_window.py
           python3 src/check_multilag.py
 
-      - name: Compile hardened exact auxiliary verifier
+      - name: Compile root-certified accelerated verifier with capacity compatibility patch
         run: |
           rm -rf build-pressure-support
           mkdir -p build-pressure-support
           python3 src/write_verifier_config.py --output build-pressure-support/candidate_config.hpp
           grep 'gaps = 6' build-pressure-support/candidate_config.hpp
           grep 'pressure_total_num = 1116000000' build-pressure-support/candidate_config.hpp
+
+          git fetch --no-tags --depth=1 origin "$VERIFIER_SOURCE_COMMIT"
+          git show "$VERIFIER_SOURCE_COMMIT:src/verify_local_tables.cpp" > build-pressure-support/verify_local_tables.cpp
+          test "$(git hash-object build-pressure-support/verify_local_tables.cpp)" = "$VERIFIER_SOURCE_BLOB"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('build-pressure-support/verify_local_tables.cpp')
+          s=p.read_text()
+          old='if (total != candidate_config::span_capacity_num)\n                throw std::runtime_error("pair span capacity mismatch");'
+          new='if (total != candidate_config::span_capacity_num[span - 1])\n                throw std::runtime_error("pair span capacity mismatch");'
+          assert s.count(old)==1
+          s=s.replace(old,new)
+          p.write_text(s)
+          print('capacity_compatibility_patch_only=True')
+          PY
+          grep -n 'span_capacity_num\[span - 1\]' build-pressure-support/verify_local_tables.cpp
+          grep -n 'prove_positive_definite' build-pressure-support/verify_local_tables.cpp
+
           g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
-            -Ibuild-pressure-support src/verify_local_tables.cpp -o build-pressure-support/verify_local_tables
+            -Ibuild-pressure-support build-pressure-support/verify_local_tables.cpp \
+            -o build-pressure-support/verify_local_tables
 
       - name: Reuse certified root 17-term outward-rounded tables
         env:
@@ -84,12 +105,12 @@ jobs:
         run: |
           : > pressure-support-certificate.log
           set +e
-          build-pressure-support/verify_local_tables 9015 1000000 "$TABLE_DIR" 30000000 \
+          build-pressure-support/verify_local_tables 9015 1000000 "$TABLE_DIR" 80000000 \
             | tee -a pressure-support-certificate.log
           code=${PIPESTATUS[0]}
           set -e
           echo "eps_009015_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
-          if [[ "$code" != "0" && "$code" != "3" ]]; then exit "$code"; fi
+          if [[ "$code" != "0" ]]; then exit "$code"; fi
 
       - name: Upload optimized auxiliary evidence
         if: always()

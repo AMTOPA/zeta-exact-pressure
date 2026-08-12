@@ -1,0 +1,37 @@
+Current local-certificate record
+================================
+
+Date: 2026-08-12
+Target epsilon: 52289/10000000 = 0.0052289
+
+Window numerator vector (denominator 1e9):
+1000000000
+6907835
+-9359173
+528441
+1509267
+-4923883
+1358707
+
+Position pressure numerator vector (denominator 2300000000):
+831522
+1096590
+1071888
+1071888
+1096590
+831522
+
+Verifier record:
+VERIFIED=true
+nodes=2334226
+pruned=1167275
+splits=1166951
+convex=1407996
+tangent=595297
+max_depth=77
+
+Higher attempted target:
+0.00522895 -> not certified in the development run.
+
+Status:
+Research certificate record. Independent reproduction requested.

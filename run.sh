@@ -11,6 +11,7 @@ python3 src/check_trace_root_tightening.py
 python3 experiments/discrete-mollifier/one_piece.py --check
 python3 experiments/discrete-mollifier/feng_k2.py --check
 python3 experiments/discrete-mollifier/critical_corner.py --check
+python3 experiments/discrete-mollifier/analytic_smoothing.py --check
 rm -rf .interval-smoke
 python3 src/build_interval_tables.py --output .interval-smoke --smoke-cells 32 --precision 45
 python3 src/write_verifier_config.py --output .interval-smoke/candidate_config.hpp

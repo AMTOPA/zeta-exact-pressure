@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Sanity/exact arithmetic checks for the squarefree primitive-Gauss collapse.
+"""Checks for the squarefree primitive-Gauss and BHB arithmetic collapse.
 
-The proof is written in primitive_gauss_collapse.md.  This script verifies the
-primitive-orthogonality formula numerically for many squarefree moduli and checks
-additive reciprocity exactly with Fractions.
+The proof is written in primitive_gauss_collapse.md.  Complex evaluations below
+are only sanity checks for the Gauss formula; the coefficient and reciprocity
+identities are checked exactly with Fractions.
 """
 
 from __future__ import annotations
@@ -53,7 +53,6 @@ def phi(n: int) -> int:
 
 
 def primitive_orthogonality(q: int, n: int) -> int:
-    """Sum_{chi mod q primitive} chi(n), for gcd(n,q)=1."""
     if math.gcd(n,q)!=1: return 0
     total=0
     for d in divisors(q):
@@ -84,7 +83,6 @@ def rhs_divisor_formula(q: int, c: int) -> complex:
 
 
 def reciprocity_difference(a: int, b: int) -> Fraction:
-    """Return abar/b + bbar/a - 1/(ab), which must be an integer."""
     if math.gcd(a,b)!=1: raise ValueError("a,b must be coprime")
     term1=Fraction(0) if b==1 else Fraction(pow(a,-1,b),b)
     term2=Fraction(0) if a==1 else Fraction(pow(b,-1,a),a)
@@ -99,6 +97,43 @@ def bhb_phase_difference(m: int,d: int,k: int,r: int,e: int) -> Fraction:
     right_first=Fraction(0) if a==1 else Fraction(m*d*pow(r,-1,a),a)
     right=right_first-Fraction(m*d,a*r)
     return left-right
+
+
+def bhb_delta_scalar_original(q: int,k: int,d: int) -> Fraction:
+    total=Fraction(0)
+    for l in divisors(d):
+        total += Fraction(
+            mobius_squarefree(d//l)*mobius_squarefree(k//l),
+            phi(k*q//l),
+        )
+    return total
+
+
+def bhb_delta_scalar_closed(q: int,k: int,d: int) -> Fraction:
+    return Fraction(
+        mobius_squarefree(k)*mobius_squarefree(d)*d,
+        phi(k)*phi(q),
+    )
+
+
+def collapsed_outer_weight(q: int,k: int,d: int,r: int) -> Fraction:
+    """Coefficient excluding P and the additive phase after q=r*e Gauss collapse.
+
+    It includes b(kq)/(kq), the exact delta scalar, and phi(r), with b's
+    polynomial P removed but its mu(kq) retained.
+    """
+    e=q//r
+    original=(
+        Fraction(mobius_squarefree(k)*mobius_squarefree(q),k*q)
+        * bhb_delta_scalar_closed(q,k,d)
+        * phi(r)
+    )
+    closed=Fraction(
+        mobius_squarefree(r)*mobius_squarefree(e)*mobius_squarefree(d)*d,
+        k*r*e*phi(k)*phi(e),
+    )
+    assert original==closed
+    return closed
 
 
 def checks() -> None:
@@ -119,8 +154,17 @@ def checks() -> None:
             e=q//r
             for k in (1,11,13):
                 if math.gcd(k,q)!=1: continue
-                diff=bhb_phase_difference(7,5,k,r,e)
-                assert diff.denominator==1,(q,r,e,k,diff)
+                assert bhb_phase_difference(7,5,k,r,e).denominator==1
+
+    # Exact collapse of the BHB l-sum and total squarefree arithmetic weight.
+    for q in (3,5,6,10,15,30):
+        if not is_squarefree(q): continue
+        for k in (1,2,7,11,14):
+            if not is_squarefree(k) or math.gcd(k,q)!=1: continue
+            for d in divisors(k):
+                assert bhb_delta_scalar_original(q,k,d)==bhb_delta_scalar_closed(q,k,d)
+                for r in divisors(q):
+                    collapsed_outer_weight(q,k,d,r)
 
 
 def main() -> None:
@@ -129,9 +173,10 @@ def main() -> None:
     args=p.parse_args()
     checks()
     if args.check:
-        print("primitive-Gauss/reciprocity checks: PASS")
+        print("primitive-Gauss/BHB arithmetic collapse checks: PASS")
     else:
         print("squarefree primitive-Gauss formula checked for q<=120")
+        print("BHB delta scalar and q=r*e outer weight checked exactly")
         print("BHB reciprocity phase checked exactly on sample squarefree blocks")
         print("See primitive_gauss_collapse.md for the exact proof and trust boundary.")
 

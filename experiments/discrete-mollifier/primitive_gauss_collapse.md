@@ -1,7 +1,7 @@
 # Exact collapse of the signed primitive-character family
 
-Status: **exact finite character identity proved below; application to a modern
-Kloosterman theorem still requires coefficient/range matching.**
+Status: **exact finite character/arithmetic identities proved below; application to
+a modern Kloosterman theorem still requires numerator/range separation.**
 
 This note removes one of the main ambiguities in Gate C.  The primitive-character
 and Gauss-sum part of Bui--Heath-Brown equation (5) can be collapsed **before taking
@@ -140,37 +140,85 @@ The `l` dependence disappears completely from the character argument.  Therefore
 C(q,k,d)\,G_q(-md\bar k),
 \]
 
-with the purely arithmetic scalar
+with
 
 \[
 C(q,k,d)=
-\sum_{l\mid(d,k)}
+\sum_{l\mid d}
 \frac{\mu(d/l)\mu(k/l)}{\phi(kq/l)}.
 \]
 
-Using the squarefree Gauss formula,
+## 5. The l-sum also collapses exactly
+
+Because `k` is squarefree and `d|k`, for every `l|d`
+
+\[
+\mu(d/l)\mu(k/l)=\mu(d)\mu(k).
+\]
+
+Write `k=dc` with `(c,d)=1`.  Multiplicativity gives
+
+\[
+\sum_{l\mid d}\frac1{\phi(k/l)}
+=
+\frac1{\phi(c)}
+\prod_{p\mid d}\left(1+\frac1{p-1}\right)
+=
+\frac{d}{\phi(k)}.
+\]
+
+Since `(q,k)=1`, it follows that
 
 \[
 \boxed{
-\sum_{\psi}^{*}\tau(\bar\psi)
-\delta(q,kq,d,\psi)\psi(m)
-=
-C(q,k,d)
-\sum_{s\mid q}\phi(s)
- e\!\left(-md\frac{\overline{k(q/s)}}{s}\right).
+C(q,k,d)=
+\mu(k)\mu(d)\frac{d}{\phi(k)\phi(q)}.
 }
 \]
 
-So the signed primitive-character family is exactly a divisor sum of additive
-Kloosterman-fraction phases.
+This identity is exact and is checked with rational arithmetic in
+`primitive_gauss.py`.
 
-## 5. Additive reciprocity and Wright's phase shape
-
-Put
+Multiplying by the original mollifier coefficient
 
 \[
-q=se.
+\frac{b(kq)}{kq}
+=
+\frac{\mu(k)\mu(q)}{kq}
+P\!\left(\frac{\log(y/kq)}{\log y}\right)
 \]
+
+cancels `mu(k)^2`.  Now write `q=se`.  The `phi(s)` from the Gauss collapse cancels
+against the same factor in `phi(q)=phi(s)phi(e)`.  Thus each divisor-phase term has
+exact arithmetic coefficient
+
+\[
+\boxed{
+P\!\left(\frac{\log(y/kse)}{\log y}\right)
+\frac{\mu(s)\mu(e)\mu(d)d}
+{k\,s\,e\,\phi(k)\phi(e)}
+}
+\]
+
+multiplying
+
+\[
+\boxed{
+e\!\left(-md\frac{\overline{ke}}s\right)}.
+\]
+
+This exposes the signed structure that equation (13) discards.  In particular the
+large reciprocal modulus `s` carries the natural Möbius weight
+
+\[
+\boxed{\mu(s)/s}.
+\]
+
+So the hard object is not an arbitrary positive character norm: it is a
+Möbius-weighted Kloosterman-fraction family with only short additional arithmetic
+parameters.
+
+## 6. Additive reciprocity and Wright's phase shape
 
 Because `(ke,s)=1`, additive reciprocity gives
 
@@ -207,14 +255,11 @@ m_{\rm W}=s,\qquad n_{\rm W}=e,\qquad R_{\rm W}=k,
 The short BHB outer factor `k` appears in precisely the fixed factor `R` of the
 reciprocal denominator.
 
-This is stronger than a qualitative analogy: the reciprocal phase itself is now
-an exact consequence of primitive orthogonality and additive reciprocity.
-
-## 6. The remaining obstruction to a black-box Wright application
+## 7. The remaining obstruction to a black-box Wright application
 
 The dictionary above does **not** prove Gate C.  Two important couplings remain.
 
-### 6.1 Large numerator/product coupling
+### 7.1 Large numerator/product coupling
 
 The formal Wright numerator would be
 
@@ -230,7 +275,7 @@ Thus one must first use the generalized-Vaughan factorization, Poisson, or anoth
 convolution split so that the oscillatory numerator variable entering the trilinear
 Kloosterman estimate is a controlled factor rather than the entire `md` product.
 
-### 6.2 Reciprocity correction
+### 7.2 Reciprocity correction
 
 The second exact factor
 
@@ -246,14 +291,16 @@ external height, so this factor should be treated together with the entire saddl
 weight.  A successful application needs a separation transform whose cost is
 compatible with the desired `theta=0.502` power saving.
 
-## 7. Revised Gate-C subproblem
+## 8. Revised Gate-C subproblem
 
-The phase-compatibility question is now solved.  The next subproblem is narrower:
+The primitive-character and arithmetic simplification is now exact.  The next
+subproblem is narrower:
 
-> Starting from the exact divisor-phase formula above and an `r=4` convolution of
-> `a_nu`, separate the product `md` and the smooth correction
+> Starting from the Möbius-weighted divisor-phase formula above and an `r=4`
+> convolution of `a_nu`, separate the product `md` and the smooth correction
 > `e(-md/(kq))Omega(md/(kq))` so that one trilinear piece matches Wright's
-> `B(M,N,A;R)` with `R=k`, while retaining the outer Möbius coefficient `b(kq)`.
+> `B(M,N,A;R)` with `R=k`, while retaining `mu(s)/s` rather than taking absolute
+> values.
 
 If this separation can be done with only polylogarithmic or a sufficiently small
 power cost, Wright's fixed-factor theorem becomes a concrete candidate input rather

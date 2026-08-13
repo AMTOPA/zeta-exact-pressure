@@ -1,6 +1,6 @@
 {
   "description": "Simple c=2 auxiliary pressure supporting line using exactly twice the root position-pressure vector.",
-  "status": "auxiliary local interval-certified at epsilon=0.0122; independent reproduction requested; not a standalone root record",
+  "status": "auxiliary local interval-certified at epsilon=0.0130; independent reproduction requested; not a standalone root record",
   "date": "2026-08-13",
   "points": 7,
   "gaps_per_local_window": 6,
@@ -15,33 +15,37 @@
     "positivity_subdivision_cells": 4096
   },
   "local_search": {
-    "method": "keep the root pair weights and take exactly twice the root position-pressure vector; raise the rigorous target only as demanded by the global pressure-frontier endpoint",
+    "method": "keep the root pair weights and take exactly twice the root position-pressure vector; raise the rigorous target only as demanded by the global pressure-frontier endpoint; before the 0.0130 probe, polish all 4096 {1,2,3,4}^6 resonance templates without screening",
     "pressure_total_scale": {"numerator":2,"denominator":1},
-    "screening_template_count": 512,
-    "screening_minimum_observed": "0.0130624470525...",
-    "candidate_target_for_certification": {"numerator":61,"denominator":5000},
+    "template_start_count": 4096,
+    "template_screening": false,
+    "float_minimum_observed": "0.013062447052546082...",
+    "float_minimum_location": ["1.03152033","1.03560208","1.95606058","1.03663732","1.02825822","1.02921536"],
+    "candidate_target_for_certification": {"numerator":13,"denominator":1000},
     "verified": true,
-    "previous_verified_targets": [{"numerator":559,"denominator":50000},{"numerator":23,"denominator":2000}],
-    "note": "The target 0.0122 remains about 8.62e-4 below the initial screening minimum and closed in 145,480 verifier nodes."
+    "previous_verified_targets": [{"numerator":559,"denominator":50000},{"numerator":23,"denominator":2000},{"numerator":61,"denominator":5000}],
+    "note": "The 0.0130 target is about 6.24e-5 below the full 4096-template polished floating minimum and closed in the hardened interval verifier. It removes the previously artificial high-energy pressure-frontier ceiling; with the present trace-corrected profile the first remaining scalar-frontier failure is instead at the c=21/20 versus c=6/5 low/mid-energy switch."
   },
   "local_certificate": {
-    "target": {"numerator":61,"denominator":5000},
+    "target": {"numerator":13,"denominator":1000},
     "verified": true,
     "independent_reproduction": false,
-    "source_commit": "56a46195e515fce48b40a6a6b3f710259a286f7e",
-    "workflow_run_id": 31654599579,
-    "artifact_id": 9163870032,
-    "artifact_digest_sha256": "118a3d5bc86a1ccb4dddccf3296011dc4feed0da047729f6f565878bb08bb91a",
-    "verified_at_utc": "2026-08-13T00:30:04Z",
+    "source_commit": "d8f77ef6e532e6afd2091718e3782b194a0e1f55",
+    "workflow_run_id": 31665998882,
+    "artifact_id": 9167943178,
+    "artifact_digest_sha256": "00ac3996ba92076ec09d9ef5e4fce594c9d5d310932b05b0ac2b574af0f49093",
+    "verified_at_utc": "2026-08-13T04:07:42Z",
     "verifier_source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
     "verifier_source_blob": "b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21",
     "capacity_compatibility_patch_only": true,
     "table_source_workflow_run_id": 31610179703,
     "table_source_artifact_id": 9147378469,
-    "verifier_stats": {"nodes":145480,"pruned":72748,"splits":72732,"convex":28471,"tangent":14019,"max_depth":39},
+    "table_source_artifact_digest_sha256": "871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1",
+    "verifier_stats": {"nodes":618896,"pruned":309456,"splits":309440,"convex":232563,"tangent":106902,"max_depth":50},
     "history": [
       {"target":"0.01118","workflow_run_id":31653117334,"artifact_id":9163326374},
-      {"target":"0.0115","workflow_run_id":31653588838,"artifact_id":9163489664}
+      {"target":"0.0115","workflow_run_id":31653588838,"artifact_id":9163489664},
+      {"target":"0.0122","workflow_run_id":31654599579,"artifact_id":9163870032,"artifact_digest_sha256":"118a3d5bc86a1ccb4dddccf3296011dc4feed0da047729f6f565878bb08bb91a"}
     ]
   },
   "pair_weights": {
@@ -57,6 +61,6 @@
   "frontier_role": {
     "base_pressure": {"numerator":93,"denominator":23000},
     "auxiliary_constraint": "S + 2 P >= A_2",
-    "six_line_projection": "Together with the c=21/20 epsilon=0.008205 line and the already certified root, c=11/10, c=6/5 and c=8/5 lines, this certified c=2 target yields a full no-loss block at m=576 with exact conditional projection 67.3458834998% and safe floor 0.6734588349, provided the c=21/20 local certificate closes and the continuous banded-Gram profile is accepted."
+    "trace_role": "The strict 0.0130 target gives substantial headroom at the high-energy endpoint of the trace-corrected pressure frontier. It does not by itself increase the current no-loss block because the first remaining scalar-frontier obstruction is the c=21/20 / c=6/5 switch near E≈1.42; its main role is to free future anisotropic or multi-lag refinements from the old c=2 ceiling."
   }
 }

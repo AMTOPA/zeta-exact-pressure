@@ -57,24 +57,56 @@ For an eigenvalue `lambda >= 0`, set `x=lambda-1 >= -1` and
 =x^2-(x-1)_+^2.
 \]
 
-Its scalar Fenchel conjugate on `x>=-1` satisfies
+Thus `phi(x)=x^2` on `[-1,1]` and `phi(x)=2x-1` on `[1,infinity)`.
+Taking the supremum of `ax-phi(x)` on these two intervals gives the scalar
+Fenchel conjugate
 
 \[
 \phi^*(a)=
 \begin{cases}
 -a-1,&a<-2,\\
 a^2/4,&-2\le a\le2,\\
-+\infty,&a>2,
++\infty,&a>2.
 \end{cases}
 \]
 
-and hence, for every `a<=2`,
+Indeed, for `-2<=a<=2` the stationary point `x=a/2` lies in `[-1,1]`,
+while for `a<-2` the constrained maximizer is the endpoint `x=-1`; for
+`a>2` the linear tail makes the supremum infinite.  In particular, for every
+`a<=2`,
 
 \[
-\phi^*(a)\le a^2/4.
+\phi^*(a)\le a^2/4,
 \]
 
-By spectral Fenchel duality, every Hermitian `A<=2I` therefore gives
+because on `a<-2` this is exactly
+`a^2/4-(-a-1)=(a+2)^2/4>=0`.
+
+For completeness, the matrix Fenchel step does **not** require `A` and `X` to
+commute.  Let `x_1<=...<=x_m` and `a_1<=...<=a_m` be their eigenvalues.
+Von Neumann's trace inequality gives
+
+\[
+\operatorname{tr}(AX)\le\sum_{i=1}^m a_i x_i.
+\]
+
+Scalar Fenchel applied termwise gives
+
+\[
+a_i x_i\le \phi(x_i)+\phi^*(a_i).
+\]
+
+Hence every Hermitian `A` whose eigenvalues satisfy `a_i<=2` obeys
+
+\[
+\operatorname{tr}\phi(X)
+\ge \operatorname{tr}(AX)-\operatorname{tr}\phi^*(A)
+\ge \operatorname{tr}(AX)-\frac14\|A\|_F^2.
+\]
+
+Since `G` is positive semidefinite, every eigenvalue of `X=G-I` is at least
+`-1`, so the scalar domain condition used above is automatic.  Therefore every
+Hermitian `A<=2I` gives
 
 \[
 \operatorname{tr}\Psi(G)
@@ -88,6 +120,28 @@ As in the banded-Gram proof, coloring indices modulo `q+1` gives
 \|Y\|_{\rm op}
 \le \rho:=\sqrt{E/T}.
 \]
+
+Explicitly, for a unit vector `u`, put `p_i=|u_i|^2` and let `P_c` be the
+`p_i`-mass in residue class `c mod (q+1)`.  Every `q`-band edge joins two
+different classes, so
+
+\[
+2\sum_{1\le j-i\le q}p_ip_j
+\le 1-\sum_c P_c^2
+\le \frac{q}{q+1}.
+\]
+
+Cauchy--Schwarz in the edge sum then gives
+
+\[
+|u^*Yu|^2
+\le
+\left(2\sum_{1\le j-i\le q}|Y_{ij}|^2\right)
+\left(2\sum_{1\le j-i\le q}p_ip_j\right)
+\le E\frac{q}{q+1}=rac ET,
+\]
+
+which proves the operator-norm bound.
 
 Now exploit the diagonal constraint that was unused in the first profile:
 
@@ -104,17 +158,26 @@ A=2\alpha Y-dI,
 d=2(\alpha\rho-1)_+.
 \]
 
-The operator-norm bound implies `A<=2I`.  If `X=Y+Z`, where `Z` contains the
-diagonal and all entries farther than `q`, then `Y` and `Z` are Frobenius
-orthogonal and `tr Y=0`.  Consequently
+The operator-norm bound implies
+
+\[
+\lambda_{\max}(A)
+\le 2\alpha\rho-d\le2,
+\]
+
+so `A<=2I` as required.  If `X=Y+Z`, where `Z` contains the diagonal and all
+entries farther than `q`, then `Y` and `Z` have disjoint Frobenius support and
+`tr Y=0`.  Consequently
 
 \[
 \operatorname{tr}(AX)
+=2\alpha\operatorname{tr}(YX)-d\operatorname{tr}X
 =2\alpha E-d\operatorname{tr}X
 \ge2\alpha E,
 \]
 
-while
+while the vanishing trace of `Y` also removes the cross term in
+`\|2\alpha Y-dI\|_F^2`, giving
 
 \[
 \frac14\|A\|_F^2
@@ -155,8 +218,15 @@ Since
 =\frac{E(\rho-1)}{E+m\rho^2}>0,
 \]
 
-this maximizer lies on the asserted branch.  Substitution, using
-`rho^2=E/T`, gives
+this maximizer lies on the asserted branch.  Its value is
+
+\[
+\frac{(E+m\rho)^2}{E+m\rho^2}-m
+=
+\frac{E\bigl(E+m(2\rho-1)\bigr)}{E+m\rho^2}.
+\]
+
+Substituting `rho^2=E/T` therefore gives
 
 \[
 \Delta\ge
@@ -218,6 +288,17 @@ and
 
 or `67.3458858362%`, with safe floor `0.6734588583`.
 
-This numerical gain is intentionally small: the purpose of the test is to
-isolate and validate the finite-`m` trace correction before attempting stronger
-matrix refinements.
+A later trace-only root-local tightening improves the numerical projection
+without changing this matrix lemma; that experiment is recorded separately in
+`trace-root-tightening.json` so that the original root record remains
+untouched.
+
+## Trust boundary
+
+The derivation above is now self-contained at the matrix-inequality level: the
+scalar conjugate, the noncommutative trace Fenchel step, the coloring bound,
+and the finite-`m` optimization are all written explicitly.  The remaining
+research trust boundary is external to this algebraic derivation: independent
+review of the lemma and of its insertion into the predecessor shifted-block /
+pinching framework is still required before any trace-corrected number is
+promoted to the root result.

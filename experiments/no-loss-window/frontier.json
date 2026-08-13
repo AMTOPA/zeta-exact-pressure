@@ -1,0 +1,74 @@
+{
+  "description": "17-term window reoptimized for the no-Gram-loss pressure-frontier objective rather than the inherited scalar-Gram m≈145 objective.",
+  "status": "discovery-level analytic-extension candidate; interval certification pending; not the root record",
+  "date": "2026-08-13",
+  "window": {
+    "term_count": 17,
+    "denominator": 1000000000,
+    "numerators": [1000000000,12272508,-12902495,3864033,6041405,-1424025,6519280,-8347828,6482919,-5011140,-592658,260544,-131207,57969,-10433,400000,-400000],
+    "frequencies": ["sqrt(2)","2*pi","4*pi","6*pi","8*pi","10*pi","12*pi","14*pi","16*pi","18*pi","20*pi","22*pi","24*pi","26*pi","28*pi","30*pi","32*pi"],
+    "computed_h": "0.6721805180790441...",
+    "projection_h_floor": {"numerator":1344361,"denominator":2000000},
+    "h_floor_interval_verified": false,
+    "positivity_subdivision_cells": 4096,
+    "sampled_window_lower_bound": "0.7631793470..."
+  },
+  "pair_weights_source": "root candidate.json; unchanged exact span capacities 2",
+  "pair_weights": {
+    "denominator": 1000000000,
+    "span_capacity_numerator": 2000000000,
+    "entries": [[0,1,244109993],[0,2,0],[0,3,254223074],[0,4,1000000000],[0,5,1000000000],[0,6,2000000000],[1,2,346264551],[1,3,368129744],[1,4,745776926],[1,5,0],[1,6,1000000000],[2,3,409625456],[2,4,1263740512],[2,5,745776926],[2,6,1000000000],[3,4,409625456],[3,5,368129744],[3,6,254223074],[4,5,346264551],[4,6,0],[5,6,244109993]]
+  },
+  "supporting_lines": [
+    {
+      "name":"base",
+      "scale":{"numerator":1,"denominator":1},
+      "target":{"numerator":3963,"denominator":500000},
+      "pressure":{"denominator":46000000000,"numerators":[22420713,32878293,37700994,37700994,32878293,22420713],"total":{"numerator":93,"denominator":23000}},
+      "float_minimum_observed":"0.00792659...",
+      "verified":false
+    },
+    {
+      "name":"c105",
+      "scale":{"numerator":21,"denominator":20},
+      "target":{"numerator":8231,"denominator":1000000},
+      "pressure":{"denominator":230000000000,"numerators":[114482489,168407678,205359833,205359833,168407678,114482489],"total":{"numerator":1953,"denominator":460000}},
+      "float_minimum_observed":"0.00823175...",
+      "verified":false
+    },
+    {
+      "name":"c12",
+      "scale":{"numerator":6,"denominator":5},
+      "target":{"numerator":1129,"denominator":125000},
+      "pressure":{"denominator":230000000000,"numerators":[138257404,191681784,228060812,228060812,191681784,138257404],"total":{"numerator":279,"denominator":57500}},
+      "float_minimum_observed":"0.00903266...",
+      "verified":false
+    },
+    {
+      "name":"c16",
+      "scale":{"numerator":8,"denominator":5},
+      "target":{"numerator":2227,"denominator":200000},
+      "pressure":{"denominator":230000000000,"numerators":[185919709,245818740,312261551,312261551,245818740,185919709],"total":{"numerator":93,"denominator":14375}},
+      "float_minimum_observed":"0.01113655...",
+      "verified":false
+    },
+    {
+      "name":"c20",
+      "scale":{"numerator":2,"denominator":1},
+      "target":{"numerator":13,"denominator":1000},
+      "pressure":{"denominator":46000000000,"numerators":[44841426,65756586,75401988,75401988,65756586,44841426],"total":{"numerator":93,"denominator":11500}},
+      "float_minimum_observed":"0.01307225...",
+      "verified":false
+    }
+  ],
+  "projection": {
+    "block_length":580,
+    "R_equals_A0":true,
+    "eta":1,
+    "exact_bound":{"numerator":4456752935,"denominator":6617680474},
+    "computed_percent":"67.3461487376128...%",
+    "safe_decimal_floor":{"numerator":6734614873,"denominator":10000000000},
+    "next_block_failure":"At m=581 the c=21/20 to c=6/5 switch has exact negative square witness -2213089/14400000000."
+  },
+  "trust_boundary":"All displayed local minima are discovery values until the shared fresh outward-rounded table workflow closes every line. Even after numerical closure, promotion remains conditional on independent acceptance of the continuous banded-Gram analytic profile in issue #5."
+}

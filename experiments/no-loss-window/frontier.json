@@ -1,74 +1,42 @@
 {
-  "description": "17-term window reoptimized for the no-Gram-loss pressure-frontier objective rather than the inherited scalar-Gram m≈145 objective.",
-  "status": "discovery-level analytic-extension candidate; interval certification pending; not the root record",
+  "description": "Rejected first 17-term window reoptimized for the no-Gram-loss pressure-frontier objective.",
+  "status": "rejected-by-rigorous-adversary; do not use the projected percentage",
   "date": "2026-08-13",
   "window": {
     "term_count": 17,
     "denominator": 1000000000,
     "numerators": [1000000000,12272508,-12902495,3864033,6041405,-1424025,6519280,-8347828,6482919,-5011140,-592658,260544,-131207,57969,-10433,400000,-400000],
     "frequencies": ["sqrt(2)","2*pi","4*pi","6*pi","8*pi","10*pi","12*pi","14*pi","16*pi","18*pi","20*pi","22*pi","24*pi","26*pi","28*pi","30*pi","32*pi"],
-    "computed_h": "0.6721805180790441...",
+    "computed_h": "0.6721805180790440469142333935700221585213727367872771050084317083297477...",
     "projection_h_floor": {"numerator":1344361,"denominator":2000000},
-    "h_floor_interval_verified": false,
-    "positivity_subdivision_cells": 4096,
-    "sampled_window_lower_bound": "0.7631793470..."
+    "h_floor_interval_verified": true,
+    "h_interval": ["0.672180518079044046914233393570022158521372736787277105008431708317891647451","0.67218051807904404691423339357002215852137273678727710500843170834160368956"],
+    "interval_window_lower_bound": "0.7631788773958446..."
   },
-  "pair_weights_source": "root candidate.json; unchanged exact span capacities 2",
-  "pair_weights": {
-    "denominator": 1000000000,
-    "span_capacity_numerator": 2000000000,
-    "entries": [[0,1,244109993],[0,2,0],[0,3,254223074],[0,4,1000000000],[0,5,1000000000],[0,6,2000000000],[1,2,346264551],[1,3,368129744],[1,4,745776926],[1,5,0],[1,6,1000000000],[2,3,409625456],[2,4,1263740512],[2,5,745776926],[2,6,1000000000],[3,4,409625456],[3,5,368129744],[3,6,254223074],[4,5,346264551],[4,6,0],[5,6,244109993]]
+  "rejection": {
+    "workflow_run_id": 31655444176,
+    "workflow_head_sha": "dc95fc96f1e22ea74e1bc57b84c92a6361d842f6",
+    "artifact_id": 9164451351,
+    "artifact_digest_sha256": "7e503f20aed224aedd92b7fd7b440d3ed0f701f904c40d3fd40d96f4ca34da2e",
+    "failed_target": {"numerator":3963,"denominator":500000},
+    "verifier_result": "INCONCLUSIVE terminal cell before the advertised base target",
+    "terminal_cell_grid_indices": [4156,4186,11687,4175,4139,7887],
+    "terminal_cell_interval_lower_bound": "0.0079089958072987195",
+    "continuous_polish_start": ["1.039","1.0465","2.92175","1.04375","1.03475","1.97175"],
+    "continuous_counterexample_value": "0.007905432226801493...",
+    "continuous_counterexample_location": ["1.0420898812","1.0474815101","2.9184566511","1.0455278219","1.0405990472","1.9751893973"],
+    "conclusion": "The advertised base epsilon=0.007926 is false for this window. The previously reported resonance-template minimum missed a noninteger basin near a 2.92 gap. The projected 67.3461487376% is invalid and must not be cited."
   },
-  "supporting_lines": [
-    {
-      "name":"base",
-      "scale":{"numerator":1,"denominator":1},
-      "target":{"numerator":3963,"denominator":500000},
-      "pressure":{"denominator":46000000000,"numerators":[22420713,32878293,37700994,37700994,32878293,22420713],"total":{"numerator":93,"denominator":23000}},
-      "float_minimum_observed":"0.00792659...",
-      "verified":false
-    },
-    {
-      "name":"c105",
-      "scale":{"numerator":21,"denominator":20},
-      "target":{"numerator":8231,"denominator":1000000},
-      "pressure":{"denominator":230000000000,"numerators":[114482489,168407678,205359833,205359833,168407678,114482489],"total":{"numerator":1953,"denominator":460000}},
-      "float_minimum_observed":"0.00823175...",
-      "verified":false
-    },
-    {
-      "name":"c12",
-      "scale":{"numerator":6,"denominator":5},
-      "target":{"numerator":1129,"denominator":125000},
-      "pressure":{"denominator":230000000000,"numerators":[138257404,191681784,228060812,228060812,191681784,138257404],"total":{"numerator":279,"denominator":57500}},
-      "float_minimum_observed":"0.00903266...",
-      "verified":false
-    },
-    {
-      "name":"c16",
-      "scale":{"numerator":8,"denominator":5},
-      "target":{"numerator":2227,"denominator":200000},
-      "pressure":{"denominator":230000000000,"numerators":[185919709,245818740,312261551,312261551,245818740,185919709],"total":{"numerator":93,"denominator":14375}},
-      "float_minimum_observed":"0.01113655...",
-      "verified":false
-    },
-    {
-      "name":"c20",
-      "scale":{"numerator":2,"denominator":1},
-      "target":{"numerator":13,"denominator":1000},
-      "pressure":{"denominator":46000000000,"numerators":[44841426,65756586,75401988,75401988,65756586,44841426],"total":{"numerator":93,"denominator":11500}},
-      "float_minimum_observed":"0.01307225...",
-      "verified":false
-    }
-  ],
-  "projection": {
-    "block_length":580,
-    "R_equals_A0":true,
-    "eta":1,
-    "exact_bound":{"numerator":4456752935,"denominator":6617680474},
-    "computed_percent":"67.3461487376128...%",
-    "safe_decimal_floor":{"numerator":6734614873,"denominator":10000000000},
-    "next_block_failure":"At m=581 the c=21/20 to c=6/5 switch has exact negative square witness -2213089/14400000000."
+  "table_evidence": {
+    "coarse_cells": 66179,
+    "midpoint_values": 132359,
+    "w_lower_sha256": "78f11b48499e4b8ae43916e33019d77e0fc2a1142c24d30064dfb79ec53544d7",
+    "w_second_lower_sha256": "8f8fc2f9b9032d97c9e13fb0c3ae650946988a4cf5ea099d9dc85e8350ae1e6e",
+    "w_mid_lower_sha256": "f550095cd1a5043b583c7f314d77926a4bf49157ae6c9af5af3e4c116d059758",
+    "w_mid_upper_sha256": "e3c4477b80f70401786a2f60d4fb694903073be5836e2d67450d141852aa56ba",
+    "w_prime_mid_lower_sha256": "bd8f9e40f29658d5d19b41dd6ddd047c679bf086a2203566901e5ce0dc9d816e",
+    "w_prime_mid_upper_sha256": "38051f8cab83911ed52af51ffdff1779e5f59ec5a52e36c9df9aa104bf238fa9"
   },
-  "trust_boundary":"All displayed local minima are discovery values until the shared fresh outward-rounded table workflow closes every line. Even after numerical closure, promotion remains conditional on independent acceptance of the continuous banded-Gram analytic profile in issue #5."
+  "research_lesson": "Future no-loss-directed window exchange must include verifier-discovered terminal cells and their polished descendants as mandatory adversarial constraints. Random differential evolution and integer resonance templates alone are insufficient.",
+  "replacement_policy": "The strongest current analytic-extension candidate reverts to the old certified 17-term window pressure-frontier bundle at 67.3458834998%, whose local numerical inputs are interval-certified."
 }

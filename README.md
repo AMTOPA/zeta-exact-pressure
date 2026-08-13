@@ -1,145 +1,61 @@
-# Zeta exact-pressure optimization
+# Zeta simple-zero research
 
 > [!IMPORTANT]
-> **Current interval-certified research-draft record under the existing scalar Gram interface: 67.3416490971%.**
+> **Current interval-certified research-draft record under the existing exact-pressure / scalar-Gram interface: 67.3416490971%.**
 >
-> A new analytic-extension experiment that retains six-band Gram information projects to **67.3423563564%**, but that new matrix lemma is not yet promoted to the root record; it requires independent mathematical review.
+> That record is retained as the certified computational baseline. The active research direction has now moved to **discrete mollified moments of `zeta'(rho)`**, where the classical RH-conditional scalar-mollifier benchmark is `19/27 = 70.370370...%`.
 
 This is a research project, not a peer-reviewed theorem and not a proof of the Riemann hypothesis.
 
-## Current certified baseline
+## 1. Certified exact-pressure baseline
 
-The current root construction uses seven points / six gaps, exact total position pressure
+The root [`candidate.json`](candidate.json) remains the current certified computer-assisted result. It uses seven points / six gaps, exact total position pressure
 
 \[
 B=\frac{93}{23000},
 \]
 
-and a second-exchange 17-term analytic window
+and a 17-term analytic window
 
 \[
 v(s)=\sum_{j=0}^{16}c_j\cos(\omega_js),
 \qquad
 \omega_0=\sqrt2,
-\quad \omega_j=2j\pi\ (1\le j\le16).
+\quad \omega_j=2j\pi\;(1\le j\le16).
 \]
 
-The rational coefficient denominator is \(10^9\), with numerator vector
-
-```text
-1000000000
-   12378982
-  -12602495
-    4164033
-    5741405
-   -1724025
-    6219280
-   -8047828
-    6321519
-   -5241981
-    -892658
-     560544
-    -431207
-     357969
-    -310433
-     100000
-    -100000
-```
-
-Interval arithmetic gives
+Outward-rounded interval arithmetic proves
 
 \[
-H(v)=0.67218815811823458516945638772565\ldots
+H(v)>0.6721881580
 \]
 
-and proves the conservative floor
+and the hardened six-dimensional verifier proves
 
 \[
-\boxed{H(v)>0.6721881580}.
-\]
-
-The same 4096-cell interval subdivision gives a positive window lower bound above `0.7616418486`.
-
-### Certified local inequality
-
-The local functional has the exact pair and position-pressure coefficients stored in [`candidate.json`](candidate.json). Every pair span \(s=1,\ldots,6\) has exact total capacity 2, and the position pressures sum exactly to \(93/23000\).
-
-Unscreened adversarial exchange found a floating minimum near
-
-\[
-0.007911105155226424\ldots.
-\]
-
-The hardened six-dimensional outward-rounded verifier proves
-
-\[
-\boxed{F(g_1,\ldots,g_6)\ge0.0079107}
+F(g_1,\ldots,g_6)\ge0.0079107
 \qquad(g_i\ge0).
 \]
 
-The successful 4000-grid / 50-digit run, compiled with `-ffp-contract=off`, reports
-
-```text
-VERIFIED=true
-nodes=3768186
-pruned=1884125
-splits=1884061
-convex=2030240
-tangent=936616
-max_depth=74
-```
-
-Evidence is recorded in `candidate.json`:
+The successful local run records
 
 ```text
 workflow run = 31610179703
 artifact id = 9147378469
 artifact digest sha256 = 871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1
+VERIFIED=true
+nodes=3768186
+convex=2030240
+tangent=936616
 ```
 
-## Existing scalar-Gram projection
-
-Under the inherited finite-dimensional profile
+Under the inherited scalar finite-dimensional Gram profile, exact arithmetic selects `m=145` and gives
 
 \[
-R_m=h_m(A_m),
-\qquad
-A_m=\varepsilon(m-6),
-\qquad
-\eta_m=R_m/A_m,
+\boxed{0.67341649097149929495\ldots},
 \]
 
-the shifted-pressure deduction gives
-
-\[
-\frac{N_0^s(T,2T)}{N(T,2T)}
-\ge
-\frac{mH-\eta_mB(m-6)}{m-R_m}-o(1).
-\]
-
-Using only the certified conservative inputs
-
-\[
-H=0.6721881580,
-\qquad
-\varepsilon=0.0079107,
-\qquad
-B=\frac{93}{23000},
-\]
-
-the integer scan selects
-
-\[
-\boxed{m=145}
-\]
-
-and gives
-
-\[
-\boxed{0.67341649097149929495\ldots}.
-\]
-
-Therefore the safe decimal floor is
+hence safe floor
 
 \[
 \boxed{0.6734164909},
@@ -147,51 +63,128 @@ Therefore the safe decimal floor is
 
 i.e. **67.3416490971%** before truncation.
 
-The immediately previous certified state, **67.3415313957%**, is frozen under [`archive/2026-08-12-certified-6734153139/`](archive/2026-08-12-certified-6734153139/).
+Historical certified states are frozen under [`archive/`](archive/).
 
-## New direction: retain band-position information
+## 2. Why this route is no longer the active optimization target
 
-The scalar profile \(h_m\) is sharp if only total off-diagonal energy is known. The translated local certificate, however, gives more structure: it only uses pairs with index span at most six. The active analytic-extension experiment therefore retains
+The exact-pressure work established a reproducible local-certificate and interval-verification framework, but repeated optimization of windows, pressures, pair weights, longer local geometries and band-aware Gram profiles showed strong diminishing returns. Analytic extensions under [`experiments/banded-gram/`](experiments/banded-gram/) and [`experiments/pressure-frontier/`](experiments/pressure-frontier/) are retained for audit/history, not as the primary numerical race.
 
-\[
-E_6=2\sum_{1\le j-i\le6}|G_{ij}|^2
-\]
+The new strategy changes the observable rather than continuing to optimize the same pair-energy interface.
 
-instead of immediately relaxing it to the full off-diagonal energy.
+## 3. Active direction: discrete mollified `zeta'` moments
 
-A coloring / Frobenius-distance argument gives the proposed continuous banded profile
+For a zero `rho`, multiplicity at least two implies
 
 \[
-g_q(E)=
-\begin{cases}
-E,&E\le(q+1)/q,\\
-2\sqrt{\frac{q+1}{q}E}-\frac{q+1}{q},&E\ge(q+1)/q.
-\end{cases}
+\zeta'(\rho)=0.
 \]
 
-Using the already interval-certified 17-term local input, exact rational arithmetic with this profile selects \(m=165\) and projects to
+Thus for a Dirichlet-polynomial mollifier `B`, Cauchy gives the direct simple-zero detector
 
 \[
-\boxed{0.6734235635636362491\ldots}
+N^*(T)
+\ge
+\frac{\left|\sum_{0<\gamma\le T}B(\rho)\zeta'(\rho)\right|^2}
+{\sum_{0<\gamma\le T}|B(\rho)\zeta'(\rho)|^2}.
 \]
 
-or
+Bui--Heath--Brown (arXiv:1302.5018), following Conrey--Ghosh--Gonek, prove under RH that the standard Möbius mollifier with length `T^theta`, `theta<1/2`, yields
 
 \[
-\boxed{67.3423563564\%}
+\boxed{\frac{19}{27}=70.370370\ldots\%}.
 \]
 
-with safe floor `0.6734235635`.
+The active work is under [`experiments/vector-mollifier/`](experiments/vector-mollifier/).
 
-This is **not yet the root certified record**: the local numerical certificate is rigorous and the final arithmetic is exact, but the new banded-Gram analytic lemma and its insertion into shifted-block pinching need independent mathematical review. The full proof sketch and machine-readable arithmetic are under [`experiments/banded-gram/`](experiments/banded-gram/).
+### 3.1 Exact scalar ceiling
 
-## Why mixed local geometries were not enough
+For the whole scalar class
 
-A same-window 7-point / 8-point mixture was tested first. The interior pair-capacity constraint forces the mixture coefficients to form a convex combination, and after the usual scalar \(A_m\to h_m(A_m)\) compression the optimizer selected an endpoint rather than an interior mixture. This negative result is what motivated changing the Gram step instead of continuing to mix certificates before the scalar bottleneck.
+\[
+b(n)=\mu(n)P\!\left(\frac{\log(y/n)}{\log y}\right),
+\qquad y=T^\theta,
+\]
 
-A preliminary five-gap experiment was also tested because its band threshold is larger. Free LP weights initially overfit badly; adversarial exchange pushed the robust local minimum well below the level required to beat the six-gap construction. For now, six gaps appears to be the better geometry for the new banded profile.
+the Bui--Heath--Brown main terms reduce to
 
-## Reproduction and trust boundary
+\[
+U=\frac12+\theta I,
+\qquad
+Q=\frac13+\theta I+\theta^2I^2+\frac{K}{12\theta},
+\]
+
+where `I=int P` and `K=int (P')^2`.
+
+Optimizing over the full `H^1` scalar class gives exactly
+
+\[
+\boxed{
+R_*(\theta)=
+\frac{\theta(\theta^2+3\theta+3)}{(1+\theta)^3}
+},
+\qquad
+R_*'(\theta)=\frac3{(1+\theta)^4}>0.
+\]
+
+Therefore the scalar `theta<1/2` class has the sharp limiting ceiling `19/27`. Merely increasing polynomial degree or adding pieces that remain `mu(n)` times a one-variable function of `log n` cannot break it. [`check_scalar_ceiling.py`](experiments/vector-mollifier/check_scalar_ceiling.py) checks the endpoint identities exactly.
+
+### 3.2 Genuine arithmetic coefficient geometry
+
+The first genuine enlargement uses Feng-type prime-tuple information while retaining outer Möbius/squarefree support. Define
+
+\[
+E_2(n;y)=
+\sum_{p<q,\;pq\mid n}
+\frac{\log p\log q}{\log^2y}.
+\]
+
+Unlike `log n`, this is not determined by the total size of `n`. The first vector family is
+
+\[
+B_0(s)=\sum_{n\le y}\frac{\mu(n)P_0(u_n)}{n^s},
+\qquad
+B_2(s)=\sum_{n\le y}\frac{\mu(n)P_2(u_n)E_2(n;y)}{n^s}.
+\]
+
+If the mixed discrete first/second moment asymptotics have vector `u` and positive matrix `Q`, the optimized Cauchy quotient is
+
+\[
+\boxed{u^*Q^{-1}u}.
+\]
+
+A finite-zero probe shows a stable positive incremental `E2` direction after allowing scalar polynomial reoptimization, but it is explicitly **discovery only** and is not an asymptotic bound. The next analytic task is the mixed second-moment first variation at the scalar `19/27` extremizer.
+
+### 3.3 Break the half-length barrier
+
+Bui--Heath--Brown's large-modulus analysis, before using `theta<=1/2`, contains two power-size errors
+
+\[
+yT^{1/2+\varepsilon}
+\quad\text{and}\quad
+y^{1/2}T^{3/4+\varepsilon}.
+\]
+
+Both hit size `T` at `theta=1/2`. If a modern off-diagonal estimate saves `T^{-delta_1}` and `T^{-delta_2}` respectively, the power-counting range becomes
+
+\[
+\theta<\frac12+\delta_1,
+\qquad
+\theta<\frac12+2\delta_2.
+\]
+
+See [`length-barrier.md`](experiments/vector-mollifier/length-barrier.md) and [`check_length_payoff.py`](experiments/vector-mollifier/check_length_payoff.py).
+
+For scale only: if the same scalar main term could be proved at `theta=51/101`, it would formally give about **70.66180725%**; at `theta=6/11`, about **72.90860981%**. These are targets, **not proved results**.
+
+Pratt--Robles (arXiv:1706.04593) show in the related continuous twisted-second-moment problem that Type I/II decomposition plus Kloosterman-sum estimates allows Feng-type mollifiers of length `theta<6/11`. The research question here is whether analogous structure can be exposed before the final Cauchy/hybrid-large-sieve step in the **discrete-zero** argument.
+
+## 4. Current go/no-go priorities
+
+1. Derive the asymptotic mixed second moment for the Feng `E2` direction and test whether `19/27` remains a stationary point in the enlarged coefficient space.
+2. Audit the Bui--Heath--Brown large-modulus character sum before their final Cauchy/hybrid-large-sieve step and seek a genuine power saving using Type I/II and Kloosterman structure.
+3. Continue a direction only when it changes the asymptotic functional or the admissible mollifier length; finite-height improvements alone are not promoted.
+
+## 5. Reproduction and trust boundary
 
 Run
 
@@ -199,8 +192,8 @@ Run
 sh run.sh
 ```
 
-for root structural checks, interval-window verification, final arithmetic, verifier smoke testing, and the exact arithmetic of the banded-Gram experiment.
+for the existing exact-pressure certified baseline and its historical analytic checks.
 
-Checked directly in this repository: exact pair-span capacities, exact declared pressure totals, interval window bounds/positivity, the current six-dimensional local certificate, existing scalar-Gram final arithmetic, and the rational arithmetic of the new banded experiment. Imported from the lineage: the explicit-formula / trace interface and shifted-block framework. The new banded-Gram matrix inequality is documented locally but still awaits independent review.
+The new vector-mollifier directory is currently analytic/discovery work. `check_scalar_ceiling.py` and `check_length_payoff.py` verify exact algebra; `finite_zero_probe.py` is deliberately non-rigorous and labels its output accordingly.
 
-Historical certified states remain under `archive/` in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md). Original repository material is MIT-licensed. Third-party analytic inputs are referenced rather than vendored; see [`THIRD_PARTY.md`](THIRD_PARTY.md).
+Imported analytic inputs are cited rather than vendored; see [`THIRD_PARTY.md`](THIRD_PARTY.md). Historical results remain under `archive/` in accordance with [`REPOSITORY_POLICY.md`](REPOSITORY_POLICY.md).

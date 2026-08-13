@@ -1,0 +1,105 @@
+name: pressure-frontier-c11-certificate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - experiments/pressure-frontier/c11.json
+      - src/check_pressure_bundle5.py
+      - .github/workflows/pressure-frontier-c11.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ZETA_CANDIDATE_PATH: experiments/pressure-frontier/c11.json
+      TABLE_SOURCE_RUN: '31610179703'
+      TABLE_SOURCE_ARTIFACT: second-exchange-17term-certificate-hardened
+      VERIFIER_SOURCE_COMMIT: b3b7784ed0089c3c2197d740aaae1a424d142e44
+      VERIFIER_SOURCE_BLOB: b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+
+      - name: Validate c=11/10 auxiliary and exact five-line arithmetic
+        run: |
+          python3 - <<'PY'
+          import json
+          from fractions import Fraction
+          c=json.load(open('experiments/pressure-frontier/c11.json'))
+          assert Fraction(c['local_search']['pressure_total_scale']['numerator'],c['local_search']['pressure_total_scale']['denominator'])==Fraction(11,10)
+          t=c['local_search']['candidate_target_for_certification']
+          assert Fraction(t['numerator'],t['denominator'])==Fraction(8477,1000000)
+          pr=c['position_pressure']
+          assert Fraction(sum(pr['numerators']),pr['denominator'])==Fraction(1023,230000)
+          print('pressure_frontier_c11_structure_exact=True')
+          PY
+          python3 src/check_window.py
+          python3 src/check_pressure_bundle5.py
+
+      - name: Compile root-certified accelerated verifier with capacity compatibility patch
+        run: |
+          rm -rf build-c11
+          mkdir -p build-c11
+          python3 src/write_verifier_config.py --output build-c11/candidate_config.hpp
+          grep 'pressure_total_num = 1023000000' build-c11/candidate_config.hpp
+          git fetch --no-tags --depth=1 origin "$VERIFIER_SOURCE_COMMIT"
+          git show "$VERIFIER_SOURCE_COMMIT:src/verify_local_tables.cpp" > build-c11/verify_local_tables.cpp
+          test "$(git hash-object build-c11/verify_local_tables.cpp)" = "$VERIFIER_SOURCE_BLOB"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('build-c11/verify_local_tables.cpp')
+          s=p.read_text()
+          old='if (total != candidate_config::span_capacity_num)\n                throw std::runtime_error("pair span capacity mismatch");'
+          new='if (total != candidate_config::span_capacity_num[span - 1])\n                throw std::runtime_error("pair span capacity mismatch");'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new))
+          print('capacity_compatibility_patch_only=True')
+          PY
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
+            -Ibuild-c11 build-c11/verify_local_tables.cpp -o build-c11/verify_local_tables
+
+      - name: Reuse certified root 17-term outward-rounded tables
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf shared-root-tables
+          mkdir shared-root-tables
+          gh run download "$TABLE_SOURCE_RUN" -n "$TABLE_SOURCE_ARTIFACT" -D shared-root-tables
+          TABLE_DIR="$(dirname "$(find shared-root-tables -name w_lower.bin -print -quit)")"
+          test -n "$TABLE_DIR"
+          test -f "$TABLE_DIR/w_second_lower.bin"
+          test -f "$TABLE_DIR/w_mid_lower.bin"
+          test -f "$TABLE_DIR/w_mid_upper.bin"
+          test -f "$TABLE_DIR/w_prime_mid_lower.bin"
+          test -f "$TABLE_DIR/w_prime_mid_upper.bin"
+          echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
+
+      - name: Run hardened c=11/10 target
+        shell: bash
+        run: |
+          : > pressure-frontier-c11.log
+          set +e
+          build-c11/verify_local_tables 8477 1000000 "$TABLE_DIR" 80000000 \
+            | tee pressure-frontier-c11.log
+          code=${PIPESTATUS[0]}
+          set -e
+          echo "eps_008477_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$code" != "0" ]]; then exit "$code"; fi
+
+      - name: Upload c=11/10 certificate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pressure-frontier-c11-certificate-hardened
+          path: pressure-frontier-c11.log
+          if-no-files-found: warn

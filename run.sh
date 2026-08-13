@@ -6,6 +6,8 @@ python3 src/check_multiplicity.py
 python3 src/check_final_bound.py
 python3 src/check_banded_gram.py
 python3 src/check_multilag.py
+python3 src/check_trace_banded_gram.py
+python3 src/check_trace_root_tightening.py
 rm -rf .interval-smoke
 python3 src/build_interval_tables.py --output .interval-smoke --smoke-cells 32 --precision 45
 python3 src/write_verifier_config.py --output .interval-smoke/candidate_config.hpp

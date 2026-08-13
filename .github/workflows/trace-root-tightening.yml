@@ -37,9 +37,9 @@ jobs:
           assert c['window']['term_count']==17
           assert c['local_certificate']['verified'] is True
           assert Fraction(c['local_certificate']['target']['numerator'],c['local_certificate']['target']['denominator'])==Fraction(79107,10_000_000)
-          assert float(c['local_search']['float_minimum_observed'].replace('...','')) > 0.0079110
+          assert float(c['local_search']['float_minimum_observed'].replace('...','')) > 0.0079111
           assert Fraction(c['position_pressure']['total']['numerator'],c['position_pressure']['total']['denominator'])==Fraction(93,23000)
-          print('trace_root_tightening_inputs_ok=True')
+          print('trace_root_frontier_inputs_ok=True')
           PY
           python3 src/check_window.py
 
@@ -82,30 +82,36 @@ jobs:
           test -f "$TABLE_DIR/manifest.json"
           echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
 
-      - name: Probe hardened root targets 0.0079109 and 0.0079110
+      - name: Probe hardened root frontier 0.00791105 0.00791108 0.00791110
         shell: bash
         run: |
-          : > trace-root-0079109.log
-          : > trace-root-0079110.log
+          : > trace-root-00791105.log
+          : > trace-root-00791108.log
+          : > trace-root-00791110.log
           set +e
-          build-trace-root/verify_local_tables 79109 10000000 "$TABLE_DIR" 100000000 \
-            | tee trace-root-0079109.log
-          code090=${PIPESTATUS[0]}
-          build-trace-root/verify_local_tables 7911 1000000 "$TABLE_DIR" 100000000 \
-            | tee trace-root-0079110.log
-          code100=${PIPESTATUS[0]}
+          build-trace-root/verify_local_tables 158221 20000000 "$TABLE_DIR" 100000000 \
+            | tee trace-root-00791105.log
+          code105=${PIPESTATUS[0]}
+          build-trace-root/verify_local_tables 197777 25000000 "$TABLE_DIR" 100000000 \
+            | tee trace-root-00791108.log
+          code108=${PIPESTATUS[0]}
+          build-trace-root/verify_local_tables 79111 10000000 "$TABLE_DIR" 100000000 \
+            | tee trace-root-00791110.log
+          code110=${PIPESTATUS[0]}
           set -e
-          echo "eps_0079109_exit_code=$code090" >> "$GITHUB_STEP_SUMMARY"
-          echo "eps_0079110_exit_code=$code100" >> "$GITHUB_STEP_SUMMARY"
-          # 0.0079109 is the conservative promotion target. 0.0079110 is bonus-only.
-          if [[ "$code090" != "0" ]]; then exit "$code090"; fi
+          echo "eps_00791105_exit_code=$code105" >> "$GITHUB_STEP_SUMMARY"
+          echo "eps_00791108_exit_code=$code108" >> "$GITHUB_STEP_SUMMARY"
+          echo "eps_00791110_exit_code=$code110" >> "$GITHUB_STEP_SUMMARY"
+          # 0.00791105 is the new conservative frontier target; tighter probes are bonus-only.
+          if [[ "$code105" != "0" ]]; then exit "$code105"; fi
 
-      - name: Upload root-tightening evidence
+      - name: Upload root-frontier evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: trace-root-tightening-hardened
+          name: trace-root-frontier-hardened
           path: |
-            trace-root-0079109.log
-            trace-root-0079110.log
+            trace-root-00791105.log
+            trace-root-00791108.log
+            trace-root-00791110.log
           if-no-files-found: warn

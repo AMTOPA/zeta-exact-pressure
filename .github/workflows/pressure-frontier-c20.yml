@@ -1,11 +1,11 @@
-name: pressure-frontier-c20-certificate
+name: pressure-frontier-c20-tightening
 
 on:
   push:
     branches: [main]
     paths:
       - experiments/pressure-frontier/c20.json
-      - src/check_pressure_bundle4.py
+      - src/check_pressure_bundle5.py
       - .github/workflows/pressure-frontier-c20.yml
   workflow_dispatch:
 
@@ -30,23 +30,20 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
 
-      - name: Validate simple c=2 auxiliary and exact four-line arithmetic
+      - name: Validate certified simple c=2 line and tightening arithmetic
         run: |
           python3 - <<'PY'
           import json
           from fractions import Fraction
           c=json.load(open('experiments/pressure-frontier/c20.json'))
+          assert c['local_certificate']['verified'] is True
+          assert Fraction(c['local_certificate']['target']['numerator'],c['local_certificate']['target']['denominator'])==Fraction(559,50000)
           assert Fraction(c['local_search']['pressure_total_scale']['numerator'],c['local_search']['pressure_total_scale']['denominator'])==2
-          t=c['local_search']['candidate_target_for_certification']
-          assert Fraction(t['numerator'],t['denominator'])==Fraction(559,50000)
-          pr=c['position_pressure']
-          assert Fraction(sum(pr['numerators']),pr['denominator'])==Fraction(93,11500)
-          root=[22420713,32878293,37700994,37700994,32878293,22420713]
-          assert pr['numerators']==[2*x for x in root]
-          print('pressure_frontier_c20_simple_structure_exact=True')
+          assert float(c['local_search']['screening_minimum_observed'].replace('...','')) > 0.0115
+          print('pressure_frontier_c20_tightening_structure_exact=True')
           PY
           python3 src/check_window.py
-          python3 src/check_pressure_bundle4.py
+          python3 src/check_pressure_bundle5.py
 
       - name: Compile root-certified accelerated verifier with capacity compatibility patch
         run: |
@@ -85,22 +82,22 @@ jobs:
           test -f "$TABLE_DIR/w_prime_mid_upper.bin"
           echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
 
-      - name: Run hardened simple c=2 target
+      - name: Run hardened c=2 target 0.0115
         shell: bash
         run: |
-          : > pressure-frontier-c20.log
+          : > pressure-frontier-c20-0115.log
           set +e
-          build-c20/verify_local_tables 559 50000 "$TABLE_DIR" 80000000 \
-            | tee pressure-frontier-c20.log
+          build-c20/verify_local_tables 23 2000 "$TABLE_DIR" 80000000 \
+            | tee pressure-frontier-c20-0115.log
           code=${PIPESTATUS[0]}
           set -e
-          echo "eps_01118_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          echo "eps_0115_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
           if [[ "$code" != "0" ]]; then exit "$code"; fi
 
-      - name: Upload c=2 certificate evidence
+      - name: Upload c=2 tightening evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pressure-frontier-c20-certificate-hardened
-          path: pressure-frontier-c20.log
+          name: pressure-frontier-c20-0115-hardened
+          path: pressure-frontier-c20-0115.log
           if-no-files-found: warn

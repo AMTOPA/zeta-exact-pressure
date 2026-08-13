@@ -1,0 +1,106 @@
+name: pressure-frontier-c20-certificate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - experiments/pressure-frontier/c20.json
+      - src/check_pressure_bundle4.py
+      - .github/workflows/pressure-frontier-c20.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ZETA_CANDIDATE_PATH: experiments/pressure-frontier/c20.json
+      TABLE_SOURCE_RUN: '31610179703'
+      TABLE_SOURCE_ARTIFACT: second-exchange-17term-certificate-hardened
+      VERIFIER_SOURCE_COMMIT: b3b7784ed0089c3c2197d740aaae1a424d142e44
+      VERIFIER_SOURCE_BLOB: b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+
+      - name: Validate simple c=2 auxiliary and exact four-line arithmetic
+        run: |
+          python3 - <<'PY'
+          import json
+          from fractions import Fraction
+          c=json.load(open('experiments/pressure-frontier/c20.json'))
+          assert Fraction(c['local_search']['pressure_total_scale']['numerator'],c['local_search']['pressure_total_scale']['denominator'])==2
+          t=c['local_search']['candidate_target_for_certification']
+          assert Fraction(t['numerator'],t['denominator'])==Fraction(559,50000)
+          pr=c['position_pressure']
+          assert Fraction(sum(pr['numerators']),pr['denominator'])==Fraction(93,11500)
+          root=[22420713,32878293,37700994,37700994,32878293,22420713]
+          assert pr['numerators']==[2*x for x in root]
+          print('pressure_frontier_c20_simple_structure_exact=True')
+          PY
+          python3 src/check_window.py
+          python3 src/check_pressure_bundle4.py
+
+      - name: Compile root-certified accelerated verifier with capacity compatibility patch
+        run: |
+          rm -rf build-c20
+          mkdir -p build-c20
+          python3 src/write_verifier_config.py --output build-c20/candidate_config.hpp
+          git fetch --no-tags --depth=1 origin "$VERIFIER_SOURCE_COMMIT"
+          git show "$VERIFIER_SOURCE_COMMIT:src/verify_local_tables.cpp" > build-c20/verify_local_tables.cpp
+          test "$(git hash-object build-c20/verify_local_tables.cpp)" = "$VERIFIER_SOURCE_BLOB"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('build-c20/verify_local_tables.cpp')
+          s=p.read_text()
+          old='if (total != candidate_config::span_capacity_num)\n                throw std::runtime_error("pair span capacity mismatch");'
+          new='if (total != candidate_config::span_capacity_num[span - 1])\n                throw std::runtime_error("pair span capacity mismatch");'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new))
+          print('capacity_compatibility_patch_only=True')
+          PY
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
+            -Ibuild-c20 build-c20/verify_local_tables.cpp -o build-c20/verify_local_tables
+
+      - name: Reuse certified root 17-term outward-rounded tables
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf shared-root-tables
+          mkdir shared-root-tables
+          gh run download "$TABLE_SOURCE_RUN" -n "$TABLE_SOURCE_ARTIFACT" -D shared-root-tables
+          TABLE_DIR="$(dirname "$(find shared-root-tables -name w_lower.bin -print -quit)")"
+          test -n "$TABLE_DIR"
+          test -f "$TABLE_DIR/w_second_lower.bin"
+          test -f "$TABLE_DIR/w_mid_lower.bin"
+          test -f "$TABLE_DIR/w_mid_upper.bin"
+          test -f "$TABLE_DIR/w_prime_mid_lower.bin"
+          test -f "$TABLE_DIR/w_prime_mid_upper.bin"
+          echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
+
+      - name: Run hardened simple c=2 target
+        shell: bash
+        run: |
+          : > pressure-frontier-c20.log
+          set +e
+          build-c20/verify_local_tables 559 50000 "$TABLE_DIR" 80000000 \
+            | tee pressure-frontier-c20.log
+          code=${PIPESTATUS[0]}
+          set -e
+          echo "eps_01118_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$code" != "0" ]]; then exit "$code"; fi
+
+      - name: Upload c=2 certificate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pressure-frontier-c20-certificate-hardened
+          path: pressure-frontier-c20.log
+          if-no-files-found: warn

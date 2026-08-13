@@ -1,0 +1,58 @@
+{
+  "description": "Root-local tightening used only by the trace-corrected banded-Gram analytic extension.",
+  "status": "local interval-certified; global projection conditional on the trace-corrected matrix lemma under review; root nonconditional record unchanged",
+  "date": "2026-08-13",
+  "root_window": {
+    "term_count": 17,
+    "h_floor": {"numerator":336094079,"denominator":500000000},
+    "pressure_total": {"numerator":93,"denominator":23000},
+    "previous_root_target": {"numerator":79107,"denominator":10000000},
+    "float_minimum_observed": "0.007911105155226424..."
+  },
+  "local_tightening": {
+    "target": {"numerator":7911,"denominator":1000000},
+    "verified": true,
+    "independent_reproduction": false,
+    "conservative_target_also_verified": {"numerator":79109,"denominator":10000000},
+    "method": "reuse the original root 17-term outward-rounded tables and the root-certified accelerated six-dimensional verifier, applying only the existing per-span-capacity compatibility edit",
+    "source_commit": "4bac68487199d4082dc9c1a43b795bac0b0fa721",
+    "workflow_run_id": 31662690446,
+    "artifact_id": 9166814941,
+    "artifact_digest_sha256": "692f8fd51b14135437a7d3fd92ed14f49bbaa5a0c22ddb5ab9cf2c7a50fc59e1",
+    "verified_at_utc": "2026-08-13T03:05:46Z",
+    "verifier_source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
+    "verifier_source_blob": "b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21",
+    "table_source_workflow_run_id": 31610179703,
+    "table_source_artifact_id": 9147378469,
+    "table_source_artifact_digest_sha256": "871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1",
+    "verifier_stats": {
+      "nodes": 3908494,
+      "pruned": 1954279,
+      "splits": 1954215,
+      "convex": 2169766,
+      "tangent": 1006289,
+      "max_depth": 81
+    },
+    "conservative_target_stats": {
+      "nodes": 3840906,
+      "pruned": 1920485,
+      "splits": 1920421,
+      "convex": 2102593,
+      "tangent": 972728,
+      "max_depth": 76
+    }
+  },
+  "trace_projection": {
+    "block_length": 576,
+    "bandwidth": 6,
+    "active_supporting_lines": ["base-tight","c=21/20 epsilon=0.0082051","c=6/5 epsilon=0.009021","c=8/5 epsilon=0.011129","c=2 epsilon=0.0122"],
+    "exact_bound": {"numerator":61473185536,"denominator":91279769375},
+    "computed_bound": "0.6734590365084389...",
+    "computed_percent": "67.34590365084389...%",
+    "safe_decimal_floor": {"numerator":6734590365,"denominator":10000000000},
+    "m577_full_no_loss": false,
+    "m577_first_failed_square_witness": {"numerator":-503181768195566329,"denominator":3670542225000000000000},
+    "exact_checker": "src/check_trace_root_tightening.py",
+    "analytic_dependency": "experiments/banded-gram/TRACE_CORRECTION.md"
+  }
+}

@@ -35,7 +35,6 @@ def quadratic_data(theta: Fraction) -> tuple[Fraction, Fraction, Fraction, Fract
 
 
 def exact_variational_checks() -> None:
-    # Exact endpoint arithmetic at theta=1/2.
     theta = Fraction(1, 2)
     I, J, A, D, K = quadratic_data(theta)
     assert I == Fraction(7, 12)
@@ -44,8 +43,13 @@ def exact_variational_checks() -> None:
     assert D == Fraction(57, 64)
     assert K == Fraction(19, 27)
 
-    # Check the closed form K(theta)=1-(1+theta)^(-3) on several rational theta.
-    for theta in (Fraction(1, 10), Fraction(1, 4), Fraction(2, 5), Fraction(1, 2), Fraction(3, 5)):
+    for theta in (
+        Fraction(1, 10),
+        Fraction(1, 4),
+        Fraction(2, 5),
+        Fraction(1, 2),
+        Fraction(3, 5),
+    ):
         *_, direct = quadratic_data(theta)
         closed = Fraction(1, 1) - Fraction(1, 1) / (Fraction(1, 1) + theta) ** 3
         assert direct == closed
@@ -108,23 +112,21 @@ def exact_redundancy_check(limit: int = 300) -> None:
         assert lhs == rhs, (n, lhs, rhs)
 
 
+def triple_excesses(theta: float) -> tuple[float, float, float]:
+    """Excess over T^1 of the three unsimplified Bui--HB power terms."""
+    return theta - 0.5, theta / 2.0 - 0.25, theta / 3.0 - 1.0 / 6.0
+
+
 def print_target_table() -> None:
     targets = [19 / 27, 0.71, 0.72, 0.73, 0.75, 0.80]
-    print("formal one-piece target table")
-    print(
-        "target        theta_required   base_delta_needed   "
-        "large_mod_T_exp   large_mod_saving"
-    )
+    print("formal one-piece target / Bui--Heath-Brown exponent budget")
+    print("target        theta_required   excess_E1       excess_E2       excess_E3")
     for target in targets:
         theta = theta_for_target(target)
-        # Barrier A: y*T^(1/2-delta)=o(T) needs delta > theta-1/2.
-        base_delta = max(0.0, theta - 0.5)
-        # Barrier B: y^(1/3)*T^beta=o(T) needs beta < 1-theta/3.
-        beta = 1.0 - theta / 3.0
-        saving = 5.0 / 6.0 - beta
+        e1, e2, e3 = triple_excesses(theta)
         print(
-            f"{100*target:8.4f}%   {theta:14.10f}   {base_delta:17.10f}   "
-            f"{beta:15.10f}   {saving:16.10f}"
+            f"{100*target:8.4f}%   {theta:14.10f}   "
+            f"{e1:14.10f}   {e2:14.10f}   {e3:14.10f}"
         )
 
 

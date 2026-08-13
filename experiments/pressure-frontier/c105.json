@@ -1,0 +1,47 @@
+{
+  "description": "Adversarially optimized c=21/20 auxiliary pressure supporting line for extending the low-energy edge of the 17-term pressure frontier.",
+  "status": "certifiability-directed auxiliary certificate; interval certification pending; not a standalone root record",
+  "date": "2026-08-13",
+  "points": 7,
+  "gaps_per_local_window": 6,
+  "window": {
+    "term_count": 17,
+    "denominator": 1000000000,
+    "numerators": [1000000000,12378982,-12602495,4164033,5741405,-1724025,6219280,-8047828,6321519,-5241981,-892658,560544,-431207,357969,-310433,100000,-100000],
+    "frequencies": ["sqrt(2)","2*pi","4*pi","6*pi","8*pi","10*pi","12*pi","14*pi","16*pi","18*pi","20*pi","22*pi","24*pi","26*pi","28*pi","30*pi","32*pi"],
+    "computed_h": "0.6721881581182345851694563877256548411463766196857994939795075115150882...",
+    "projection_h_floor": {"numerator":336094079,"denominator":500000000},
+    "h_floor_interval_verified": true,
+    "positivity_subdivision_cells": 4096
+  },
+  "local_search": {
+    "method": "fix the root 17-term window and pair weights; constrain total pressure to exactly (21/20)B; optimize the three reflection-symmetric position-pressure coordinates by adversarial linear exchange; quantize to denominator 230e9; use a frontier-threshold-directed target",
+    "pressure_total_scale": {"numerator":21,"denominator":20},
+    "screening_template_count": 512,
+    "screening_minimum_observed": "0.00820573038985...",
+    "candidate_target_for_certification": {"numerator":1641,"denominator":200000},
+    "verified": false,
+    "note": "The target 0.008205 is about 7.30e-7 below the lowest 512-template polished value. The proof mechanism is the hardened interval verifier. This smaller-pressure auxiliary needs about 1.5% more table range than the root artifact, so its workflow builds a fresh slightly extended table set for the identical analytic window."
+  },
+  "local_certificate": {
+    "target": {"numerator":1641,"denominator":200000},
+    "verified": false,
+    "independent_reproduction": false,
+    "method": "fresh outward-rounded tables for the identical certified 17-term window plus the root-certified accelerated six-dimensional verifier with only the per-span-capacity compatibility edit"
+  },
+  "pair_weights": {
+    "denominator": 1000000000,
+    "span_capacity_numerator": 2000000000,
+    "entries": [[0,1,244109993],[0,2,0],[0,3,254223074],[0,4,1000000000],[0,5,1000000000],[0,6,2000000000],[1,2,346264551],[1,3,368129744],[1,4,745776926],[1,5,0],[1,6,1000000000],[2,3,409625456],[2,4,1263740512],[2,5,745776926],[2,6,1000000000],[3,4,409625456],[3,5,368129744],[3,6,254223074],[4,5,346264551],[4,6,0],[5,6,244109993]]
+  },
+  "position_pressure": {
+    "denominator": 230000000000,
+    "numerators": [114482489,168407678,205359833,205359833,168407678,114482489],
+    "total": {"numerator":1953,"denominator":460000}
+  },
+  "frontier_role": {
+    "base_pressure": {"numerator":93,"denominator":23000},
+    "auxiliary_constraint": "S + (21/20) P >= A_{1.05}",
+    "six_line_projection": "If this target and the c=2 target epsilon=0.0122 close, then with the already certified root, c=11/10, c=6/5 and c=8/5 lines, the six-line bundle has a full no-loss block at m=576 with exact conditional projection 67.3458834998% and safe floor 0.6734588349."
+  }
+}

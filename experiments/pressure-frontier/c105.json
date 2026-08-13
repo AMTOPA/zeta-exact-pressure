@@ -1,6 +1,6 @@
 {
   "description": "Adversarially optimized c=21/20 auxiliary pressure supporting line for extending the low-energy edge of the 17-term pressure frontier.",
-  "status": "certifiability-directed auxiliary certificate; interval certification pending; not a standalone root record",
+  "status": "auxiliary local interval-certified at epsilon=0.008205; independent reproduction requested; not a standalone root record",
   "date": "2026-08-13",
   "points": 7,
   "gaps_per_local_window": 6,
@@ -20,14 +20,32 @@
     "screening_template_count": 512,
     "screening_minimum_observed": "0.00820573038985...",
     "candidate_target_for_certification": {"numerator":1641,"denominator":200000},
-    "verified": false,
-    "note": "The target 0.008205 is about 7.30e-7 below the lowest 512-template polished value. The proof mechanism is the hardened interval verifier. This smaller-pressure auxiliary needs about 1.5% more table range than the root artifact, so its workflow builds a fresh slightly extended table set for the identical analytic window."
+    "verified": true,
+    "note": "The target 0.008205 is about 7.30e-7 below the lowest 512-template polished value and closed in the hardened interval verifier."
   },
   "local_certificate": {
     "target": {"numerator":1641,"denominator":200000},
-    "verified": false,
+    "verified": true,
     "independent_reproduction": false,
-    "method": "fresh outward-rounded tables for the identical certified 17-term window plus the root-certified accelerated six-dimensional verifier with only the per-span-capacity compatibility edit"
+    "method": "fresh outward-rounded tables for the identical certified 17-term window plus the root-certified accelerated six-dimensional verifier with only the per-span-capacity compatibility edit",
+    "source_commit": "4cc12cee19ffb8c7276db77ba9a4da623ff64f5f",
+    "workflow_run_id": 31654577586,
+    "artifact_id": 9164171548,
+    "artifact_digest_sha256": "4559daad3c613fc9c64a46439b8931f874e1bc491cc61b391d1f36a20c75fe5a",
+    "verified_at_utc": "2026-08-13T00:43:59Z",
+    "verifier_source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
+    "verifier_source_blob": "b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21",
+    "capacity_compatibility_patch_only": true,
+    "table_cells": 65970,
+    "verifier_stats": {"nodes":3435324,"pruned":1717694,"splits":1717630,"convex":1701100,"tangent":773835,"max_depth":64},
+    "table_hashes_sha256_big_endian_float_stream": {
+      "w_lower.bin":"17e5e678f2e5130dbe5c4608d9d5e5722727a2f652dff05af4bb3f20548140c6",
+      "w_second_lower.bin":"a27f2908cd44a534b22c2ac6d5f9286f3a00af643f0f8288e9de30d8b4ccd2b6",
+      "w_mid_lower.bin":"4081c81342721072d440e432b4a6b5371297a3c611ce60ae17e533ce1a5b54c1",
+      "w_mid_upper.bin":"5aaaa543e57131d697a30b9e25b74c2105d1c531f72436934ea99d656033de65",
+      "w_prime_mid_lower.bin":"fd73ce767157e18da0860d9e6dce0adb6afd757e3b466c343bbf01fe85d6057d",
+      "w_prime_mid_upper.bin":"d9f5c3442f70beb8075af02a6dda9fd7be719545bb92e7c1119fccf61f83110c"
+    }
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -42,6 +60,6 @@
   "frontier_role": {
     "base_pressure": {"numerator":93,"denominator":23000},
     "auxiliary_constraint": "S + (21/20) P >= A_{1.05}",
-    "six_line_projection": "If this target and the c=2 target epsilon=0.0122 close, then with the already certified root, c=11/10, c=6/5 and c=8/5 lines, the six-line bundle has a full no-loss block at m=576 with exact conditional projection 67.3458834998% and safe floor 0.6734588349."
+    "six_line_projection": "Together with the interval-certified root, c=11/10, c=6/5, c=8/5 and c=2 epsilon=0.0122 lines, this interval-certified line yields a full no-loss block at m=576 with exact conditional projection 67.3458834998% and safe floor 0.6734588349."
   }
 }

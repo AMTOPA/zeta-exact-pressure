@@ -1,0 +1,156 @@
+name: trace-root-terminal-refinement
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/trace-root-terminal-refinement.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  hybrid:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ZETA_CANDIDATE_PATH: candidate.json
+      TABLE_SOURCE_RUN: '31610179703'
+      TABLE_SOURCE_ARTIFACT: second-exchange-17term-certificate-hardened
+      VERIFIER_SOURCE_COMMIT: b3b7784ed0089c3c2197d740aaae1a424d142e44
+      VERIFIER_SOURCE_BLOB: b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21
+      REFINER_SOURCE_COMMIT: 1bcef82d2c3e8c9149ccee9403cacb372a447576
+      REFINER_SOURCE_BLOB: 9d135009f4204ec40e428f674aa214ee30cb788b
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+
+      - name: Build pinned accelerated coverage collector
+        run: |
+          rm -rf build-terminal
+          mkdir -p build-terminal
+          python3 src/write_verifier_config.py --output build-terminal/candidate_config.hpp
+          git fetch --no-tags --depth=1 origin "$VERIFIER_SOURCE_COMMIT"
+          git show "$VERIFIER_SOURCE_COMMIT:src/verify_local_tables.cpp" > build-terminal/verify_collect_accelerated.cpp
+          test "$(git hash-object build-terminal/verify_collect_accelerated.cpp)" = "$VERIFIER_SOURCE_BLOB"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('build-terminal/verify_collect_accelerated.cpp')
+          s=p.read_text()
+          old='if (total != candidate_config::span_capacity_num)\n                throw std::runtime_error("pair span capacity mismatch");'
+          new='if (total != candidate_config::span_capacity_num[span - 1])\n                throw std::runtime_error("pair span capacity mismatch");'
+          assert s.count(old)==1
+          s=s.replace(old,new)
+          anchor='INCONCLUSIVE=true reason=terminal_cell'
+          pos=s.index(anchor)
+          ret=s.index('return 3;',pos)
+          s=s[:ret]+'continue;'+s[ret+len('return 3;'):]
+          old_final='std::cout << "VERIFIED=true nodes="'
+          new_final='std::cout << "COVERAGE_COMPLETE=true nodes="'
+          assert s.count(old_final)==1
+          s=s.replace(old_final,new_final)
+          p.write_text(s)
+          print('coverage_control_flow_patch_only=True')
+          PY
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
+            -Ibuild-terminal build-terminal/verify_collect_accelerated.cpp \
+            -o build-terminal/verify_collect_accelerated
+
+      - name: Restore pinned direct terminal refiner
+        run: |
+          git fetch --no-tags --depth=1 origin "$REFINER_SOURCE_COMMIT"
+          git show "$REFINER_SOURCE_COMMIT:src/refine_terminal_boxes.py" > build-terminal/refine_terminal_boxes.py
+          test "$(git hash-object build-terminal/refine_terminal_boxes.py)" = "$REFINER_SOURCE_BLOB"
+
+      - name: Reuse certified root 17-term outward-rounded tables
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf shared-root-tables
+          mkdir shared-root-tables
+          gh run download "$TABLE_SOURCE_RUN" -n "$TABLE_SOURCE_ARTIFACT" -D shared-root-tables
+          TABLE_DIR="$(dirname "$(find shared-root-tables -name w_lower.bin -print -quit)")"
+          test -n "$TABLE_DIR"
+          test -f "$TABLE_DIR/w_second_lower.bin"
+          test -f "$TABLE_DIR/w_mid_lower.bin"
+          test -f "$TABLE_DIR/w_mid_upper.bin"
+          test -f "$TABLE_DIR/w_prime_mid_lower.bin"
+          test -f "$TABLE_DIR/w_prime_mid_upper.bin"
+          echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
+
+      - name: Collect and refine target 0.00791108
+        shell: bash
+        run: |
+          build-terminal/verify_collect_accelerated 197777 25000000 "$TABLE_DIR" 100000000 \
+            | tee coverage-00791108.log
+          grep 'reason=terminal_cell' coverage-00791108.log > terminal-lines-00791108.txt || true
+          python3 - <<'PY'
+          import re
+          src=open('terminal-lines-00791108.txt').read().splitlines()
+          with open('terminal-boxes-00791108.txt','w') as f:
+              f.write('# grid=4000 target=197777/25000000\n')
+              for line in src:
+                  m=re.search(r'box=((?:\[\d+,\d+\]){6})',line)
+                  assert m, line
+                  cells=re.findall(r'\[(\d+),(\d+)\]',m.group(1))
+                  assert all(a==b for a,b in cells), cells
+                  f.write(','.join(a for a,b in cells)+'\n')
+          print('terminal_cells_00791108=',len(src))
+          PY
+          if grep -qv '^#' terminal-boxes-00791108.txt; then
+            PYTHONPATH=src python3 build-terminal/refine_terminal_boxes.py \
+              --boxes-file terminal-boxes-00791108.txt --grid 4000 --precision 80 \
+              --max-depth 36 --max-nodes 5000000 \
+              --target-num 197777 --target-den 25000000 \
+              | tee refinement-00791108.log
+          else
+            echo 'ALL_TERMINAL_BOXES_VERIFIED=true boxes=0 total_nodes=0' | tee refinement-00791108.log
+          fi
+
+      - name: Collect and refine target 0.00791110
+        shell: bash
+        run: |
+          build-terminal/verify_collect_accelerated 79111 10000000 "$TABLE_DIR" 100000000 \
+            | tee coverage-00791110.log
+          grep 'reason=terminal_cell' coverage-00791110.log > terminal-lines-00791110.txt || true
+          python3 - <<'PY'
+          import re
+          src=open('terminal-lines-00791110.txt').read().splitlines()
+          with open('terminal-boxes-00791110.txt','w') as f:
+              f.write('# grid=4000 target=79111/10000000\n')
+              for line in src:
+                  m=re.search(r'box=((?:\[\d+,\d+\]){6})',line)
+                  assert m, line
+                  cells=re.findall(r'\[(\d+),(\d+)\]',m.group(1))
+                  assert all(a==b for a,b in cells), cells
+                  f.write(','.join(a for a,b in cells)+'\n')
+          print('terminal_cells_00791110=',len(src))
+          PY
+          if grep -qv '^#' terminal-boxes-00791110.txt; then
+            PYTHONPATH=src python3 build-terminal/refine_terminal_boxes.py \
+              --boxes-file terminal-boxes-00791110.txt --grid 4000 --precision 80 \
+              --max-depth 36 --max-nodes 5000000 \
+              --target-num 79111 --target-den 10000000 \
+              | tee refinement-00791110.log
+          else
+            echo 'ALL_TERMINAL_BOXES_VERIFIED=true boxes=0 total_nodes=0' | tee refinement-00791110.log
+          fi
+
+      - name: Upload hybrid evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trace-root-terminal-refinement-hardened
+          path: |
+            coverage-00791108.log
+            terminal-boxes-00791108.txt
+            refinement-00791108.log
+            coverage-00791110.log
+            terminal-boxes-00791110.txt
+            refinement-00791110.log
+          if-no-files-found: warn

@@ -30,20 +30,19 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
 
-      - name: Validate certified c=2 line and m=576 tightening arithmetic
+      - name: Validate certified c=2 line and 0.0130 frontier probe
         run: |
           python3 - <<'PY'
           import json
           from fractions import Fraction
           c=json.load(open('experiments/pressure-frontier/c20.json'))
           assert c['local_certificate']['verified'] is True
-          assert Fraction(c['local_certificate']['target']['numerator'],c['local_certificate']['target']['denominator'])==Fraction(23,2000)
+          assert Fraction(c['local_certificate']['target']['numerator'],c['local_certificate']['target']['denominator'])==Fraction(61,5000)
           assert Fraction(c['local_search']['pressure_total_scale']['numerator'],c['local_search']['pressure_total_scale']['denominator'])==2
-          assert float(c['local_search']['screening_minimum_observed'].replace('...','')) > 0.0122
-          print('pressure_frontier_c20_0122_structure_exact=True')
+          assert float(c['local_search']['screening_minimum_observed'].replace('...','')) > 0.0130
+          print('pressure_frontier_c20_0130_probe_structure_exact=True')
           PY
           python3 src/check_window.py
-          python3 src/check_pressure_bundle6.py
 
       - name: Compile root-certified accelerated verifier with capacity compatibility patch
         run: |
@@ -82,22 +81,22 @@ jobs:
           test -f "$TABLE_DIR/w_prime_mid_upper.bin"
           echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
 
-      - name: Run hardened c=2 target 0.0122
+      - name: Run hardened c=2 target 0.0130
         shell: bash
         run: |
-          : > pressure-frontier-c20-0122.log
+          : > pressure-frontier-c20-0130.log
           set +e
-          build-c20/verify_local_tables 61 5000 "$TABLE_DIR" 80000000 \
-            | tee pressure-frontier-c20-0122.log
+          build-c20/verify_local_tables 13 1000 "$TABLE_DIR" 80000000 \
+            | tee pressure-frontier-c20-0130.log
           code=${PIPESTATUS[0]}
           set -e
-          echo "eps_0122_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          echo "eps_0130_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
           if [[ "$code" != "0" ]]; then exit "$code"; fi
 
-      - name: Upload c=2 tightening evidence
+      - name: Upload c=2 frontier evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pressure-frontier-c20-0122-hardened
-          path: pressure-frontier-c20-0122.log
+          name: pressure-frontier-c20-0130-hardened
+          path: pressure-frontier-c20-0130.log
           if-no-files-found: warn

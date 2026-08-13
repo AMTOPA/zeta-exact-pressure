@@ -1,6 +1,6 @@
 {
   "description": "Adversarially optimized auxiliary 6/5-pressure six-gap certificate for the pressure-frontier bundle.",
-  "status": "auxiliary local interval-certified at epsilon=0.009017; independent reproduction requested; not a standalone root record",
+  "status": "auxiliary local interval-certified at epsilon=0.009021; independent reproduction requested; not a standalone root record",
   "date": "2026-08-13",
   "points": 7,
   "gaps_per_local_window": 6,
@@ -22,21 +22,21 @@
     "differential_evolution_runs": 6,
     "float_minimum_observed": "0.00902172205332521...",
     "float_minimum_location": ["1.036097587833","1.038002793236","1.965416856027","1.045335923444","1.967453357559","1.040665593176"],
-    "candidate_target_for_certification": {"numerator":9017,"denominator":1000000},
+    "candidate_target_for_certification": {"numerator":9021,"denominator":1000000},
     "verified": true,
-    "previous_verified_target": {"numerator":9015,"denominator":1000000},
-    "note": "The target 0.009017 is about 4.72e-6 below the quantized unscreened floating minimum and closed in the hardened interval verifier. The lower 0.009015 target had already sufficed for the two-line m=312 projection; 0.009017 is retained because it is the bundle-directed target used with the c=8/5 supporting line at m=496."
+    "previous_verified_targets": [{"numerator":9015,"denominator":1000000},{"numerator":9017,"denominator":1000000}],
+    "note": "The target 0.009021 is only about 7.22e-7 below the quantized unscreened floating minimum, yet closed in the root-certified accelerated interval verifier. It is the low-energy switch target used by the four-line m=500 pressure-frontier bundle."
   },
   "local_certificate": {
-    "target": {"numerator":9017,"denominator":1000000},
+    "target": {"numerator":9021,"denominator":1000000},
     "verified": true,
     "independent_reproduction": false,
     "method": "reuse the outward-rounded tables for the identical certified 17-term window and the root-certified accelerated six-dimensional C++ branch-and-bound verifier; apply only the mechanical compatibility change from one scalar span capacity to per-span capacity indexing",
-    "source_commit": "af334c7c1527497d45c06e119f33e4fc187c820f",
-    "workflow_run_id": 31652296299,
-    "artifact_id": 9163050273,
-    "artifact_digest_sha256": "15456e74c421ba887805fd80cf81d02d94f9a3550d857f980b1537815274c9f5",
-    "verified_at_utc": "2026-08-12T23:50:52Z",
+    "source_commit": "1d8301070d93f79d7bbe3edd1fa7bc7749d0e077",
+    "workflow_run_id": 31652999370,
+    "artifact_id": 9163297177,
+    "artifact_digest_sha256": "8d726504a77f2842c34cf80ecc1adbff67557d8511f143f9fb61e0167d1d8458",
+    "verified_at_utc": "2026-08-13T00:02:34Z",
     "verifier_source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
     "verifier_source_blob": "b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21",
     "capacity_compatibility_patch_only": true,
@@ -44,19 +44,17 @@
     "table_source_artifact_id": 9147378469,
     "table_source_artifact_digest_sha256": "871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1",
     "verifier_stats": {
-      "nodes": 2223766,
-      "pruned": 1111891,
-      "splits": 1111875,
-      "convex": 1048624,
-      "tangent": 477837,
-      "max_depth": 65
+      "nodes": 2363080,
+      "pruned": 1181548,
+      "splits": 1181532,
+      "convex": 1176892,
+      "tangent": 540445,
+      "max_depth": 73
     },
-    "previous_certificate": {
-      "target": {"numerator":9015,"denominator":1000000},
-      "workflow_run_id": 31652101496,
-      "artifact_id": 9162976523,
-      "artifact_digest_sha256": "59ae8abd4e6c45a656ae54035ce3b10cb9e988a104e440bd25c0ddf37f959903"
-    }
+    "history": [
+      {"target":"0.009015","workflow_run_id":31652101496,"artifact_id":9162976523},
+      {"target":"0.009017","workflow_run_id":31652296299,"artifact_id":9163050273}
+    ]
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -70,9 +68,8 @@
   },
   "multilag_role": {
     "base_pressure": {"numerator":93,"denominator":23000},
-    "base_constraint": "S + P >= A0 from root candidate.json, where S is the six-band energy and P=(93/23000)*span",
-    "auxiliary_constraint": "S + (6/5) P >= A1 because the optimized auxiliary pressure vector has the same exact total (6/5)B; translated pressure bookkeeping uses only the total",
-    "two_line_projection": "The already certified target 0.009015 removes the Gram discount through m=312, giving exact conditional projection 67.3447428731% with safe floor 0.6734474287.",
-    "bundle_projection": "The stronger certified target 0.009017 is used with the certified c=8/5 auxiliary line in the three-supporting-line m=496 pressure-frontier bundle, giving exact conditional projection 67.3456660659% with safe floor 0.6734566606, conditional only on acceptance of the continuous banded-Gram analytic profile."
+    "base_constraint": "S + P >= A0 from root candidate.json",
+    "auxiliary_constraint": "S + (6/5) P >= A1",
+    "four_line_projection": "Together with the certified c=8/5 epsilon=0.011129 and c=2 epsilon=0.01118 lines, this certified epsilon=0.009021 line gives a full no-Gram-loss block at m=500 with exact conditional projection 67.3456785899% and safe floor 0.6734567858, conditional only on acceptance of the continuous banded-Gram analytic profile."
   }
 }

@@ -1,0 +1,103 @@
+name: trace-banded-c105-tightening
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - experiments/banded-gram/TRACE_CORRECTION.md
+      - src/check_trace_banded_gram.py
+      - .github/workflows/trace-banded-c105-tightening.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ZETA_CANDIDATE_PATH: experiments/pressure-frontier/c105.json
+      TABLE_SOURCE_RUN: '31654577586'
+      TABLE_SOURCE_ARTIFACT: pressure-frontier-c105-certificate-hardened
+      VERIFIER_SOURCE_COMMIT: b3b7784ed0089c3c2197d740aaae1a424d142e44
+      VERIFIER_SOURCE_BLOB: b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+
+      - name: Validate exact trace-corrected projection inputs
+        run: |
+          python3 - <<'PY'
+          import json
+          from fractions import Fraction
+          c=json.load(open('experiments/pressure-frontier/c105.json'))
+          assert c['local_certificate']['verified'] is True
+          assert Fraction(c['local_certificate']['target']['numerator'],c['local_certificate']['target']['denominator'])==Fraction(1641,200000)
+          assert float(c['local_search']['screening_minimum_observed'].replace('...','')) > 0.0082051
+          print('c105_trace_tightening_input_ok=True')
+          PY
+          python3 src/check_trace_banded_gram.py
+
+      - name: Compile root-certified accelerated verifier with capacity compatibility patch
+        run: |
+          rm -rf build-trace-c105
+          mkdir -p build-trace-c105
+          python3 src/write_verifier_config.py --output build-trace-c105/candidate_config.hpp
+          git fetch --no-tags --depth=1 origin "$VERIFIER_SOURCE_COMMIT"
+          git show "$VERIFIER_SOURCE_COMMIT:src/verify_local_tables.cpp" > build-trace-c105/verify_local_tables.cpp
+          test "$(git hash-object build-trace-c105/verify_local_tables.cpp)" = "$VERIFIER_SOURCE_BLOB"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('build-trace-c105/verify_local_tables.cpp')
+          s=p.read_text()
+          old='if (total != candidate_config::span_capacity_num)\n                throw std::runtime_error("pair span capacity mismatch");'
+          new='if (total != candidate_config::span_capacity_num[span - 1])\n                throw std::runtime_error("pair span capacity mismatch");'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new))
+          print('capacity_compatibility_patch_only=True')
+          PY
+          g++ -std=c++17 -O3 -march=x86-64 -DNDEBUG -ffp-contract=off \
+            -Ibuild-trace-c105 build-trace-c105/verify_local_tables.cpp \
+            -o build-trace-c105/verify_local_tables
+
+      - name: Reuse certified extended c=21/20 tables
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf shared-c105-tables
+          mkdir shared-c105-tables
+          gh run download "$TABLE_SOURCE_RUN" -n "$TABLE_SOURCE_ARTIFACT" -D shared-c105-tables
+          TABLE_DIR="$(dirname "$(find shared-c105-tables -name w_lower.bin -print -quit)")"
+          test -n "$TABLE_DIR"
+          test -f "$TABLE_DIR/w_second_lower.bin"
+          test -f "$TABLE_DIR/w_mid_lower.bin"
+          test -f "$TABLE_DIR/w_mid_upper.bin"
+          test -f "$TABLE_DIR/w_prime_mid_lower.bin"
+          test -f "$TABLE_DIR/w_prime_mid_upper.bin"
+          test -f "$TABLE_DIR/manifest.json"
+          echo "TABLE_DIR=$TABLE_DIR" >> "$GITHUB_ENV"
+
+      - name: Run hardened c=21/20 target 0.0082051
+        shell: bash
+        run: |
+          : > trace-banded-c105-tightening.log
+          set +e
+          build-trace-c105/verify_local_tables 82051 10000000 "$TABLE_DIR" 80000000 \
+            | tee trace-banded-c105-tightening.log
+          code=${PIPESTATUS[0]}
+          set -e
+          echo "eps_0082051_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$code" != "0" ]]; then exit "$code"; fi
+
+      - name: Upload tightening evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trace-banded-c105-0082051-hardened
+          path: trace-banded-c105-tightening.log
+          if-no-files-found: warn

@@ -65,6 +65,45 @@ may be more useful than a fully generic Bettin--Chandee bound: the extra arithme
 factor is short and should not automatically be charged as part of the oscillatory
 conductor.
 
+### Quantitative size check at the conductor edge
+
+Suppose a future transformation identifies Wright's convolution scale with a block
+at the BHB conductor edge
+
+\[
+X\asymp Q^3.
+\]
+
+Then the current Corollary 2.2(i) short-factor condition becomes
+
+\[
+N\le Q^{-33/28}(Q^3)^{17/28-\varepsilon}
+=Q^{9/14-3\varepsilon}.
+\]
+
+Ignoring the explicit epsilon margin, the allowed short exponent is therefore
+
+\[
+\boxed{9/14\approx0.642857}.
+\]
+
+By contrast, at `theta=0.502` and `Q>=T^(1/2)`, the entire BHB outer range obeys
+
+\[
+K\le T^{0.002+o(1)}\le Q^{0.004+o(1)}.
+\]
+
+Thus, **if** one of the BHB short arithmetic parameters can genuinely be mapped to
+Wright's short convolution/fixed-factor variable, its size is nowhere near the
+published range boundary.  The size geometry has huge slack.
+
+This is a useful negative/positive separation:
+
+- **not the main problem:** the raw length of `K` or `D`;
+- **still the main problem:** obtaining the correct Kloosterman phase, preserving
+  the outer sign, and producing a coefficient satisfying the required
+  Siegel--Walfisz/equidistribution hypothesis.
+
 ## 4. Why Wright is not yet a black-box theorem for BHB
 
 The present BHB object is not the convolution-in-progressions sum in Wright's
@@ -110,7 +149,7 @@ e\!\left(\vartheta\frac{a\overline m}{Rn}\right)
 \]
 
 or prove that it cannot be reduced to such a form without losing the outer sign.
-Only then should Wright's fixed-factor theorem be tested numerically against the
+Only then should Wright's fixed-factor theorem be tested against the
 `theta=0.502` corner.
 
 ## 6. Current decision

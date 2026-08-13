@@ -1,6 +1,6 @@
 {
   "description": "Simple c=2 auxiliary pressure supporting line using exactly twice the root position-pressure vector.",
-  "status": "auxiliary local interval-certified at epsilon=0.01118; independent reproduction requested; not a standalone root record",
+  "status": "auxiliary local interval-certified at epsilon=0.0115; independent reproduction requested; not a standalone root record",
   "date": "2026-08-13",
   "points": 7,
   "gaps_per_local_window": 6,
@@ -15,38 +15,31 @@
     "positivity_subdivision_cells": 4096
   },
   "local_search": {
-    "method": "do not optimize the c=2 pressure shape: keep the root pair weights and take exactly twice the root position-pressure vector. The global four-line m=500 deduction only needs epsilon above about 0.011170221 once the c=6/5 line reaches 0.009021, so use a low certifiability-directed target rather than a local-record target",
+    "method": "keep the root pair weights and take exactly twice the root position-pressure vector; use certifiability-directed targets below the observed local frontier",
     "pressure_total_scale": {"numerator":2,"denominator":1},
     "screening_template_count": 512,
     "screening_minimum_observed": "0.0130624470525...",
-    "candidate_target_for_certification": {"numerator":559,"denominator":50000},
+    "candidate_target_for_certification": {"numerator":23,"denominator":2000},
     "verified": true,
-    "note": "The target 0.01118 is more than 0.00188 below the lowest value seen in the initial 512-template screening and closed almost immediately in the hardened interval verifier. The screening is not used as proof."
+    "previous_verified_target": {"numerator":559,"denominator":50000},
+    "note": "The tightened target 0.0115 remains more than 0.00156 below the lowest screening value and closed in only 44,488 verifier nodes."
   },
   "local_certificate": {
-    "target": {"numerator":559,"denominator":50000},
+    "target": {"numerator":23,"denominator":2000},
     "verified": true,
     "independent_reproduction": false,
-    "method": "reuse the outward-rounded tables for the identical certified 17-term window plus the root-certified accelerated six-dimensional verifier with only the per-span-capacity compatibility edit",
-    "source_commit": "2e336b2f0ee52fc65eb9823670650cc8460b71ea",
-    "workflow_run_id": 31653117334,
-    "artifact_id": 9163326374,
-    "artifact_digest_sha256": "fc432e319a17d9c430c23c0bdf6b5b1d8aada93a2dbcc4ea782e640abbbc12cb",
-    "verified_at_utc": "2026-08-13T00:04:00Z",
+    "source_commit": "06b211f83074ca2a98179bbc294ac6339d7797aa",
+    "workflow_run_id": 31653588838,
+    "artifact_id": 9163489664,
+    "artifact_digest_sha256": "cefd9c20e2d7a91173218d31c32a88386110179d3645445c18a687bf6ac8ebf1",
+    "verified_at_utc": "2026-08-13T00:12:02Z",
     "verifier_source_commit": "b3b7784ed0089c3c2197d740aaae1a424d142e44",
     "verifier_source_blob": "b10cdbeac16aed1c1076d5ce9b6e8ee22793dd21",
     "capacity_compatibility_patch_only": true,
     "table_source_workflow_run_id": 31610179703,
     "table_source_artifact_id": 9147378469,
-    "table_source_artifact_digest_sha256": "871532c739d5a9e8de770cf00675381ea4fd9c81f212d8e46f86403a27a34dc1",
-    "verifier_stats": {
-      "nodes": 26372,
-      "pruned": 13194,
-      "splits": 13178,
-      "convex": 2756,
-      "tangent": 1586,
-      "max_depth": 34
-    }
+    "verifier_stats": {"nodes":44488,"pruned":22252,"splits":22236,"convex":5569,"tangent":3121,"max_depth":36},
+    "history": [{"target":"0.01118","workflow_run_id":31653117334,"artifact_id":9163326374}]
   },
   "pair_weights": {
     "denominator": 1000000000,
@@ -60,7 +53,7 @@
   },
   "frontier_role": {
     "base_pressure": {"numerator":93,"denominator":23000},
-    "auxiliary_constraint": "S + 2 P >= A3 after translated pressure bookkeeping",
-    "four_line_projection": "Together with the interval-certified root, c=6/5 epsilon=0.009021, and c=8/5 epsilon=0.011129 lines, this interval-certified c=2 line yields a full no-Gram-loss block at m=500 with exact conditional projection 67.3456785899% and safe floor 0.6734567858."
+    "auxiliary_constraint": "S + 2 P >= A_2",
+    "five_line_projection": "Together with the certified c=11/10 epsilon=0.008477, c=6/5 epsilon=0.009021, c=8/5 epsilon=0.011129 and root lines, this certified epsilon=0.0115 line yields a full no-loss block at m=525 with exact conditional projection 67.3457525418% and safe floor 0.6734575254."
   }
 }
